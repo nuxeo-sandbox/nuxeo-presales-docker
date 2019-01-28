@@ -8,7 +8,7 @@ Install [docker-sync.io](http://docker-sync.io/) to enable fast content synchron
 
 ## Execution
 
-```
+```bash
 Nuxeo Docker Environment Generator
 Usage: ./create.sh [-d|--dir <arg>] [-a|--application <arg>] [-u|--user <arg>] [-p|--pass <arg>] [-v|--version <arg>] [-o|--host <arg>] [-l|--port <arg>] [-t|--template <arg>] [-m|--mp-opts <arg>] [--nxuser <arg>] [--(no-)nxhotfix] [--nxdata <arg>] [--nxlog <arg>] [--(no-)verbose] [-h|--help] [<packages-1>] ... [<packages-n>] ...
 	<packages>: Packages to include, in addition to application-name
@@ -22,7 +22,7 @@ Usage: ./create.sh [-d|--dir <arg>] [-a|--application <arg>] [-u|--user <arg>] [
 	-t,--template: Add configuration template (empty by default)
 	-m,--mp-opts: Nuxeo Marketplace Install options (default: '--relax=false')
 	--nxuser: (Advanced) Nuxeo runtime user (default: 'nuxeo')
-	--nxhotfix,--no-nxhotfix: (Advanced) Apply HotFix packages' (false by default)
+	--nxhotfix,--no-nxhotfix: (Advanced) Apply HotFix packages (false by default)
 	--nxdata: (Advanced) Nuxeo data directory (default: '/var/lib/nuxeo/data')
 	--nxlog: (Advanced) Nuxeo log directory (default: '/var/log/nuxeo')
 	--verbose,--no-verbose: Verbose output (off by default)
@@ -31,7 +31,7 @@ Usage: ./create.sh [-d|--dir <arg>] [-a|--application <arg>] [-u|--user <arg>] [
 
 ### Example
 
-```
+```bash
 nuxeo-project$ ~/scripts/create.sh -t mongodb -v 10.3 nuxeo-web-ui nuxeo-jsf-ui nuxeo-platform-3d
 ```
 
@@ -43,9 +43,58 @@ Use the Nuxeo command line tool to synchronize directories with the container.  
 
 Example:
 
-```
+```bash
 nuxeo-project$ nuxeo sync --src ~/dev/nuxeo-plugin/nuxeo-plugin-web-ui/src/main/resources/web/nuxeo.war/ui --dest $PWD/nuxeo.war/
 ```
+
+## macOS Tips and Tricks
+
+### Use nuxeo-platform-3d with Nuxeo Docker
+
+Use `socat/docker-compose.yml` to set up a Docker services bridge for macOS.  Modify your application's docker-compose.yml to expose the correct `DOCKER_HOST` and binary volume.  Nuxeo will now be able to launch other containers on your system
+
+### Local Hostname
+
+Define a local loopback alias and hostname for your machine.  This will allow you to provide an alias for your localhost address (127.0.0.1) within containers.  Remember, each container will have it's own 127.0.0.1 adapter.  Leveraging the localhost alias will allow you to seamlessly talk between one or more containers.
+
+Create the following XML within `/Library/LaunchDaemons/com.startup.alias.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.startup.alias</string>
+    <key>LaunchOnlyOnce</key>
+    <true/>
+    <key>ProgramArguments</key>
+    <array>
+	    <string>ifconfig</string>
+        <string>lo0</string>
+        <string>alias</string>
+        <string>172.16.123.1</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+```
+
+Enable it:
+
+```bash
+# Add it to your running machine
+sudo ifconfig lo0 alias 172.16.123.1
+# Add it to your startup instructions
+sudo launchctl load $PWD/com.startup.alias.plist
+```
+
+Then add an entry to your `/etc/hosts`:
+
+`172.16.123.1  myhost`
+
+You'll now be able to use 'myhost' in your address bar to access your local resources: http://myhost:8080
 
 ## Support
 

@@ -19,6 +19,7 @@ services:
       - STUDIO_USERNAME=${STUDIO_USERNAME}
       - STUDIO_CREDENTIALS=${STUDIO_CREDENTIALS}
 # See: https://hub.docker.com/r/alpine/socat/ to set up docker forwarding
+# - Example configuration socat/docker-compose.yml
 #      - DOCKER_HOST=tcp://laptop:2376
     volumes:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
