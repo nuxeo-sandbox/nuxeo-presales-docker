@@ -35,7 +35,7 @@ _PRINT_HELP="yes"
 # ARG_OPTIONAL_SINGLE([mp-opts],[m],[Nuxeo Marketplace Install options],[--relax=false])
 
 # ARG_OPTIONAL_SINGLE([nxuser],[],[(Advanced) Nuxeo runtime user],[nuxeo])
-# ARG_OPTIONAL_BOOLEAN([nxhotfix],[],[(Advanced) Apply HotFix packages'],[false])
+# ARG_OPTIONAL_BOOLEAN([nxhotfix],[],[(Advanced) Apply HotFix packages'],[true])
 # ARG_OPTIONAL_SINGLE([nxdata],[],[(Advanced) Nuxeo data directory],[/var/lib/nuxeo/data])
 # ARG_OPTIONAL_SINGLE([nxlog],[],[(Advanced) Nuxeo log directory],[/var/log/nuxeo])
 
@@ -84,7 +84,7 @@ _arg_port="9090"
 _arg_template=()
 _arg_mp_opts="--relax=false"
 _arg_nxuser="nuxeo"
-_arg_nxhotfix="false"
+_arg_nxhotfix="true"
 _arg_nxdata="/var/lib/nuxeo/data"
 _arg_nxlog="/var/log/nuxeo"
 _arg_verbose="off"
@@ -104,7 +104,7 @@ print_help ()
 	printf '\t%s\n' "-t,--template: Add configuration template (empty by default)"
 	printf '\t%s\n' "-m,--mp-opts: Nuxeo Marketplace Install options (default: '--relax=false')"
 	printf '\t%s\n' "--nxuser: (Advanced) Nuxeo runtime user (default: 'nuxeo')"
-	printf '\t%s\n' "--nxhotfix,--no-nxhotfix: (Advanced) Apply HotFix packages' (false by default)"
+	printf '\t%s\n' "--nxhotfix,--no-nxhotfix: (Advanced) Apply HotFix packages' (true by default)"
 	printf '\t%s\n' "--nxdata: (Advanced) Nuxeo data directory (default: '/var/lib/nuxeo/data')"
 	printf '\t%s\n' "--nxlog: (Advanced) Nuxeo log directory (default: '/var/log/nuxeo')"
 	printf '\t%s\n' "--verbose,--no-verbose: Verbose output (off by default)"
@@ -225,8 +225,8 @@ parse_commandline ()
 				_arg_nxuser="${_key##--nxuser=}"
 				;;
 			--no-nxhotfix|--nxhotfix)
-				_arg_nxhotfix="on"
-				test "${1:0:5}" = "--no-" && _arg_nxhotfix="off"
+				_arg_nxhotfix="true"
+				test "${1:0:5}" = "--no-" && _arg_nxhotfix="false"
 				;;
 			--nxdata)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
@@ -310,11 +310,6 @@ fi
 if [ -z "${_arg_pass}" ]; then
   read -s -p "Studio Password: " _arg_pass
   echo ""
-fi
-
-# Change from 'on' to 'true' for hotfix
-if [ "on" == "${_arg_nxhotfix}" ]; then
-  _arg_nxhotfix="true"
 fi
 
 # Set local environment from arguments
