@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ ! -e /var/lib/nuxeo/data/instance.clid ]; then
-  nuxeoctl register ${STUDIO_USERNAME} "${NUXEO_PROJECT}" "dev" "docker" "${NUXEO_CREDENTIALS}"
+  nuxeoctl register ${STUDIO_USERNAME} "${NUXEO_PROJECT}" "dev" "docker" "${STUDIO_CREDENTIALS}"
 fi
 
 if [ ${NUXEO_INSTALL_HOTFIX:='true'} == "true" ]; then
