@@ -1,0 +1,9 @@
+version: '3'
+services:
+  nuxeo: 
+    volumes:
+      - nuxeo-${APPLICATION_NAME}-sync:/opt/nuxeo/server/nxserver/nuxeo.war:nocopy
+
+volumes:
+  nuxeo-${APPLICATION_NAME}-sync:
+    external: true

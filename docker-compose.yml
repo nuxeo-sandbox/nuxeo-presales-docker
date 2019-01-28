@@ -1,0 +1,30 @@
+version: '3'
+services:
+  nuxeo:
+    image: nuxeo:${NUXEO_VERSION}
+    hostname: ${APPLICATION_NAME}
+    ports:
+      - "${NUXEO_PORT}:8080"
+    environment:
+      - NUXEO_HOSTNAME=${NUXEO_HOSTNAME}
+      - NUXEO_PORT=${NUXEO_PORT}
+      - NUXEO_PROJECT=${APPLICATION_NAME}
+      - NUXEO_PACKAGES=${NUXEO_PACKAGES}
+      - NUXEO_TEMPLATES=${NUXEO_TEMPLATES}
+      - NUXEO_INSTALL_HOTFIX=${NUXEO_INSTALL_HOTFIX}
+      - NUXEO_MPINSTALL_OPTIONS=${NUXEO_MPINSTALL_OPTIONS}
+      - NUXEO_DATA=${NUXEO_DATA}
+      - NUXEO_LOG=${NUXEO_LOG}
+      - NUXEO_USER=${NUXEO_USER}
+      - STUDIO_USERNAME=${STUDIO_USERNAME}
+      - STUDIO_CREDENTIALS=${STUDIO_CREDENTIALS}
+# See: https://hub.docker.com/r/alpine/socat/ to set up docker forwarding
+#      - DOCKER_HOST=tcp://laptop:2376
+    volumes:
+      - ./init:/docker-entrypoint-initnuxeo.d/:rw
+# Mount docker binary to access REST API for blender, etc.
+#      - /usr/local/bin/docker:/usr/bin/docker:ro
+      - data-volume:/var/lib/nuxeo/data:rw
+
+volumes:
+  data-volume:
