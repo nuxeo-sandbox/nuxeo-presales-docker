@@ -51,7 +51,7 @@ nuxeo-project$ nuxeo sync --src ~/dev/nuxeo-plugin/nuxeo-plugin-web-ui/src/main/
 
 ### Use nuxeo-platform-3d with Nuxeo Docker
 
-Use `socat/docker-compose.yml` to set up a Docker services bridge for macOS.  Modify your application's docker-compose.yml to expose the correct `DOCKER_HOST` and binary volume.  Nuxeo will now be able to launch other containers on your system
+Use `socat/docker-compose.yml` to set up a Docker services bridge for macOS.  Modify your application's docker-compose.yml to expose the correct `DOCKER_HOST` and binary volume.  Nuxeo will now be able to launch other containers on your system.
 
 ### Local Hostname
 
@@ -70,7 +70,7 @@ Create the following XML within `/Library/LaunchDaemons/com.startup.alias.plist`
     <true/>
     <key>ProgramArguments</key>
     <array>
-	    <string>ifconfig</string>
+        <string>ifconfig</string>
         <string>lo0</string>
         <string>alias</string>
         <string>172.16.123.1</string>
@@ -87,7 +87,7 @@ Enable it:
 # Add it to your running machine
 sudo ifconfig lo0 alias 172.16.123.1
 # Add it to your startup instructions
-sudo launchctl load $PWD/com.startup.alias.plist
+sudo launchctl load /Library/LaunchDaemons/com.startup.alias.plist
 ```
 
 Then add an entry to your `/etc/hosts`:
