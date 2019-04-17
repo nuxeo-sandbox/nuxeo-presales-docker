@@ -80,7 +80,7 @@ _arg_user="${USER}"
 _arg_pass=
 _arg_version="latest"
 _arg_host="localhost"
-_arg_port="9090"
+_arg_port="0"
 _arg_template=()
 _arg_mp_opts="--relax=false"
 _arg_nxuser="nuxeo"
@@ -100,7 +100,7 @@ print_help ()
 	printf '\t%s\n' "-p,--pass: Studio password, will be read from command line if not provided (no default)"
 	printf '\t%s\n' "-v,--version: Nuxeo version (from Docker Hub) (default: 'latest')"
 	printf '\t%s\n' "-o,--host: Specify Nuxeo hostname (default: 'localhost')"
-	printf '\t%s\n' "-l,--port: Listen on specified port (default: '9090')"
+	printf '\t%s\n' "-l,--port: Listen on specified port (default: '0' auto-select)"
 	printf '\t%s\n' "-t,--template: Add configuration template (empty by default)"
 	printf '\t%s\n' "-m,--mp-opts: Nuxeo Marketplace Install options (default: '--relax=false')"
 	printf '\t%s\n' "--nxuser: (Advanced) Nuxeo runtime user (default: 'nuxeo')"
@@ -310,6 +310,14 @@ fi
 if [ -z "${_arg_pass}" ]; then
   read -s -p "Studio Password: " _arg_pass
   echo ""
+fi
+
+# Check port, auto assign if '0'
+if [ "${_arg_port}" = "0" ]; then
+  PNUM=$RANDOM;
+  let "PNUM %= 3001";
+  _arg_port=$(($PNUM+6999));
+  echo "Using port number ${_arg_port}";
 fi
 
 # Set local environment from arguments

@@ -1,8 +1,13 @@
-version: '3'
+version: '3.6'
 services:
   nuxeo:
     image: nuxeo:${NUXEO_VERSION}
     hostname: ${APPLICATION_NAME}
+    depends_on: 
+      - mongo
+      - elasticsearch
+      - elasticsearch2
+      - elasticsearch3
     ports:
       - "${NUXEO_PORT}:8080"
     environment:
@@ -25,7 +30,96 @@ services:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
 # Mount docker binary to access REST API for blender, etc.
 #      - /usr/local/bin/docker:/usr/bin/docker:ro
-      - data-volume:/var/lib/nuxeo/data:rw
+      - nuxeo-data:/var/lib/nuxeo/data:rw
+  mongo:
+    image: mongo
+    hostname: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.0
+    hostname: elasticsearch
+    environment:
+      - node.name=es01
+      - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.0
+    hostname: elasticsearch2
+    environment:
+      - node.name=es02
+      - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    volumes:
+      - esdata2:/usr/share/elasticsearch/data
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.0
+    hostname: elasticsearch3
+    environment:
+      - node.name=es03
+      - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    privileged: true
+    volumes:
+      - esdata3:/usr/share/elasticsearch/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.5.0
+    hostname: kibana
+    depends_on: 
+      - elasticsearch
+      - elasticsearch2
+      - elasticsearch3    
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch:9200/
+    ports:
+      - 5601:5601
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
 
 volumes:
-  data-volume:
+  esdata1:
+  esdata2:
+  esdata3:
+  nuxeo-data:
+  mongo-data:

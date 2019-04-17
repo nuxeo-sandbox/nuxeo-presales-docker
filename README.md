@@ -18,7 +18,7 @@ Usage: ./create.sh [-d|--dir <arg>] [-a|--application <arg>] [-u|--user <arg>] [
 	-p,--pass: Studio password, will be read from command line if not provided (no default)
 	-v,--version: Nuxeo version (from Docker Hub) (default: 'latest')
 	-o,--host: Specify Nuxeo hostname (default: 'localhost')
-	-l,--port: Listen on specified port (default: '9090')
+	-l,--port: Listen on specified port (default: '0' auto-select)
 	-t,--template: Add configuration template (empty by default)
 	-m,--mp-opts: Nuxeo Marketplace Install options (default: '--relax=false')
 	--nxuser: (Advanced) Nuxeo runtime user (default: 'nuxeo')
@@ -29,10 +29,22 @@ Usage: ./create.sh [-d|--dir <arg>] [-a|--application <arg>] [-u|--user <arg>] [
 	-h,--help: Prints help
 ```
 
+### Set up a project
+
+Create a directory with the name of your Nuxeo Studio project.  Navigate to that directory and run the `create.sh` script
+with the desired options.  The create script will prompt you for your Studio password if not provided on the
+command line.  You will now have a Docker compose configuration set up for your project.
+
+By default, if you are in a directory with a name that matches your Studio project, you do not need to add any additional
+arguments for the create script.  The script will use the name of the current directory as your project name.
+
+Take note of the port assigned.  You will be able to access your Nuxeo instance at http://localhost:PORT/nuxeo
+
 ### Example
 
 ```bash
 nuxeo-project$ ~/scripts/create.sh -t mongodb -v 10.3 nuxeo-web-ui nuxeo-jsf-ui nuxeo-platform-3d
+nuxeo-project$ docker-compose up -d
 ```
 
 Install the `nuxeo-project` application with the `mongodb` template for 10.3.  Will add the Web UI, JSF, and 3D packages.
