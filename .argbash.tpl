@@ -10,13 +10,13 @@
 
 # ARG_OPTIONAL_SINGLE([version], [v], [Nuxeo version (from Docker Hub)], [latest])
 # ARG_OPTIONAL_SINGLE([host], [o], [Specify Nuxeo hostname], [localhost])
-# ARG_OPTIONAL_SINGLE([port], [l], [Listen on specified port], [9090])
+# ARG_OPTIONAL_SINGLE([port], [l], [Listen on specified port], [8080])
 # ARG_OPTIONAL_REPEATED([template], [t], [Add configuration template], [])
 
 # ARG_OPTIONAL_SINGLE([mp-opts], [m], [Nuxeo Marketplace Install options], [--relax=false])
 
 # ARG_OPTIONAL_SINGLE([nxuser], , [(Advanced) Nuxeo runtime user], [nuxeo])
-# ARG_OPTIONAL_BOOLEAN([nxhotfix], , [(Advanced) Apply HotFix packages'], [false])
+# ARG_OPTIONAL_BOOLEAN([nxhotfix], , [(Advanced) Apply HotFix packages'], [on])
 # ARG_OPTIONAL_SINGLE([nxdata], , [(Advanced) Nuxeo data directory], [/var/lib/nuxeo/data])
 # ARG_OPTIONAL_SINGLE([nxlog], , [(Advanced) Nuxeo log directory], [/var/log/nuxeo])
 
