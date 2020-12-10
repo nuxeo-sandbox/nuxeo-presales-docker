@@ -5,30 +5,30 @@ Dockerfile:
 	NUXEO_IMAGE=$(NUXEO_IMAGE) XVAR='$$' envsubst < Dockerfile.in > Dockerfile
 
 build:
-	docker-compose --project-directory $(COMPOSE_DIR) build
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build
 
 start:
-	docker-compose --project-directory $(COMPOSE_DIR) up --detach
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach
 
 restart:
-	docker-compose --project-directory $(COMPOSE_DIR) restart
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml restart
 
 logs:
-	docker-compose --project-directory $(COMPOSE_DIR) logs -f
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml logs -f
 
 ps:
-	docker-compose --project-directory $(COMPOSE_DIR) ps
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml ps
 
 stop:
-	docker-compose --project-directory $(COMPOSE_DIR) stop
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml stop
 
 down:
-	docker-compose --project-directory $(COMPOSE_DIR) down
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down
 
 rm:
-	docker-compose --project-directory $(COMPOSE_DIR) rm --force --stop nuxeo
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop nuxeo
 
 new: | rm start
 
 clean:
-	docker-compose --project-directory $(COMPOSE_DIR) down --volumes --rmi local --remove-orphans
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
