@@ -25,5 +25,10 @@ stop:
 down:
 	docker-compose --project-directory $(COMPOSE_DIR) down
 
+rm:
+	docker-compose --project-directory $(COMPOSE_DIR) rm --force --stop nuxeo
+
+new: | rm start
+
 clean:
 	docker-compose --project-directory $(COMPOSE_DIR) down --volumes --rmi local --remove-orphans
