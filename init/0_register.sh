@@ -1,17 +1,16 @@
 #!/bin/sh
 
-if [ ! -e /var/lib/nuxeo/data/instance.clid ]; then
-  nuxeoctl register ${STUDIO_USERNAME} "${NUXEO_PROJECT}" "dev" "docker" "${STUDIO_CREDENTIALS}"
+if [ ! -e /var/lib/nuxeo/instance.clid ]; then
+  echo "Registering Nuxeo instance with project ${APPLICATION_NAME}"
+  nuxeoctl register ${STUDIO_USERNAME} "${APPLICATION_NAME}" "dev" "docker" "${STUDIO_CREDENTIALS}"
 fi
 
 if [ ${NUXEO_INSTALL_HOTFIX:='true'} == "true" ]; then
+  echo "Installing hotfixes..."
   nuxeoctl mp-hotfix --accept=true
 fi
 
-if compgen -G "*.jar" > /dev/null; then
-  cp -f /docker-entrypoint-initnuxeo.d/*.jar /opt/nuxeo/server/nxserver/bundles/
+if [ -n "${ADDITIONAL_PACKAGES}" ]; then
+  echo "Installing additional packages..."
+  nuxeoctl mp-install --accept=true ${ADDITIONAL_PACKAGES}
 fi
-if compgen -G "*.xml" > /dev/null; then
-  cp -f /docker-entrypoint-initnuxeo.d/*.xml /opt/nuxeo/server/nxserver/config/
-fi
-

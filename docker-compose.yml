@@ -1,75 +1,95 @@
-version: '3.6'
+version: '3.8'
 services:
   nuxeo:
-    image: ${NUXEO_REGISTRY}/${NUXEO_IMAGE}:${NUXEO_VERSION}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - "INSTALL_RPM=${INSTALL_RPM}"
+        - "NUXEO_CLID=${NUXEO_CLID}"
+    image: presales-nuxeo
     hostname: nuxeo
     restart: always
     depends_on: 
       - mongo
       - elasticsearch
+    expose:
+      - 8080
     ports:
-      - "${NUXEO_PORT}:8080"
+      - "8080:8080"
     env_file:
-      - ./env
-      - /var/lib/nuxeo/env
-# See: https://hub.docker.com/r/alpine/socat/ to set up docker forwarding
-# - Example configuration socat/docker-compose.yml
-#      - DOCKER_HOST=tcp://laptop:2376
+      - ./.env
     volumes:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
+      - /var/lib/nuxeo/conf:/etc/nuxeo/conf.d/:ro
+      - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker:ro
-      - nuxeo-data:/var/lib/nuxeo/data:rw
+      - nuxeo-data:/var/lib/nuxeo:rw
   mongo:
-    image: mongo
+    image: mongo:${MONGO_VERSION}
     hostname: mongo
     restart: always
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
+      interval: 1m
+      timeout: 30s
+      retries: 10
+      start_period: 15s
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
     hostname: elasticsearch
     restart: always
+    healthcheck:
+      test: curl -f http://elasticsearch:9200/
+      interval: 2m
+      timeout: 30s
+      retries: 10
+      start_period: 1m
     environment:
-      - node.name=es01
+      - discovery.type=single-node
       - cluster.name=elasticsearch
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      nproc: 65535
-      memlock:
-        soft: -1
-        hard: -1
-    cap_add:
-      - ALL
-    privileged: true
-    volumes:
-      - es-data:/usr/share/elasticsearch/data
+    expose: 
+      - 9200
+      - 9300
     ports:
       - 9200:9200
       - 9300:9300
-  kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.5.0
-    hostname: kibana
-    restart: always
-    depends_on: 
-      - elasticsearch
-    environment:
-      SERVER_NAME: localhost
-      ELASTICSEARCH_URL: http://elasticsearch:9200/
-      SERVER_BASEPATH: /kibana
-    ports:
-      - "5601:5601"
     ulimits:
-      nproc: 65535
       memlock:
         soft: -1
         hard: -1
-    cap_add:
-      - ALL
-
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:${ELASTIC_VERSION}
+    hostname: kibana
+    restart: always
+    healthcheck:
+      test: curl -f http://kibana:5601/kibana/app/kibana
+      interval: 2m
+      timeout: 30s
+      retries: 10
+      start_period: 2m
+    depends_on: 
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200/
+      SERVER_BASEPATH: /kibana
+      SERVER_REWRITEBASEPATH: 'true'
+    expose:
+      - 5601
+    ports:
+      - "5601:5601"
+    volumes:
+      - kibana-data:/usr/share/kibana/data
 volumes:
   es-data:
+  kibana-data:
   nuxeo-data:
   mongo-data:
