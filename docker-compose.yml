@@ -7,6 +7,8 @@ services:
       args:
         - "INSTALL_RPM=${INSTALL_RPM}"
         - "NUXEO_CLID=${NUXEO_CLID}"
+    env_file:
+      - ./.env
     image: presales-nuxeo
     hostname: nuxeo
     restart: always
@@ -17,8 +19,6 @@ services:
       - 8080
     ports:
       - "8080:8080"
-    env_file:
-      - ./.env
     volumes:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
       - /var/lib/nuxeo/conf:/etc/nuxeo/conf.d/:ro
@@ -40,7 +40,14 @@ services:
     volumes:
       - mongo-data:/data/db
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    build:
+      context: .
+      dockerfile: es/Dockerfile
+      args:
+        - "ELASTIC_VERSION=${ELASTIC_VERSION}"
+    env_file:
+      - ./.env
+    image: presales-elasticsearch
     hostname: elasticsearch
     restart: always
     healthcheck:

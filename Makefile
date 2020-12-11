@@ -1,9 +1,15 @@
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
+ELASTIC_VERSION := "7.9.3"
 COMPOSE_DIR := .
 SERVICE := 
 
-Dockerfile:
+Dockerfile: 
 	NUXEO_IMAGE=$(NUXEO_IMAGE) XVAR='$$' envsubst < Dockerfile.in > Dockerfile
+
+in/Dockerfile:
+	ELASTIC_VERSION=$(ELASTIC_VERSION) XVAR='$$' envsubst < es/Dockerfile.in > es/Dockerfile
+
+dockerfiles: Dockerfile in/Dockerfile
 
 build:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
