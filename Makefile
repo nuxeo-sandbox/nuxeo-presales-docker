@@ -2,6 +2,7 @@ NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 ELASTIC_VERSION := "7.9.3"
 COMPOSE_DIR := .
 SERVICE := 
+COMMAND := 
 
 Dockerfile: 
 	NUXEO_IMAGE=$(NUXEO_IMAGE) XVAR='$$' envsubst < Dockerfile.in > Dockerfile
@@ -16,6 +17,9 @@ build:
 
 start:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
+
+exec:
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml exec $(SERVICE) $(COMMAND)
 
 restart:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
