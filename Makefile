@@ -1,29 +1,32 @@
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 COMPOSE_DIR := .
+SERVICE := 
 
 Dockerfile:
 	NUXEO_IMAGE=$(NUXEO_IMAGE) XVAR='$$' envsubst < Dockerfile.in > Dockerfile
 
 build:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
 
 start:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
 
 restart:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml restart
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
 
 logs:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml logs -f
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
+
+status: ps
 
 ps:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml ps
 
 stop:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml stop
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml stop $(SERVICE)
 
 down:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down $(SERVICE)
 
 rm:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop nuxeo
