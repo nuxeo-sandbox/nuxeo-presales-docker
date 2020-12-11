@@ -6,10 +6,10 @@ SERVICE :=
 Dockerfile: 
 	NUXEO_IMAGE=$(NUXEO_IMAGE) XVAR='$$' envsubst < Dockerfile.in > Dockerfile
 
-in/Dockerfile:
+es/Dockerfile:
 	ELASTIC_VERSION=$(ELASTIC_VERSION) XVAR='$$' envsubst < es/Dockerfile.in > es/Dockerfile
 
-dockerfiles: Dockerfile in/Dockerfile
+dockerfiles: Dockerfile es/Dockerfile
 
 build:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
