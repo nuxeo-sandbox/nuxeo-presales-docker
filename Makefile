@@ -32,6 +32,9 @@ restart:
 logs:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
 
+vilog:
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
+
 status: ps
 
 ps:
