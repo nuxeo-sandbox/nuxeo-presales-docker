@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := ps
+
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 ELASTIC_VERSION := "7.9.3"
 COMPOSE_DIR := .
