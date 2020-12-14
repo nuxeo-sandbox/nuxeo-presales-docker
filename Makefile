@@ -12,8 +12,13 @@ es/Dockerfile:
 
 dockerfiles: Dockerfile es/Dockerfile
 
+pull:
+	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml pull $(SERVICE)
+
 build:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
+
+rebuild: | pull build
 
 start:
 	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
