@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := ps
+.PHONY: pull build rebuild start exec restart logs vilog status ps stop down rm new clean
 
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 ELASTIC_VERSION := "7.9.3"
