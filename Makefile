@@ -16,43 +16,43 @@ es/Dockerfile:
 dockerfiles: Dockerfile es/Dockerfile
 
 pull:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml pull $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml pull $(SERVICE)
 
 build:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
 
 rebuild: | pull build
 
 start:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
 
 exec:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml exec $(SERVICE) $(COMMAND)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec $(SERVICE) $(COMMAND)
 
 restart:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
 
 logs:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
 
 vilog:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
 
 status: ps
 
 ps:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml ps
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
 
 stop:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml stop $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml stop $(SERVICE)
 
 down:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml down $(SERVICE)
 
 rm:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop nuxeo
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop nuxeo
 
 new: | rm start
 
 clean:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
