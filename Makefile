@@ -23,7 +23,7 @@ build:
 
 rebuild: | pull build
 
-start:
+up:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
 
 exec:
@@ -42,6 +42,9 @@ status: ps
 
 ps:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
+
+start:
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml start $(SERVICE)
 
 stop:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml stop $(SERVICE)
