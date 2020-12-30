@@ -36,7 +36,7 @@ RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; 
 # Install remote packages and a local package with its dependencies
 # RUN /install-packages.sh --clid ${XVAR}{NUXEO_CLID} nuxeo-web-ui nuxeo-drive ${XVAR}NUXEO_HOME/local-packages/local-package.zip
 
-RUN usermod -aG ${HOST_DOCKER_GROUP_ID} nuxeo
+RUN usermod -aG 998 nuxeo
 
 # >>> Make your changes above this line <<<
 
