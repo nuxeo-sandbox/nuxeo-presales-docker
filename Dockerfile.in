@@ -38,14 +38,15 @@ RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; 
 
 RUN usermod -aG 998 nuxeo
 
-# Include the google credentials.
-# Replace the filename with your value
-# COPY google-credential.json /opt/nuxeo/google-credential.json
-# ENV GOOGLE_CREDENTIALS_PATH=/opt/nuxeo/google-credential.json
-
 # >>> Make your changes above this line <<<
 
 # !!! DO NOT CHANGE BELOW THIS LINE !!!
 # Set back original (nuxeo) user
 USER 900
+
+# Include the google credentials.
+# Replace the filename with your value
+# COPY google-credential.json /opt/nuxeo/google-credential.json
+# ENV GOOGLE_CREDENTIALS_PATH=/opt/nuxeo/google-credential.json
+
 # !!! END OF FILE !!!
