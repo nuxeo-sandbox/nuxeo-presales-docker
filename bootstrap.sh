@@ -62,15 +62,15 @@ fi
 
 # Choose image
 FROM_IMAGE=${CLOUD_IMAGE}
-echo "Which image?"
-select lc in "LTS" "Cloud"
+echo "Which image? (LTS requires a Nuxeo Docker login)"
+select lc in "Cloud" "LTS"
 do
-    if [[ "$lc" == "LTS" || "$lc" == "1" ]]
+    if [[ "$lc" == "LTS" || "$lc" == "2" ]]
     then
         echo "LTS selected"
         FROM_IMAGE=${LTS_IMAGE}
         break
-    elif [[ "$lc" == "Cloud" || "$lc" == "2" ]]
+    elif [[ "$lc" == "Cloud" || "$lc" == "1" ]]
     then
         echo "Cloud selected"
         FROM_IMAGE=${CLOUD_IMAGE}
@@ -84,7 +84,7 @@ echo "Using Image: ${FROM_IMAGE}"
 
 # Check out repository
 echo ""
-echo "Cloning docker configuration: ${PWD}/${NX_STUDIO}"
+echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
 git clone ${REPO} ${NX_STUDIO}
 mkdir -p ${NX_STUDIO}/conf
 cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
