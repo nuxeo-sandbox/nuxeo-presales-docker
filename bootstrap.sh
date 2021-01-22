@@ -26,7 +26,7 @@ NX_STUDIO=""
 INSTALL_RPM=""
 while [ -z "${NX_STUDIO}" ]
 do
-  echo -n "Studio Project name: "
+  echo -n "Studio Project ID: "
   read NX_STUDIO
 done
 
