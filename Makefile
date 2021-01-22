@@ -41,7 +41,7 @@ vilog:
 status: | info ps
 
 info:
-	$(COMPOSE_DIR)/info.sh $(COMPOSE_DIR)
+	@$(COMPOSE_DIR)/info.sh $(COMPOSE_DIR)
 
 ps:
 	@docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
