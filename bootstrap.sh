@@ -82,14 +82,6 @@ export FROM_IMAGE
 echo ""
 echo "Using Image: ${FROM_IMAGE}"
 
-# Check out repository
-echo ""
-echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
-git clone ${REPO} ${NX_STUDIO}
-mkdir -p ${NX_STUDIO}/conf
-cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
-echo ""
-
 # Check Docker repo configuration
 if [[ "${FROM_IMAGE}" == "${LTS_IMAGE}" ]]
 then
@@ -120,6 +112,14 @@ do
   read -s CREDENTIALS
   echo ""
 done
+
+# Check out repository
+echo ""
+echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
+git clone ${REPO} ${NX_STUDIO}
+mkdir -p ${NX_STUDIO}/conf
+cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
+echo ""
 
 # Write system configuration
 cat << EOF > ${NX_STUDIO}/conf/system.conf
