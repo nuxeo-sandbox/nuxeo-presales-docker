@@ -9,7 +9,7 @@ set -euf
 NUXEO_ENV=".env"
 ERR=""
 
-TMP_DIR=$(mktemp)
+TMP_DIR=$(mktemp -d)
 mkdir -p ${TMP_DIR}
 
 NUXEO_CLID=$(grep '^NUXEO_CLID' ${NUXEO_ENV} | tail -n 1  | cut -d '=' -f2)
