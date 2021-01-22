@@ -23,7 +23,7 @@ RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; 
 
 # !!! DO NOT CHANGE ABOVE THIS LINE !!!
 
-# >>> Make your changes below this line <<<
+# >>> Make your changes BELOW this line <<<
 
 # See: https://github.com/nuxeo/nuxeo/tree/master/docker for source documentation
 
@@ -38,13 +38,13 @@ RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; 
 
 RUN usermod -aG 998 nuxeo
 
-# >>> Make your changes above this line <<<
+# >>> Make your changes ABOVE this line <<<
 
-# !!! DO NOT CHANGE BELOW THIS LINE !!!
+# !!! DO NOT CHANGE BELOW THIS LINE (except for noted items) !!!
 # Set back original (nuxeo) user
 USER 900
 
-# Include the google credentials.
+# (Optional) Include the google credentials.
 # Replace the filename with your value
 # COPY google-credential.json /opt/nuxeo/google-credential.json
 # ENV GOOGLE_CREDENTIALS_PATH=/opt/nuxeo/google-credential.json

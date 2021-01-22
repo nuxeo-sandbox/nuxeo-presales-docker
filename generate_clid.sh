@@ -9,18 +9,19 @@ set -euf
 NUXEO_ENV=".env"
 ERR=""
 
-TMP_DIR="/tmp/nuxeo"
+TMP_DIR=$(mktemp)
+mkdir -p ${TMP_DIR}
 
-NUXEO_CLID=$(grep NUXEO_CLID ${NUXEO_ENV} | tail -n 1  | cut -d '=' -f2)
+NUXEO_CLID=$(grep '^NUXEO_CLID' ${NUXEO_ENV} | tail -n 1  | cut -d '=' -f2)
 if [ -n "${NUXEO_CLID}" ]; then
   echo "NUXEO_CLID appears to be configure in ${NUXEO_ENV} or your system environment.  Remove and then run this script again."
   exit 2
 fi
 
-FROM_IMAGE=$(grep '^FROM_IMAGE' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
+FROM_IMAGE=$(grep '^NUXEO_IMAGE' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
 if [ -z "${FROM_IMAGE}" ]; then
   FROM_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
-  echo "Upstream image 'FROM_IMAGE' is not set in ${NUXEO_ENV}, using: ${FROM_IMAGE}"
+  echo "Upstream image 'NUXEO_IMAGE' is not set in ${NUXEO_ENV}, using: ${FROM_IMAGE}"
 fi
 
 STUDIO_USERNAME=$(grep '^STUDIO_USERNAME' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
@@ -49,4 +50,6 @@ if [ -e ${TMP_DIR}/instance.clid ]; then
   echo -n "NUXEO_CLID=" >> ${NUXEO_ENV}
   awk 1 ORS="--" ${TMP_DIR}/instance.clid >> ${NUXEO_ENV}
   echo "" >> ${NUXEO_ENV}
+else
+  exit 2
 fi
