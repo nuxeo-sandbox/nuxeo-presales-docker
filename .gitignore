@@ -2,3 +2,5 @@
 env
 Dockerfile
 es/Dockerfile
+nuxeo_packages
+conf

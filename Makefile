@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := ps
+.DEFAULT_GOAL := status
 .PHONY: pull build rebuild start exec restart logs vilog status ps stop down rm new clean
 
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
@@ -16,43 +16,49 @@ es/Dockerfile:
 dockerfiles: Dockerfile es/Dockerfile
 
 pull:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml pull $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml pull $(SERVICE)
 
 build:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
 
 rebuild: | pull build
 
-start:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
+up:
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
 
 exec:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml exec $(SERVICE) $(COMMAND)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec $(SERVICE) $(COMMAND)
 
 restart:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
 
 logs:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
 
 vilog:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
 
-status: ps
+status: | info ps
+
+info:
+	$(COMPOSE_DIR)/info.sh $(COMPOSE_DIR)
 
 ps:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml ps
+	@docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
+
+start:
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml start $(SERVICE)
 
 stop:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml stop $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml stop $(SERVICE)
 
 down:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down $(SERVICE)
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml down $(SERVICE)
 
 rm:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop nuxeo
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop $(SERVICE)
 
 new: | rm start
 
 clean:
-	docker-compose --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
