@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := ps
+.DEFAULT_GOAL := status
 .PHONY: pull build rebuild start exec restart logs vilog status ps stop down rm new clean
 
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
@@ -38,10 +38,13 @@ logs:
 vilog:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
 
-status: ps
+status: | info ps
+
+info:
+	$(COMPOSE_DIR)/info.sh $(COMPOSE_DIR)
 
 ps:
-	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
+	@docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
 
 start:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml start $(SERVICE)
