@@ -1,12 +1,12 @@
 
-You have now configured your Nuxeo Docker Compose setup.
+You have now configured your Nuxeo Docker Compose setup.  Please check the above output to make sure build processes have completed and images have been pulled.
 
 The stack includes Nuxeo, MongoDB, Kibana, and ElasticSearch.  Each product runs under it's own respective license agreement.  Please check docker-compose.yml for more details.
 
 To start your stack, navigate to your Project directory and bring up the applications:
   docker-compose up -d
 
-Nuxeo will launch on port 8080.  If you wish to change ports, check the Docker environment (.env) file in your Project directory.
+Nuxeo will launch on port 8080.  If you wish to change ports, check the Docker environment (.env) file in your Project directory.  Check the logs for any anomalous behavior.
 
 For more details, see the README at:
 https://github.com/nuxeo-sandbox/nuxeo-presales-docker/blob/master/README.md

@@ -21,6 +21,40 @@ then
   exit 1
 fi
 
+# Directions for image setup
+cat << EOM
+ _ __  _   ___  _____  ___
+| '_ \| | | \ \/ / _ \/ _ \\
+| | | | |_| |>  <  __/ (_) |
+|_| |_|\__,_/_/\_\___|\___/
+
+Nuxeo Docker Compose Bootstrap
+
+This script will ask you for your Studio Project ID, Version (default is master), 
+and configured hostname (default is 'localhost').
+
+You can then choose between the Cloud (public) and LTS (private) images.  If LTS
+is selected, you will need to use your Sonatype User Token credentials to log into
+the repository.  Navigate to https://packages.nuxeo.com/ and use the "Sign In"
+link in the upper right to log into the system.  Once logged in, access your user
+token with this link: https://packages.nuxeo.com/#user/usertoken - you may create,
+access existing token, or reset the token here.  Your "token name code" is your
+docker username and your "token pass code" is your password.
+
+The next set of prompts will ask for your Studio username and Studio token. 
+Please obtain these from https://connect.nuxeo.com/
+
+If you are on a Mac, you have  the option to save your token in your keychain.  If
+you choose to do so, a dialog box will pop up to verify credential access when you
+use this script.
+
+At this point, your configuration will be completed and the Nuxeo images will be
+downloaded and built.  This may consume a lot of bandwidth and may take a bit of
+time.  Please be patient.  At the end of the script, additional instructions will
+be displayed.
+
+EOM
+
 # Prompt for studio project name
 NX_STUDIO=""
 INSTALL_RPM=""
@@ -106,6 +140,44 @@ do
   echo -n "Studio username: "
   read STUDIO_USERNAME
 done
+
+# Check to see if password exists
+MACFOUND="false"
+if [[ "${OSTYPE}" == "darwin"* ]]
+then
+  password=$( security find-generic-password -w -a ${STUDIO_USERNAME} -s studio 2>/dev/null)
+  CHECK=$?
+  if [[ "$CHECK" != "0" ]]
+  then
+    echo "No password found in MacOS keychain, please provide your credentials below."
+  else
+    MACFOUND="true"
+    CREDENTIALS="${password}"
+  fi
+fi
+
+if [[ "${MACFOUND}" == "false" && "${OSTYPE}" == "darwin"* ]]
+then
+  echo -n "Save the Nuxeo Studio token in your keychain? y/n [y]: "
+  read SAVEIT
+
+  CHECK="1"
+  if [[ -z "${SAVEIT}" || "${SAVEIT}" == "y" || "${SAVEIT}" == "Y" ]]
+  then
+    echo ""
+    echo "You will be prompted to enter your token twice.  After you have saved your token, you will be prompted for your login password in a dialog box."
+    security add-generic-password -T "" -a ${STUDIO_USERNAME} -s studio -w
+    CHECK=$?
+  fi
+
+  if [[ "$CHECK" == "0" ]]
+  then
+    echo ""
+    echo "A dialog box will now pop up to verify your credentials.  Please enter your login password.  The login password will not be visible to this script."
+    CREDENTIALS=$( security find-generic-password -w -a ${STUDIO_USERNAME} -s studio )
+  fi
+fi
+
 while [ -z "${CREDENTIALS}" ]
 do
   echo -n "Studio token: "
