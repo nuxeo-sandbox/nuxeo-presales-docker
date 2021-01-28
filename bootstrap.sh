@@ -198,6 +198,9 @@ cat << EOF > ${NX_STUDIO}/conf/system.conf
 # Host Configuration
 session.timeout=600
 nuxeo.url=http://${FQDN}:8080/nuxeo
+
+# Templates
+nuxeo.templates=default,mongodb
 EOF
 
 # Write environment file
