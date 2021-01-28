@@ -2,10 +2,36 @@
 
 Docker Compose stack for running Nuxeo
 
-## Dependencies
+## Getting Started
 
-Docker, docker-compose.
+If you are planning to run Nuxeo on your local laptop, use the bootstrap script:
 
+```
+bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
+```
+
+This script will ask you for your Studio Project ID, Project Version (default is master), 
+and configured hostname (default is 'localhost').
+
+You can then choose between the Cloud (public) and LTS (private) images.  If LTS
+is selected, you will need to use your Sonatype User Token credentials to log into
+the repository.  Navigate to https://packages.nuxeo.com/ and use the "Sign In"
+link in the upper right to log into the system.  Once logged in, access your user
+token with this link: https://packages.nuxeo.com/#user/usertoken - you may create,
+access existing token, or reset the token here.  Your "token name code" is your
+docker username and your "token pass code" is your password.
+
+The next set of prompts will ask for your Studio username and Studio token. 
+Please obtain these from https://connect.nuxeo.com/
+
+If you are on a Mac, you have  the option to save your token in your keychain.  If
+you choose to do so, a dialog box will pop up to verify credential access when you
+use this script.
+
+At this point, your configuration will be complete and the Nuxeo images will be
+downloaded and built.  _This may consume a lot of bandwidth and may take a bit of
+time_.  Please be patient.  At the end of the script, additional instructions will
+be displayed.
 ## Support
 
 **These features are sand-boxed and not yet part of the Nuxeo Production platform.**
