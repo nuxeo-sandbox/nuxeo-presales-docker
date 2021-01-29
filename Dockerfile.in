@@ -14,6 +14,12 @@ ENV INSTALL_RPM ${XVAR}INSTALL_RPM
 
 # We need to be root to run yum commands
 USER 0
+
+# Create out of place stream directory
+ENV NUXEO_HOME /opt/nuxeo/server
+RUN mkdir -p $NUXEO_HOME/stream \
+  && chown 900:0 $NUXEO_HOME/stream && chmod g+rwX $NUXEO_HOME/stream
+
 # Install RPM Fusion free repository
 RUN yum -y localinstall --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm \
     && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-el-7 \

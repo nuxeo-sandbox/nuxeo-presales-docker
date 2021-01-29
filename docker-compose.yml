@@ -22,9 +22,10 @@ services:
     volumes:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
       - ./conf:/etc/nuxeo/conf.d/:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
       - nuxeo-data:/var/lib/nuxeo:rw
+      - nuxeo-stream:/opt/nuxeo/server/stream:rw
   mongo:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
@@ -101,4 +102,5 @@ volumes:
   es-data:
   kibana-data:
   nuxeo-data:
+  nuxeo-stream:
   mongo-data:
