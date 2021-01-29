@@ -13,6 +13,7 @@ CHECKS=()
 command -v make >/dev/null || CHECKS+=("make")
 command -v git >/dev/null || CHECKS+=("git")
 command -v docker >/dev/null || CHECKS+=("docker")
+command -v docker-compose >/dev/null || CHECKS+=("docker-compose")
 
 if [ $CHECKS ]
 then
