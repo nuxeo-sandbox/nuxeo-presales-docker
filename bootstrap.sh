@@ -44,7 +44,7 @@ docker username and your "token pass code" is your password.
 The next set of prompts will ask for your Studio username and Studio token. 
 Please obtain these from https://connect.nuxeo.com/
 
-If you are on a Mac, you have  the option to save your token in your keychain.  If
+If you are on a Mac, you have the option to save your token in your keychain.  If
 you choose to do so, a dialog box will pop up to verify credential access when you
 use this script.
 
