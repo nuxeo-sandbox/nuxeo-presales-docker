@@ -14,7 +14,7 @@ mkdir -p ${TMP_DIR}
 
 NUXEO_CLID=$(grep '^NUXEO_CLID' ${NUXEO_ENV} | tail -n 1  | cut -d '=' -f2)
 if [ -n "${NUXEO_CLID}" ]; then
-  echo "NUXEO_CLID appears to be configure in ${NUXEO_ENV} or your system environment.  Remove and then run this script again."
+  echo "NUXEO_CLID appears to be configured in ${NUXEO_ENV} or your system environment.  Remove and then run this script again."
   exit 2
 fi
 
