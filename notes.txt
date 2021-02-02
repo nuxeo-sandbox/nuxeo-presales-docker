@@ -19,4 +19,10 @@ environment (.env) file in your Project directory.  Check the logs for any
 anomalous behavior.
 
 For more details, see the README at:
-https://github.com/nuxeo-sandbox/nuxeo-presales-docker/blob/master/README.md
+ https://github.com/nuxeo-sandbox/nuxeo-presales-docker/blob/master/README.md
+
+We also have a Wiki:
+ https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki
+
+If you encounter problems or have a feature request, please create  New Issue:
+ https://github.com/nuxeo-sandbox/nuxeo-presales-docker/issues
