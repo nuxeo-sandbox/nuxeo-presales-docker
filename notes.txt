@@ -4,7 +4,7 @@ above output to make sure build processes have completed and images have been
 pulled.
 
 The stack includes Nuxeo, MongoDB, Kibana, and ElasticSearch.  Each product
-runs under it's own respective license agreement.  Please check
+runs under its own respective license agreement.  Please check
 docker-compose.yml for more details.
 
 To start your stack, navigate to your Project directory and bring up the
