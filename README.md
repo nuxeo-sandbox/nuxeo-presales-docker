@@ -10,7 +10,7 @@ If you are planning to run Nuxeo on your local laptop, use the bootstrap script:
 bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
 ```
 
-This script will ask you for your Studio Project ID, Project Version (default is master), 
+This script will ask you for your Studio Project ID, Version (default is master),
 and configured hostname (default is 'localhost').
 
 You can then choose between the Cloud (public) and LTS (private) images.  If LTS
@@ -21,10 +21,10 @@ token with this link: https://packages.nuxeo.com/#user/usertoken - you may creat
 access existing token, or reset the token here.  Your "token name code" is your
 docker username and your "token pass code" is your password.
 
-The next set of prompts will ask for your Studio username and Studio token. 
-Please obtain these from https://connect.nuxeo.com/
+The next set of prompts will ask for your Studio username and Studio token.
+Please obtain the token from https://connect.nuxeo.com/nuxeo/site/connect/tokens
 
-If you are on a Mac, you have  the option to save your token in your keychain.  If
+If you are on a Mac, you have the option to save your token in your keychain.  If
 you choose to do so, a dialog box will pop up to verify credential access when you
 use this script.
 
