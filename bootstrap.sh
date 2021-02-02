@@ -43,7 +43,7 @@ access existing token, or reset the token here.  Your "token name code" is your
 docker username and your "token pass code" is your password.
 
 The next set of prompts will ask for your Studio username and Studio token. 
-Please obtain these from https://connect.nuxeo.com/
+Please obtain the token from https://connect.nuxeo.com/nuxeo/site/connect/tokens
 
 If you are on a Mac, you have the option to save your token in your keychain.  If
 you choose to do so, a dialog box will pop up to verify credential access when you
