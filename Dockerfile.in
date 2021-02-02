@@ -17,8 +17,8 @@ USER 0
 
 # Create out of place stream directory
 ENV NUXEO_HOME /opt/nuxeo/server
-RUN mkdir -p $NUXEO_HOME/stream \
-  && chown 900:0 $NUXEO_HOME/stream && chmod g+rwX $NUXEO_HOME/stream
+RUN mkdir -p ${XVAR}NUXEO_HOME/stream \
+  && chown 900:0 ${XVAR}NUXEO_HOME/stream && chmod g+rwX ${XVAR}NUXEO_HOME/stream
 
 # Install RPM Fusion free repository
 RUN yum -y localinstall --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm \
