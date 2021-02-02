@@ -4,3 +4,4 @@ Dockerfile
 es/Dockerfile
 nuxeo_packages
 conf
+init/log4j2.xml

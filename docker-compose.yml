@@ -16,9 +16,16 @@ services:
       - mongo
       - elasticsearch
     expose:
+      # Webservice Port
       - 8080
+      # Port for Debugging (JPDA)
+      - 8787
+      # JMX port
+      - 1089
     ports:
       - "${NUXEO_PORT}:8080"
+      - "8787:8787"
+      - "1089:1089"
     volumes:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
       - ./conf:/etc/nuxeo/conf.d/:ro
@@ -37,6 +44,7 @@ services:
       retries: 10
       start_period: 15s
     expose:
+      # Mongo connection
       - 27017
     ports:
       - "27017:27017"
