@@ -44,7 +44,7 @@ if [ -n "${ERR}" ]; then
   exit 1
 fi
 
-docker run -it -v ${TMP_DIR}:/var/lib/nuxeo/:rw ${FROM_IMAGE} \
+docker run --rm -v ${TMP_DIR}:/var/lib/nuxeo/:rw ${FROM_IMAGE} \
        nuxeoctl register "${STUDIO_USERNAME}" "${APPLICATION_NAME}" "dev" "Docker" "${STUDIO_CREDENTIALS}"
 if [ -e ${TMP_DIR}/instance.clid ]; then
   echo -n "NUXEO_CLID=" >> ${NUXEO_ENV}
