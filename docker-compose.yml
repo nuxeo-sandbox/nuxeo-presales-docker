@@ -46,8 +46,9 @@ services:
     expose:
       # Mongo connection
       - 27017
-    ports:
-      - "27017:27017"
+    # Uncomment the following block if you require host-level access to MongoDB
+    #ports:
+    #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
   elasticsearch:
@@ -75,9 +76,10 @@ services:
     expose: 
       - 9200
       - 9300
-    ports:
-      - 9200:9200
-      - 9300:9300
+    # Uncomment the following block if you require host-level access to ElasticSearch
+    #ports:
+    #  - 9200:9200
+    #  - 9300:9300
     ulimits:
       memlock:
         soft: -1
