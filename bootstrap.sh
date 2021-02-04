@@ -11,13 +11,14 @@ ELASTIC_VERSION="7.9.3"
 CHECKS=()
 # Check for commands used in this script
 command -v make >/dev/null || CHECKS+=("make")
+command -v envsubst >/dev/null || CHECKS+=("envsubst")
 command -v git >/dev/null || CHECKS+=("git")
 command -v docker >/dev/null || CHECKS+=("docker")
 command -v docker-compose >/dev/null || CHECKS+=("docker-compose")
 
 if [ $CHECKS ]
 then
-  echo "Please install the following programs:"
+  echo "Please install the following programs for your platform:"
   echo ${CHECKS[@]}
   exit 1
 fi
