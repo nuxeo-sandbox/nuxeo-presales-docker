@@ -1,6 +1,8 @@
 # Nuxeo Presales Docker Template
 
-Docker Compose stack for running Nuxeo
+Docker Compose stack for running Nuxeo.
+
+See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
 
 ## Getting Started
 
