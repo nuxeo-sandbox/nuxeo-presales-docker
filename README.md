@@ -15,6 +15,8 @@ bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker
 This script will ask you for your Studio Project ID, Version (default is master),
 and configured hostname (default is 'localhost').
 
+Need an account or project?  Go to https://connect.nuxeo.com/
+
 You can then choose between the Cloud (public) and LTS (private) images.  If LTS
 is selected, you will need to use your Sonatype User Token credentials to log into
 the repository.  Navigate to https://packages.nuxeo.com/ and use the "Sign In"
