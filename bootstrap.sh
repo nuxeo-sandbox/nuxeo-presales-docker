@@ -138,6 +138,14 @@ then
   fi
 fi
 
+echo -n "Add Nuxeo Web UI to your configuration? y/n [y]: "
+read WEBUI
+
+if [[ -z "${WEBUI}" || "${WEBUI}" == "y" || "${WEBUI}" == "Y" ]]
+then
+  STUDIO_PACKAGE="${STUDIO_PACKAGE} nuxeo-web-ui"
+fi
+
 # Prompt for Studio Login
 while [ -z "${STUDIO_USERNAME}" ]
 do
