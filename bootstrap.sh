@@ -10,6 +10,7 @@ ELASTIC_VERSION="7.9.3"
 
 CHECKS=()
 # Check for commands used in this script
+command -v awk >/dev/null || CHECKS+=("awk")
 command -v make >/dev/null || CHECKS+=("make")
 command -v envsubst >/dev/null || CHECKS+=("envsubst")
 command -v git >/dev/null || CHECKS+=("git")
@@ -21,6 +22,14 @@ then
   echo "Please install the following programs for your platform:"
   echo ${CHECKS[@]}
   exit 1
+fi
+
+docker info >/dev/null
+RUNNING=$?
+if [ "${RUNNING}" != "0" ]
+then
+  echo "Docker does not appear to be running, please start Docker."
+  exit 2
 fi
 
 # Directions for image setup
@@ -75,6 +84,7 @@ then
 fi
 
 # Prompt for project version
+PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
 STUDIO_PACKAGE=""
 NX_STUDIO_VER=""
 echo -n "Version: [0.0.0-SNAPSHOT] "
@@ -218,6 +228,7 @@ EOF
 # Write environment file
 cat << EOF > ${NX_STUDIO}/.env
 APPLICATION_NAME=${NX_STUDIO}
+PROJECT_NAME=${PROJECT_NAME}
 
 # Cloud Image: ${CLOUD_IMAGE}
 # LTS Image  : ${LTS_IMAGE}

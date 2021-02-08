@@ -9,7 +9,7 @@ services:
         - "NUXEO_CLID=${NUXEO_CLID}"
     env_file:
       - ./.env
-    image: presales-nuxeo-${APPLICATION_NAME}
+    image: presales-nuxeo-${PROJECT_NAME}
     hostname: nuxeo
     restart: always
     depends_on: 
@@ -59,7 +59,7 @@ services:
         - "ELASTIC_VERSION=${ELASTIC_VERSION}"
     env_file:
       - ./.env
-    image: presales-elasticsearch-${APPLICATION_NAME}
+    image: presales-elasticsearch-${PROJECT_NAME}
     hostname: elasticsearch
     restart: always
     healthcheck:
