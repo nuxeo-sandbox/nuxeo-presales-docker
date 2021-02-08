@@ -2,7 +2,7 @@
 
 REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
-LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021.x"
+LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021"
 CLOUD_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 
 MONGO_VERSION="4.4"
