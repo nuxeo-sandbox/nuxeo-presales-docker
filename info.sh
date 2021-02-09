@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 COMPOSE_DIR=${COMPOSE_DIR:-${1:-.}}
 NUXEO_ENV="${COMPOSE_DIR}/.env"
