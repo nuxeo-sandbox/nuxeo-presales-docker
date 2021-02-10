@@ -89,7 +89,7 @@ Repository Image
 
 EOM
 
-if [[ -n "${REPO_SHA}" && "${REPO_SHA}a" != "${IDS[1]}" ]]
+if [[ -n "${IDS[1]}" && -n "${REPO_SHA}" && "${REPO_SHA}" != "${IDS[1]}" ]]
 then
   echo -n "It appears there is a newer image available.  Pull image and rebuild? y/n [y]: "
   read UPDATE
