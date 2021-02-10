@@ -58,7 +58,7 @@ down:
 rm:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml rm --force --stop $(SERVICE)
 
-new: | rm start
+new: | rm up
 
 clean:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
