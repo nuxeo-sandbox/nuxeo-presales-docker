@@ -252,6 +252,14 @@ EOF
 # Run everything in NX_STUDIO dir
 cd ${NX_STUDIO}
 
+# Pull images
+echo "Please wait, getting things ready..."
+make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION}
+docker pull --quiet ${FROM_IMAGE}
+echo " pulling other services..."
+docker-compose --log-level ERROR pull
+echo ""
+
 # Generate CLID
 echo "Generating CLID..."
 ./generate_clid.sh
@@ -267,14 +275,9 @@ then
 fi
 echo ""
 
-# Pull / build image
-echo "Please wait, getting things ready..."
-make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION}
-docker pull --quiet ${FROM_IMAGE}
-echo " building your custom image..."
+# Build image (may use CLID generated in previous step)
+echo "Building your custom image(s)..."
 docker-compose build
-echo " pulling other services..."
-docker-compose --log-level ERROR pull
 echo ""
 
 # Display startup instructions
