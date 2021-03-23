@@ -135,6 +135,17 @@ if [[ "${FROM_IMAGE}" == "${LTS_IMAGE}" ]]
 then
   grep -q ${DOCKER_PRIVATE} ${HOME}/.docker/config.json
   FOUND=$?
+  DOCKER=""
+  if [[ "${FOUND}" == "0" ]]
+  then
+    echo -n "Docker login found.  Would you like to use the existing credentials? y/n [y]: "
+    read DOCKER
+  fi
+  if [[ ${FOUND} == "0" ]] && [[ "${DOCKER}" == "n" || "${DOCKER}" == "N" ]]
+  then
+    STUDIO_PACKAGE="${STUDIO_PACKAGE} nuxeo-web-ui"
+    FOUND="1"
+  fi
   if [[ "${FOUND}" != "0" ]]
   then
     echo "Please provide your login credentials for ${DOCKER_PRIVATE}:"
