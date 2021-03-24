@@ -1,8 +1,12 @@
 # Nuxeo Presales Docker Template
 
-Docker Compose stack for running Nuxeo.
+Docker Compose stack for running **Nuxeo 11.x** or **LTS 2021**.
 
 See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
+
+## Compatible Versions
+
+This stack is built for and compatible with **Nuxeo 2021 LTS** and **Cloud** release.
 
 ## Getting Started
 
