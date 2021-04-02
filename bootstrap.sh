@@ -116,6 +116,7 @@ fi
 
 # Choose image
 IMAGE_TYPE="${IMAGE_TYPE:-}"
+AUTO_IMAGE=""
 FROM_IMAGE=""
 if [ -z "${IMAGE_TYPE}" ]
 then
@@ -129,19 +130,23 @@ then
   done
 else
   lc=${IMAGE_TYPE}
+  AUTO_IMAGE="y"
 fi
 lc=$(echo "${lc}" | awk '{print tolower($0)}')
 if [[ "$lc" == "lts" || "$lc" == "2" ]]
 then
   echo "LTS selected"
   FROM_IMAGE=${LTS_IMAGE}
+  IMAGE_TYPE="lts"
 elif [[ "$lc" == "cloud" || "$lc" == "1" ]]
 then
   echo "Cloud selected"
   FROM_IMAGE=${CLOUD_IMAGE}
+  IMAGE_TYPE="cloud"
 else
   echo "Invalid image type '${lc}', using Cloud image"
   FROM_IMAGE=${CLOUD_IMAGE}
+  IMAGE_TYPE="cloud"
 fi
 
 export FROM_IMAGE
@@ -154,7 +159,7 @@ then
   grep -q ${DOCKER_PRIVATE} ${HOME}/.docker/config.json
   FOUND=$?
   DOCKER=""
-  if [ -z "${IMAGE_TYPE}" ] && [[ "${FOUND}" == "0" ]]
+  if [ -z "${AUTO_IMAGE}" ] && [[ "${FOUND}" == "0" ]]
   then
     echo -n "Docker login found.  Would you like to use the existing credentials? y/n [y]: "
     read DOCKER
@@ -315,6 +320,11 @@ echo ""
 # Build image (may use CLID generated in previous step)
 echo "Building your custom image(s)..."
 docker-compose build
+echo ""
+
+# Display a sharable config
+echo "> Share your configuration:"
+echo "IMAGE_TYPE=${IMAGE_TYPE} FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} WEBUI=${WEBUI} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions
