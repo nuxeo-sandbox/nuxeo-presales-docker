@@ -40,20 +40,27 @@ At this point, your configuration will be complete and the Nuxeo images will be
 downloaded and built.  _This may consume a lot of bandwidth and may take a bit of
 time_.  Please be patient.  At the end of the script, additional instructions will
 be displayed.
-## Support
 
-**These features are sand-boxed and not yet part of the Nuxeo Production platform.**
+# Support
+
+**These features are not part of the Nuxeo Production platform.**
 
 These solutions are provided for inspiration and we encourage customers to use them as code samples and learning resources.
 
 This is a moving project (no API maintenance, no deprecation process, etc.) If any of these solutions are found to be useful for the Nuxeo Platform in general, they will be integrated directly into platform, not maintained here.
 
-## Licensing
+# License
 
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-## About Nuxeo
+# About Nuxeo
 
-Nuxeo dramatically improves how content-based applications are built, managed and deployed, making customers more agile, innovative and successful. Nuxeo provides a next generation, enterprise ready platform for building traditional and cutting-edge content oriented applications. Combining a powerful application development environment with SaaS-based tools and a modular architecture, the Nuxeo Platform and Products provide clear business value to some of the most recognizable brands including Verizon, Electronic Arts, Sharp, FICO, the U.S. Navy, and Boeing. Nuxeo is headquartered in New York and Paris.
+Nuxeo Platform is an open source Content Services platform, written in Java. Data can be stored in both SQL & NoSQL databases.
 
-More information is available at [www.nuxeo.com](http://www.nuxeo.com).
+The development of the Nuxeo Platform is mostly done by Nuxeo employees with an open development model.
+
+The source code, documentation, roadmap, issue tracker, testing, benchmarks are all public.
+
+Typically, Nuxeo users build different types of information management solutions for [document management](https://www.nuxeo.com/solutions/document-management/), [case management](https://www.nuxeo.com/solutions/case-management/), and [digital asset management](https://www.nuxeo.com/solutions/dam-digital-asset-management/), use cases. It uses schema-flexible metadata & content models that allows content to be repurposed to fulfill future use cases.
+
+More information is available at [www.nuxeo.com](https://www.nuxeo.com).
