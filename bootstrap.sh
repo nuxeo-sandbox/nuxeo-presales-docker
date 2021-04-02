@@ -69,7 +69,7 @@ be displayed.
 EOM
 
 # Prompt for studio project name
-NX_STUDIO=""
+NX_STUDIO="${NX_STUDIO:-}"
 INSTALL_RPM=""
 while [ -z "${NX_STUDIO}" ]
 do
@@ -86,9 +86,12 @@ fi
 # Prompt for project version
 PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
 STUDIO_PACKAGE=""
-NX_STUDIO_VER=""
-echo -n "Version: [0.0.0-SNAPSHOT] "
-read NX_STUDIO_VER
+NX_STUDIO_VER="${NX_STUDIO_VER:-}"
+if [ -z "${NX_STUDIO_VER}" ]
+then
+  echo -n "Version: [0.0.0-SNAPSHOT] "
+  read NX_STUDIO_VER
+fi
 if [ -z "${NX_STUDIO_VER}" ]
 then
   NX_STUDIO_VER="0.0.0-SNAPSHOT"
@@ -100,31 +103,46 @@ then
 fi
 
 # Prompt for host name
-FQDN=""
-echo -n "Hostname: [localhost] "
-read FQDN
+FQDN="${FQDN:-}"
+if [ -z "${FQDN}" ]
+then
+  echo -n "Hostname: [localhost] "
+  read FQDN
+fi
 if [ -z "${FQDN}" ]
 then
   FQDN="localhost"
 fi
 
 # Choose image
-FROM_IMAGE=${CLOUD_IMAGE}
-echo "Which image? (LTS requires a Nuxeo Docker login)"
-select lc in "Cloud" "LTS"
-do
-    if [[ "$lc" == "LTS" || "$lc" == "2" ]]
-    then
-        echo "LTS selected"
-        FROM_IMAGE=${LTS_IMAGE}
-        break
-    elif [[ "$lc" == "Cloud" || "$lc" == "1" ]]
-    then
-        echo "Cloud selected"
-        FROM_IMAGE=${CLOUD_IMAGE}
-        break
-    fi
-done
+IMAGE_TYPE="${IMAGE_TYPE:-}"
+FROM_IMAGE=""
+if [ -z "${IMAGE_TYPE}" ]
+then
+  echo "Which image? (LTS requires a Nuxeo Docker login)"
+  select lc in "Cloud" "LTS"
+  do
+      if [[ "$lc" == "LTS" || "$lc" == "2" ]] || [[ "$lc" == "Cloud" || "$lc" == "1" ]]
+      then
+          break
+      fi
+  done
+else
+  lc=${IMAGE_TYPE}
+fi
+lc=$(echo "${lc}" | awk '{print tolower($0)}')
+if [[ "$lc" == "lts" || "$lc" == "2" ]]
+then
+  echo "LTS selected"
+  FROM_IMAGE=${LTS_IMAGE}
+elif [[ "$lc" == "cloud" || "$lc" == "1" ]]
+then
+  echo "Cloud selected"
+  FROM_IMAGE=${CLOUD_IMAGE}
+else
+  echo "Invalid image type '${lc}', using Cloud image"
+  FROM_IMAGE=${CLOUD_IMAGE}
+fi
 
 export FROM_IMAGE
 echo ""
@@ -136,7 +154,7 @@ then
   grep -q ${DOCKER_PRIVATE} ${HOME}/.docker/config.json
   FOUND=$?
   DOCKER=""
-  if [[ "${FOUND}" == "0" ]]
+  if [ -z "${IMAGE_TYPE}" ] && [[ "${FOUND}" == "0" ]]
   then
     echo -n "Docker login found.  Would you like to use the existing credentials? y/n [y]: "
     read DOCKER
@@ -159,8 +177,12 @@ then
   fi
 fi
 
-echo -n "Add Nuxeo Web UI to your configuration? y/n [y]: "
-read WEBUI
+WEBUI=${WEBUI:-}
+if [[ -z "${WEBUI}" ]]
+then
+  echo -n "Add Nuxeo Web UI to your configuration? y/n [y]: "
+  read WEBUI
+fi
 
 if [[ -z "${WEBUI}" || "${WEBUI}" == "y" || "${WEBUI}" == "Y" ]]
 then
@@ -168,6 +190,7 @@ then
 fi
 
 # Prompt for Studio Login
+STUDIO_USERNAME=${STUDIO_USERNAME:-}
 while [ -z "${STUDIO_USERNAME}" ]
 do
   echo -n "Studio username: "
@@ -178,7 +201,7 @@ done
 MACFOUND="false"
 if [[ "${OSTYPE}" == "darwin"* ]]
 then
-  password=$( security find-generic-password -w -a ${STUDIO_USERNAME} -s studio 2>/dev/null)
+  password=$(security find-generic-password -w -a ${STUDIO_USERNAME} -s studio 2>/dev/null)
   CHECK=$?
   if [[ "$CHECK" != "0" ]]
   then
@@ -207,10 +230,11 @@ then
   then
     echo ""
     echo "A dialog box will now pop up to verify your credentials.  Please enter your login password.  The login password will not be visible to this script."
-    CREDENTIALS=$( security find-generic-password -w -a ${STUDIO_USERNAME} -s studio )
+    CREDENTIALS=$(security find-generic-password -w -a ${STUDIO_USERNAME} -s studio )
   fi
 fi
 
+CREDENTIALS=${CREDENTIALS:-}
 while [ -z "${CREDENTIALS}" ]
 do
   echo -n "Studio token: "
