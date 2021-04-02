@@ -277,7 +277,7 @@ NUXEO_IMAGE=${FROM_IMAGE}
 NUXEO_DEV=true
 NUXEO_INSTALL_HOTFIX=true
 NUXEO_PORT=8080
-NUXEO_PACKAGES=${STUDIO_PACKAGE}
+NUXEO_PACKAGES=${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}
 
 JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8787
 
@@ -324,7 +324,7 @@ echo ""
 
 # Display a sharable config
 echo "> Share your configuration:"
-echo "IMAGE_TYPE=${IMAGE_TYPE} FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} WEBUI=${WEBUI} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
+echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} WEBUI=${WEBUI} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions
