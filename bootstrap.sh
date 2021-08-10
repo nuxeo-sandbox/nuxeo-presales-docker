@@ -41,7 +41,7 @@ cat << EOM
 
 Nuxeo Docker Compose Bootstrap
 
-This script will ask you for your Studio Project ID, Version (default is master), 
+This script will ask you for your Studio Project ID, Version (default is master),
 and configured hostname (default is 'localhost').
 
 Need an account or project?  Go to https://connect.nuxeo.com/
@@ -54,7 +54,7 @@ token with this link: https://packages.nuxeo.com/#user/usertoken - you may creat
 access existing token, or reset the token here.  Your "token name code" is your
 docker username and your "token pass code" is your password.
 
-The next set of prompts will ask for your Studio username and Studio token. 
+The next set of prompts will ask for your Studio username and Studio token.
 Please obtain the token from https://connect.nuxeo.com/nuxeo/site/connect/tokens
 
 If you are on a Mac, you have the option to save your token in your keychain.  If
@@ -180,18 +180,6 @@ then
       exit 1
     fi
   fi
-fi
-
-WEBUI=${WEBUI:-}
-if [[ -z "${WEBUI}" ]]
-then
-  echo -n "Add Nuxeo Web UI to your configuration? y/n [y]: "
-  read WEBUI
-fi
-
-if [[ -z "${WEBUI}" || "${WEBUI}" == "y" || "${WEBUI}" == "Y" ]]
-then
-  STUDIO_PACKAGE="${STUDIO_PACKAGE} nuxeo-web-ui"
 fi
 
 # Prompt for Studio Login
@@ -324,7 +312,7 @@ echo ""
 
 # Display a sharable config
 echo "> Share your configuration:"
-echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} WEBUI=${WEBUI} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
+echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions
