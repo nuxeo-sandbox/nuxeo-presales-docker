@@ -27,8 +27,8 @@ services:
       - "8787:8787"
       - "1089:1089"
     volumes:
-      - ./init:/docker-entrypoint-initnuxeo.d/:rw
-      - ./conf:/etc/nuxeo/conf.d/:ro
+      - ./init:/docker-entrypoint-initnuxeo.d:rw
+      - ./conf:/etc/nuxeo/conf.d:ro
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
       - nuxeo-data:/var/lib/nuxeo:rw
