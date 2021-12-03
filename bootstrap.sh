@@ -267,8 +267,6 @@ NUXEO_INSTALL_HOTFIX=true
 NUXEO_PORT=8080
 NUXEO_PACKAGES=${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}
 
-JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8787 -Djava.security.properties=/etc/nuxeo/conf.d/java.security
-
 INSTALL_RPM=${INSTALL_RPM}
 
 ELASTIC_VERSION=${ELASTIC_VERSION}

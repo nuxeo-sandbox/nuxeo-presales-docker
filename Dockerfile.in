@@ -30,6 +30,9 @@ RUN yum -y localinstall --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfu
     && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-el-7 \
     && yum -y install ffmpeg mediainfo x264 x265 ipa-mincho-fonts
 
+# Dependencies for GLB thumbnail generation
+#RUN yum -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
+
 # Add additional RPMs to the source image
 RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; fi
 
@@ -60,5 +63,15 @@ USER 900
 # Replace the filename with your value
 # COPY google-credential.json /opt/nuxeo/google-credential.json
 # ENV GOOGLE_CREDENTIALS_PATH=/opt/nuxeo/google-credential.json
+
+# install node.js and screenshot-glb
+#RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
+#    source ~/.bash_profile && nvm install 16.13.0 && npm install -g @shopify/screenshot-glb
+
+# workaround to make the screenshot-glb command available in the default system PATH used by Java
+#USER 0
+#RUN ln -s /home/nuxeo/.nvm/versions/node/v16.13.0/bin/node /usr/local/bin/node
+#RUN ln -s /home/nuxeo/.nvm/versions/node/v16.13.0/bin/screenshot-glb /usr/local/bin/screenshot-glb
+#USER 900
 
 # !!! END OF FILE !!!
