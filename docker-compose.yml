@@ -12,7 +12,7 @@ services:
     image: presales-nuxeo-${PROJECT_NAME}
     hostname: nuxeo
     restart: always
-    depends_on: 
+    depends_on:
       - mongo
       - elasticsearch
     expose:
@@ -33,6 +33,10 @@ services:
       - /usr/bin/docker:/usr/bin/docker:ro
       - nuxeo-data:/var/lib/nuxeo:rw
       - nuxeo-stream:/opt/nuxeo/server/stream:rw
+      # Optional, makes container startup faster after the first time
+      # - "nuxeo_store:/opt/nuxeo/server/packages/store"
+      # Makes things pretty slow, uncomment with caution; useful for debugging
+      # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
   mongo:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
@@ -73,7 +77,7 @@ services:
       - cluster.name=elasticsearch
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    expose: 
+    expose:
       - 9200
       - 9300
     # Uncomment the following block if you require host-level access to ElasticSearch
@@ -96,7 +100,7 @@ services:
       timeout: 30s
       retries: 10
       start_period: 2m
-    depends_on: 
+    depends_on:
       - elasticsearch
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200/
