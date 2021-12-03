@@ -34,7 +34,7 @@ services:
       - nuxeo-data:/var/lib/nuxeo:rw
       - nuxeo-stream:/opt/nuxeo/server/stream:rw
       # Optional, makes container startup faster after the first time
-      # - "nuxeo_store:/opt/nuxeo/server/packages/store"
+      # - ./nuxeo_store:/opt/nuxeo/server/packages/store
       # Makes things pretty slow, uncomment with caution; useful for debugging
       # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
   mongo:
