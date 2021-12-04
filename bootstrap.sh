@@ -3,7 +3,7 @@
 REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
 LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021"
-CLOUD_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
+LATEST_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 
 MONGO_VERSION="4.4"
 ELASTIC_VERSION="7.9.3"
@@ -41,30 +41,20 @@ cat << EOM
 
 Nuxeo Docker Compose Bootstrap
 
-This script will ask you for your Studio Project ID, Version (default is master),
-and configured hostname (default is 'localhost').
+Requirements:
 
-Need an account or project?  Go to https://connect.nuxeo.com/
+* A Nuxeo Connect Account (https://connect.nuxeo.com/)
+* A Nuxeo Connect token (https://connect.nuxeo.com/nuxeo/site/connect/tokens)
+* A Nuxeo Studio project id
+* Sonatype User Token credentials (https://packages.nuxeo.com/#user/usertoken)
 
-You can then choose between the Cloud (public) and LTS (private) images.  If LTS
-is selected, you will need to use your Sonatype User Token credentials to log into
-the repository.  Navigate to https://packages.nuxeo.com/ and use the "Sign In"
-link in the upper right to log into the system.  Once logged in, access your user
-token with this link: https://packages.nuxeo.com/#user/usertoken - you may create,
-access existing token, or reset the token here.  Your "token name code" is your
-docker username and your "token pass code" is your password.
+If you are on a Mac, you have the option to save your Connect Token in your
+Keychain. If you do so, note that a dialog box will pop up to verify credential
+access whenever you use this script.
 
-The next set of prompts will ask for your Studio username and Studio token.
-Please obtain the token from https://connect.nuxeo.com/nuxeo/site/connect/tokens
-
-If you are on a Mac, you have the option to save your token in your keychain.  If
-you choose to do so, a dialog box will pop up to verify credential access when you
-use this script.
-
-At this point, your configuration will be completed and the Nuxeo images will be
-downloaded and built.  This may consume a lot of bandwidth and may take a bit of
-time.  Please be patient.  At the end of the script, additional instructions will
-be displayed.
+This script builds a custom Nuxeo docker image. This may consume a lot of
+bandwidth and may take a bit of time. Please be patient. At the end of the
+script, additional instructions will be displayed.
 
 EOM
 
@@ -115,15 +105,16 @@ then
 fi
 
 # Choose image
-IMAGE_TYPE="${IMAGE_TYPE:-}"
+# Cloud image is deprecated, just default to LTS
+IMAGE_TYPE="LTS"
 AUTO_IMAGE=""
 FROM_IMAGE=""
 if [ -z "${IMAGE_TYPE}" ]
 then
   echo "Which image? (LTS requires a Nuxeo Docker login)"
-  select lc in "Cloud" "LTS"
+  select lc in "Latest" "LTS"
   do
-      if [[ "$lc" == "LTS" || "$lc" == "2" ]] || [[ "$lc" == "Cloud" || "$lc" == "1" ]]
+      if [[ "$lc" == "LTS" || "$lc" == "2" ]] || [[ "$lc" == "Latest" || "$lc" == "1" ]]
       then
           break
       fi
@@ -138,15 +129,15 @@ then
   echo "LTS selected"
   FROM_IMAGE=${LTS_IMAGE}
   IMAGE_TYPE="lts"
-elif [[ "$lc" == "cloud" || "$lc" == "1" ]]
+elif [[ "$lc" == "latest" || "$lc" == "1" ]]
 then
-  echo "Cloud selected"
-  FROM_IMAGE=${CLOUD_IMAGE}
-  IMAGE_TYPE="cloud"
+  echo "Latest selected"
+  FROM_IMAGE=${LATEST_IMAGE}
+  IMAGE_TYPE="latest"
 else
-  echo "Invalid image type '${lc}', using Cloud image"
-  FROM_IMAGE=${CLOUD_IMAGE}
-  IMAGE_TYPE="cloud"
+  echo "Invalid image type '${lc}', using Latest image"
+  FROM_IMAGE=${LATEST_IMAGE}
+  IMAGE_TYPE="latest"
 fi
 
 export FROM_IMAGE
@@ -258,7 +249,7 @@ cat << EOF > ${NX_STUDIO}/.env
 APPLICATION_NAME=${NX_STUDIO}
 PROJECT_NAME=${PROJECT_NAME}
 
-# Cloud Image: ${CLOUD_IMAGE}
+# Latest Image: ${LATEST_IMAGE}
 # LTS Image  : ${LTS_IMAGE}
 NUXEO_IMAGE=${FROM_IMAGE}
 
