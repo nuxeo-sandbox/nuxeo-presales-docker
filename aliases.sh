@@ -18,6 +18,7 @@ alias dcstop='docker-compose stop'
 alias dcup='docker-compose up'
 alias dcupd='docker-compose up -d'
 
+# QOL aliases to make managing the stack easier
 alias stack='make -e'
 alias nx='stack SERVICE=nuxeo'
 alias nxl='nx logs'
