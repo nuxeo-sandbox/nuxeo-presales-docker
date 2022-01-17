@@ -1,53 +1,49 @@
-# Nuxeo Presales Docker Template
+# About
 
-Docker Compose stack for running Nuxeo.
+Simple command line tooling for creating and managing a Docker Compose stack for
+running Nuxeo.
 
-See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
+See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for
+additional documentation.
 
-## Compatible Versions
+# Compatible Versions
 
-This stack is built for and compatible with **Nuxeo 2021 LTS** and **Cloud** release.
+* Nuxeo LTS 2021
 
-## Getting Started
+# Requirements
 
-If you are planning to run Nuxeo on your local laptop, use the bootstrap script:
+* Docker Engine
+* Docker Compose
+* Git Command Line
+
+# Usage
+
+For running Nuxeo locally, you can install everything using the bootstrap script
+like so:
 
 ```
 bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
 ```
 
-This script will ask you for your Studio Project ID, Version (default is master),
-and configured hostname (default is 'localhost').
+See [Getting
+Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki/Getting-Started)
+for an explanation of how the script works.
 
-Need an account or project?  Go to https://connect.nuxeo.com/
-
-You can then choose between the Cloud (public) and LTS (private) images.  If LTS
-is selected, you will need to use your Sonatype User Token credentials to log into
-the repository.  Navigate to https://packages.nuxeo.com/ and use the "Sign In"
-link in the upper right to log into the system.  Once logged in, access your user
-token with this link: https://packages.nuxeo.com/#user/usertoken - you may create,
-access existing token, or reset the token here.  Your "token name code" is your
-docker username and your "token pass code" is your password.
-
-The next set of prompts will ask for your Studio username and Studio token.
-Please obtain the token from https://connect.nuxeo.com/nuxeo/site/connect/tokens
-
-If you are on a Mac, you have the option to save your token in your keychain.  If
-you choose to do so, a dialog box will pop up to verify credential access when you
-use this script.
-
-At this point, your configuration will be complete and the Nuxeo images will be
-downloaded and built.  _This may consume a lot of bandwidth and may take a bit of
-time_.  Please be patient.  At the end of the script, additional instructions will
-be displayed.
+For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to
+scaffold the environment. You can find an example of how to use this tooling in
+EC2
+[here](https://github.com/nuxeo/presales-vmdemo/blob/master/AWS-templates/Nuxeo_Release_presales).
 
 # Support
 
 **These features are not part of the Nuxeo Production platform.**
 
-These solutions are provided for inspiration and we encourage customers to use them as code samples and learning resources.
+These solutions are provided for inspiration and we encourage customers to use
+them as code samples and learning resources.
 
-This is a moving project (no API maintenance, no deprecation process, etc.) If any of these solutions are found to be useful for the Nuxeo Platform in general, they will be integrated directly into platform, not maintained here.
+This is a moving project (no API maintenance, no deprecation process, etc.) If
+any of these solutions are found to be useful for the Nuxeo Platform in general,
+they will be integrated directly into platform, not maintained here.
 
 # License
 
@@ -55,12 +51,21 @@ This is a moving project (no API maintenance, no deprecation process, etc.) If a
 
 # About Nuxeo
 
-Nuxeo Platform is an open source Content Services platform, written in Java. Data can be stored in both SQL & NoSQL databases.
+Nuxeo Platform is an open source Content Services platform, written in Java.
+Data can be stored in both SQL & NoSQL databases.
 
-The development of the Nuxeo Platform is mostly done by Nuxeo employees with an open development model.
+The development of the Nuxeo Platform is mostly done by Nuxeo employees with an
+open development model.
 
-The source code, documentation, roadmap, issue tracker, testing, benchmarks are all public.
+The source code, documentation, roadmap, issue tracker, testing, benchmarks are
+all public.
 
-Typically, Nuxeo users build different types of information management solutions for [document management](https://www.nuxeo.com/solutions/document-management/), [case management](https://www.nuxeo.com/solutions/case-management/), and [digital asset management](https://www.nuxeo.com/solutions/dam-digital-asset-management/), use cases. It uses schema-flexible metadata & content models that allows content to be repurposed to fulfill future use cases.
+Typically, Nuxeo users build different types of information management solutions
+for [document management](https://www.nuxeo.com/solutions/document-management/),
+[case management](https://www.nuxeo.com/solutions/case-management/), and
+[digital asset
+management](https://www.nuxeo.com/solutions/dam-digital-asset-management/), use
+cases. It uses schema-flexible metadata & content models that allows content to
+be repurposed to fulfill future use cases.
 
 More information is available at [www.nuxeo.com](https://www.nuxeo.com).
