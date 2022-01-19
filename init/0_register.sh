@@ -6,12 +6,6 @@ if [ ! -e /var/lib/nuxeo/instance.clid ]; then
   nuxeoctl register ${STUDIO_USERNAME} "${APPLICATION_NAME}" "dev" "docker" "${STUDIO_CREDENTIALS}"
 fi
 
-# Install pending hotfixes for image
-if [ ${NUXEO_INSTALL_HOTFIX:='true'} == "true" ]; then
-  echo "Installing hotfixes..."
-  nuxeoctl mp-hotfix --accept=true
-fi
-
 # Copy log configuration for debugging, etc.
 
 if [ -e /docker-entrypoint-initnuxeo.d/log4j2.xml ]; then
