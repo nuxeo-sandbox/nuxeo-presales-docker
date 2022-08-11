@@ -11,7 +11,7 @@ services:
       - ./.env
     image: presales-nuxeo-${PROJECT_NAME}
     hostname: nuxeo
-    restart: always
+    restart: unless-stopped
     depends_on:
       - mongo
       - elasticsearch
@@ -40,7 +40,7 @@ services:
   mongo:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
       interval: 1m
@@ -65,7 +65,7 @@ services:
       - ./.env
     image: presales-elasticsearch-${PROJECT_NAME}
     hostname: elasticsearch
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: curl -f http://elasticsearch:9200/
       interval: 2m
@@ -93,7 +93,7 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:${ELASTIC_VERSION}
     hostname: kibana
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: curl -f http://kibana:5601/kibana/app/kibana
       interval: 2m
