@@ -240,6 +240,9 @@ cat << EOF > ${NX_STUDIO}/conf/system.conf
 session.timeout=600
 nuxeo.url=http://${FQDN}:8080/nuxeo
 
+# Enable "select all" by default
+nuxeo.selection.selectAllEnabled=true
+
 # Templates
 nuxeo.templates=default,mongodb
 EOF
