@@ -24,12 +24,17 @@ alias dcupd='docker-compose up -d'
 # QOL aliases to make managing the stack easier
 alias stack='make -e'
 alias nx='stack SERVICE=nuxeo'
+# See https://github.com/nuxeo-sandbox/nuxeo-presales-docker/issues/10
 alias nxlogs='nx logs'
 alias nxl='nx exec COMMAND="tail -f /var/log/nuxeo/server.log"'
 alias nxbash='nx exec COMMAND=bash'
 alias es='stack SERVICE=elasticsearch'
 alias mongodb='stack SERVICE=mongo'
 alias mongo='stack exec SERVICE=mongo COMMAND=mongo'
+# This is a hard-coded hack for now; the root problem is `nx pull` does nothing
+# useful because we're using a custom image. What we want to do is pull the
+# latest base nuxeo image, and then build a new local image.
+alias nxpull='docker pull docker-private.packages.nuxeo.com/nuxeo/nuxeo:2021'
 
 # Quick access to nuxeoctl
 alias nxctl-status='nx exec COMMAND="nuxeoctl status"'
