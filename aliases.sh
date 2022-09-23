@@ -24,7 +24,7 @@ alias dcupd='docker-compose up -d'
 # QOL aliases to make managing the stack easier
 alias stack='make -e'
 alias nx='stack SERVICE=nuxeo'
-alias nxl='nx logs'
+alias nxl='nx exec COMMAND="tail -f /var/log/nuxeo/server.log"'
 alias nxbash='nx exec COMMAND=bash'
 alias es='stack SERVICE=elasticsearch'
 alias mongodb='stack SERVICE=mongo'
