@@ -30,6 +30,11 @@ RUN yum -y localinstall --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfu
     && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-el-7 \
     && yum -y install ffmpeg mediainfo x264 x265 ipa-mincho-fonts
 
+# Install newest version of imagemagick and icc color profiles
+# RUN yum -y localinstall --nogpgcheck https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm https://rpms.remirepo.net/enterprise/remi-release-7.rpm \
+#    && yum -y remove ImageMagick && yum --enablerepo=remi -y install ImageMagick7 \
+#    && yum -y install icc-profiles-openicc
+
 # Dependencies for GLB thumbnail generation
 #RUN yum -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
 
