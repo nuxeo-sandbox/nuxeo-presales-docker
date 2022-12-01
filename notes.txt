@@ -13,7 +13,7 @@ applications:
 
 (but it is HIGHLY recommended to install the aliases! See below...)
 
-alises.sh provides shortcuts to common functions to build, start, and stop
+aliases.sh provides shortcuts to common functions to build, start, and stop
 the stack configuration.
 
 Nuxeo will launch on port 8080.  If you wish to change ports, check the Docker
