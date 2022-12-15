@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Shortcut to create a new stack
-alias nxcreate='bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"'
+alias nxcreate='bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"'
 
 # Example aliases for working with docker-compose and Nuxeo
 alias dcb='docker-compose build'

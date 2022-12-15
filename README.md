@@ -22,7 +22,7 @@ For running Nuxeo locally, you can install everything using the bootstrap script
 like so:
 
 ```
-bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
 ```
 
 See [Getting
