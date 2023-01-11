@@ -3,11 +3,13 @@
 REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 BRANCH="master"
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
-LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021"
-LATEST_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
+LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2023"
 
-MONGO_VERSION="4.4"
-ELASTIC_VERSION="7.9.3"
+MONGO_VERSION="6.0"
+OPENSEARCH_VERSION="1.3.11"
+
+OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
+OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
 
 CHECKS=()
 # Check for commands used in this script
@@ -268,9 +270,9 @@ cat << EOF > ${NX_STUDIO}/.env
 APPLICATION_NAME=${NX_STUDIO}
 PROJECT_NAME=${PROJECT_NAME}
 
-# Latest Image: ${LATEST_IMAGE}
-# LTS Image  : ${LTS_IMAGE}
 NUXEO_IMAGE=${FROM_IMAGE}
+
+CONNECT_URL=https://connect.nuxeo.com/nuxeo/site/
 
 NUXEO_DEV=true
 NUXEO_PORT=8080
@@ -278,8 +280,9 @@ NUXEO_PACKAGES=${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}
 
 INSTALL_RPM=${INSTALL_RPM}
 
-ELASTIC_VERSION=${ELASTIC_VERSION}
 MONGO_VERSION=${MONGO_VERSION}
+OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
+OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
 
 FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
@@ -291,7 +294,6 @@ cd ${NX_STUDIO}
 
 # Pull images
 echo "Please wait, getting things ready..."
-make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION}
 docker pull --quiet ${FROM_IMAGE}
 echo " pulling other services..."
 docker compose pull

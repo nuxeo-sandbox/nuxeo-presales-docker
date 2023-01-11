@@ -3,10 +3,13 @@ services:
   nuxeo:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: build_nuxeo/Dockerfile
       args:
         - "INSTALL_RPM=${INSTALL_RPM}"
+        - "CONNECT_URL=${CONNECT_URL}"
         - "NUXEO_CLID=${NUXEO_CLID}"
+        - "NUXEO_PACKAGES=${NUXEO_PACKAGES}"
+        - "NUXEO_IMAGE=${NUXEO_IMAGE}"
     env_file:
       - ./.env
     image: presales-nuxeo-${PROJECT_NAME}
@@ -14,7 +17,7 @@ services:
     restart: unless-stopped
     depends_on:
       - mongo
-      - elasticsearch
+      - opensearch
     expose:
       # Webservice Port
       - 8080
@@ -31,8 +34,6 @@ services:
       - ./conf:/etc/nuxeo/conf.d/:ro
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
-      - nuxeo-data:/var/lib/nuxeo:rw
-      - nuxeo-stream:/opt/nuxeo/server/stream:rw
       # Optional, makes container startup faster after the first time
       # - ./nuxeo_store:/opt/nuxeo/server/packages/store
       # Makes things pretty slow, uncomment with caution; useful for debugging
@@ -55,28 +56,29 @@ services:
     #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
-  elasticsearch:
+  opensearch:
     build:
       context: .
-      dockerfile: es/Dockerfile
+      dockerfile: build_opensearch/Dockerfile
       args:
-        - "ELASTIC_VERSION=${ELASTIC_VERSION}"
+        - "OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}"
     env_file:
       - ./.env
-    image: presales-elasticsearch-${PROJECT_NAME}
-    hostname: elasticsearch
+    image: presales-opensearch-${PROJECT_NAME}
+    hostname: opensearch
     restart: unless-stopped
     healthcheck:
-      test: curl -f http://elasticsearch:9200/
+      test: curl -f http://opensearch:9200/
       interval: 2m
       timeout: 30s
       retries: 10
       start_period: 1m
     environment:
       - discovery.type=single-node
-      - cluster.name=elasticsearch
+      - cluster.name=opensearch
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "DISABLE_SECURITY_PLUGIN=true"
     expose:
       - 9200
       - 9300
@@ -89,32 +91,28 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - es-data:/usr/share/elasticsearch/data
-  kibana:
-    image: docker.elastic.co/kibana/kibana-oss:${ELASTIC_VERSION}
-    hostname: kibana
+      - opensearch-data:/usr/share/opensearch/data
+  dashboards:
+    image: ${OPENSEARCH_DASHBOARDS_IMAGE}
+    hostname: dashboards
     restart: unless-stopped
     healthcheck:
-      test: curl -f http://kibana:5601/kibana/app/kibana
+      test: curl -f http://dashboards:5601/dashboards
       interval: 2m
       timeout: 30s
       retries: 10
       start_period: 2m
     depends_on:
-      - elasticsearch
+      - opensearch
     environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200/
-      SERVER_BASEPATH: /kibana
+      OPENSEARCH_HOSTS: http://opensearch:9200/
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: 'true'
+      SERVER_BASEPATH: /dashboards
       SERVER_REWRITEBASEPATH: 'true'
     expose:
       - 5601
     ports:
       - "5601:5601"
-    volumes:
-      - kibana-data:/usr/share/kibana/data
 volumes:
-  es-data:
-  kibana-data:
-  nuxeo-data:
-  nuxeo-stream:
+  opensearch-data:
   mongo-data:

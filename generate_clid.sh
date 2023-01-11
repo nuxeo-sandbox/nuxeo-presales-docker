@@ -13,6 +13,8 @@ TMP_DIR=$(mktemp -d)
 mkdir -p ${TMP_DIR}
 chmod 777 ${TMP_DIR}
 
+CONF_DIR=$(readlink -f ./conf)
+
 NUXEO_CLID=$(grep '^NUXEO_CLID' ${NUXEO_ENV} | tail -n 1  | cut -d '=' -f2)
 if [ -n "${NUXEO_CLID}" ]; then
   echo "NUXEO_CLID appears to be configured in ${NUXEO_ENV} or your system environment.  Remove and then run this script again."
@@ -46,7 +48,7 @@ if [ -n "${ERR}" ]; then
   exit 1
 fi
 
-docker run --rm -v ${TMP_DIR}:/var/lib/nuxeo/:rw ${FROM_IMAGE} \
+docker run --rm -v ${TMP_DIR}:/var/lib/nuxeo/:rw -v ${CONF_DIR}:/etc/nuxeo/conf.d/:ro ${FROM_IMAGE}\
        nuxeoctl register "${STUDIO_USERNAME}" "${APPLICATION_NAME}" "dev" "Docker" "${STUDIO_CREDENTIALS}"
 CLID="${TMP_DIR}/instance.clid"
 # Write CLID to file
