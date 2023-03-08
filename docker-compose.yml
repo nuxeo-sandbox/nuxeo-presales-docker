@@ -1,45 +1,37 @@
 version: '3.8'
 services:
-  nuxeo:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - "INSTALL_RPM=${INSTALL_RPM}"
-        - "NUXEO_CLID=${NUXEO_CLID}"
-    env_file:
-      - ./.env
-    image: presales-nuxeo-${PROJECT_NAME}
-    hostname: nuxeo
-    restart: unless-stopped
-    depends_on:
-      - mongo
-      - elasticsearch
-    expose:
-      # Webservice Port
-      - 8080
-      # Port for Debugging (JPDA)
-      - 8787
-      # JMX port
-      - 1089
-    ports:
-      - "${NUXEO_PORT}:8080"
-      - "8787:8787"
-      - "1089:1089"
+  zookeeper:
+    image: zookeeper:${ZOOKEEPER_VERSION}
+    container_name: zookeeper
+    hostname: zookeeper
     volumes:
-      - ./init:/docker-entrypoint-initnuxeo.d/:rw
-      - ./conf:/etc/nuxeo/conf.d/:ro
-      - /var/run/docker.sock:/var/run/docker.sock:rw
-      - /usr/bin/docker:/usr/bin/docker:ro
-      - nuxeo-data:/var/lib/nuxeo:rw
-      - nuxeo-stream:/opt/nuxeo/server/stream:rw
-      # Optional, makes container startup faster after the first time
-      # - ./nuxeo_store:/opt/nuxeo/server/packages/store
-      # Makes things pretty slow, uncomment with caution; useful for debugging
-      # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
+      - ./data/zookeeper/data:/datalog
+      - ./data/zookeeper/log:/data
+  kafka:
+    image: wurstmeister/kafka:${KAFKA_VERSION}
+    container_name: kafka
+    hostname: kafka
+    environment:
+      #KAFKA_BROKER_ID: 1
+      KAFKA_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 10
+      KAFKA_OFFSETS_RETENTION_MINUTES: 20160
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms256M"
+      KAFKA_LOG_DIRS: /kafka/log
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+    depends_on:
+      - zookeeper
+    volumes:
+      - ${PWD}/data/kafka/data:/kafka:rw
+      - ${PWD}/data/kafka/log:/opt/kafka/log:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
   mongo:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
+    container_name: mongo
+    command: mongod --replSet rs0
     restart: unless-stopped
     healthcheck:
       test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
@@ -66,6 +58,7 @@ services:
     image: presales-elasticsearch-${PROJECT_NAME}
     hostname: elasticsearch
     restart: unless-stopped
+    container_name: elasticsearch
     healthcheck:
       test: curl -f http://elasticsearch:9200/
       interval: 2m
@@ -77,6 +70,7 @@ services:
       - cluster.name=elasticsearch
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
     expose:
       - 9200
       - 9300
@@ -93,6 +87,7 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:${ELASTIC_VERSION}
     hostname: kibana
+    container_name: kibana
     restart: unless-stopped
     healthcheck:
       test: curl -f http://kibana:5601/kibana/app/kibana
@@ -112,6 +107,49 @@ services:
       - "5601:5601"
     volumes:
       - kibana-data:/usr/share/kibana/data
+  nuxeo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - "INSTALL_RPM=${INSTALL_RPM}"
+        - "NUXEO_CLID=${NUXEO_CLID}"
+    env_file:
+      - ./.env
+    image: presales-nuxeo-${PROJECT_NAME}
+    hostname: nuxeo
+    container_name: nuxeo
+    restart: unless-stopped
+    depends_on:
+      - kafka
+      - mongo
+      - elasticsearch
+    expose:
+      # Webservice Port
+      - 8080
+      # Port for Debugging (JPDA)
+      - 8787
+      # JMX port
+      - 1089
+    ports:
+      - "${NUXEO_PORT}:8080"
+      - "8787:8787"
+      - "1089:1089"
+    # required to setup async-profiling
+    privileged: true
+    mem_reservation: 1g
+    mem_limit: 3g
+    volumes:
+      - ./init:/docker-entrypoint-initnuxeo.d/:rw
+      - ./conf:/etc/nuxeo/conf.d/:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /usr/bin/docker:/usr/bin/docker:ro
+      - nuxeo-data:/var/lib/nuxeo:rw
+      - nuxeo-stream:/opt/nuxeo/server/stream:rw
+      # Optional, makes container startup faster after the first time
+      # - ./nuxeo_store:/opt/nuxeo/server/packages/store
+      # Makes things pretty slow, uncomment with caution; useful for debugging
+      # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
 volumes:
   es-data:
   kibana-data:

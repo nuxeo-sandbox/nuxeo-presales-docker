@@ -7,6 +7,8 @@ LATEST_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 
 MONGO_VERSION="4.4"
 ELASTIC_VERSION="7.9.3"
+ZOOKEEPER_VERSION="3.5.8"
+KAFKA_VERSION="2.13-2.6.0"
 
 CHECKS=()
 # Check for commands used in this script
@@ -264,6 +266,8 @@ INSTALL_RPM=${INSTALL_RPM}
 
 ELASTIC_VERSION=${ELASTIC_VERSION}
 MONGO_VERSION=${MONGO_VERSION}
+ZOOKEEPER_VERSION=${ZOOKEEPER_VERSION}
+KAFKA_VERSION=${KAFKA_VERSION}
 
 FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
@@ -275,7 +279,7 @@ cd ${NX_STUDIO}
 
 # Pull images
 echo "Please wait, getting things ready..."
-make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION}
+make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION} ZOOKEEPER_VERSION=${ZOOKEEPER_VERSION} KAFKA_VERSION=${KAFKA_VERSION}
 docker pull --quiet ${FROM_IMAGE}
 echo " pulling other services..."
 docker-compose --log-level ERROR pull
