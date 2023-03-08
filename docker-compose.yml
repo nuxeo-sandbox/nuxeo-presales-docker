@@ -31,7 +31,7 @@ services:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
     container_name: mongo
-    command: mongod --replSet rs0
+    #command: mongod --replSet rs0
     restart: unless-stopped
     healthcheck:
       test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
@@ -39,12 +39,12 @@ services:
       timeout: 30s
       retries: 10
       start_period: 15s
-    expose:
-      # Mongo connection
-      - 27017
+#    expose:
+#      # Mongo connection
+#      - 27017
     # Uncomment the following block if you require host-level access to MongoDB
-    #ports:
-    #  - "27017:27017"
+    ports:
+      - "27017:27017"
     volumes:
       - mongo-data:/data/db
   elasticsearch:
@@ -71,13 +71,13 @@ services:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "cluster.routing.allocation.disk.threshold_enabled=false"
-    expose:
-      - 9200
-      - 9300
+#    expose:
+#      - 9200
+#      - 9300
     # Uncomment the following block if you require host-level access to ElasticSearch
-    #ports:
-    #  - 9200:9200
-    #  - 9300:9300
+    ports:
+      - 9200:9200
+      - 9300:9300
     ulimits:
       memlock:
         soft: -1
@@ -101,8 +101,8 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200/
       SERVER_BASEPATH: /kibana
       SERVER_REWRITEBASEPATH: 'true'
-    expose:
-      - 5601
+#    expose:
+#      - 5601
     ports:
       - "5601:5601"
     volumes:
@@ -124,13 +124,13 @@ services:
       - kafka
       - mongo
       - elasticsearch
-    expose:
-      # Webservice Port
-      - 8080
-      # Port for Debugging (JPDA)
-      - 8787
-      # JMX port
-      - 1089
+#    expose:
+#      # Webservice Port
+#      - 8080
+#      # Port for Debugging (JPDA)
+#      - 8787
+#      # JMX port
+#      - 1089
     ports:
       - "${NUXEO_PORT}:8080"
       - "8787:8787"
