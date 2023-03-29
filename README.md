@@ -12,6 +12,7 @@ additional documentation.
 
 # Requirements
 
+* [Access to Nuxeo Docker image](https://doc.nuxeo.com/nxdoc/docker-image/#requirements)
 * Docker Engine
 * Docker Compose
 * Git Command Line
