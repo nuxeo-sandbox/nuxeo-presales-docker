@@ -4,10 +4,10 @@
 NUXEO_IMAGE := "docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
 ELASTIC_VERSION := "7.9.3"
 COMPOSE_DIR := .
-SERVICE := 
-COMMAND := 
+SERVICE :=
+COMMAND :=
 
-Dockerfile: 
+Dockerfile:
 	NUXEO_IMAGE=$(NUXEO_IMAGE) XVAR='$$' envsubst < Dockerfile.in > Dockerfile
 
 es/Dockerfile:
@@ -41,10 +41,10 @@ vilog:
 status: | info ps
 
 info:
-	@$(COMPOSE_DIR)/info.sh $(COMPOSE_DIR)
+	$(COMPOSE_DIR)/info.sh $(COMPOSE_DIR)
 
 ps:
-	@docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
+	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml ps
 
 start:
 	docker-compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml start $(SERVICE)
