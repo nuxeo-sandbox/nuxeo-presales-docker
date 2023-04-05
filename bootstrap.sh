@@ -277,7 +277,7 @@ echo "Please wait, getting things ready..."
 make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION}
 docker pull --quiet ${FROM_IMAGE}
 echo " pulling other services..."
-docker compose --log-level ERROR pull
+docker compose pull
 echo ""
 
 # Generate CLID
