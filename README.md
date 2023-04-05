@@ -26,6 +26,8 @@ like so:
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
 ```
 
+Note: if you are testing new features, you can pass `-b branch-name` to the bootstrap script to clone a specific branch.
+
 See [Getting
 Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki/Getting-Started)
 for an explanation of how the script works.
