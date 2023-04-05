@@ -1,6 +1,7 @@
 #!/bin/bash
 
 REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
+BRANCH="master"
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
 LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021"
 LATEST_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
@@ -30,6 +31,14 @@ then
   echo "Docker does not appear to be running, please start Docker."
   exit 2
 fi
+
+# Allow use of a different branch, useful for testing
+while getopts b: flag
+do
+  case "${flag}" in
+    b) BRANCH=${OPTARG};;
+  esac
+done
 
 # Directions for image setup
 cat << EOM
@@ -225,10 +234,18 @@ do
   echo ""
 done
 
-# Check out repository
+# Create project folder
 echo ""
 echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
-git clone ${REPO} ${NX_STUDIO}
+
+if [ BRANCH eq "master" ]
+then
+  git clone ${REPO} ${NX_STUDIO}
+else
+  echo "Using nuxeo-presales-docker branch ${BRANCH}"
+  git clone -b ${BRANCH} ${REPO} ${NX_STUDIO}
+fi
+
 mkdir -p ${NX_STUDIO}/conf
 cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
 echo ""
