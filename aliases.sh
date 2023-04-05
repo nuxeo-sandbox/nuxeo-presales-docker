@@ -3,23 +3,23 @@
 # Shortcut to create a new stack
 alias nxcreate='bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"'
 
-# Example aliases for working with docker-compose and Nuxeo
-alias dcb='docker-compose build'
-alias dcdn='docker-compose down'
-alias dce='docker-compose exec'
-alias dck='docker-compose kill'
-alias dcl='docker-compose logs'
-alias dclf='docker-compose logs -f'
-alias dco=docker-compose
-alias dcps='docker-compose ps'
-alias dcpull='docker-compose pull'
-alias dcr='docker-compose run'
-alias dcrestart='docker-compose restart'
-alias dcrm='docker-compose rm'
-alias dcstart='docker-compose start'
-alias dcstop='docker-compose stop'
-alias dcup='docker-compose up'
-alias dcupd='docker-compose up -d'
+# Example aliases for working with docker compose and Nuxeo
+alias dcb='docker compose build'
+alias dcdn='docker compose down'
+alias dce='docker compose exec'
+alias dck='docker compose kill'
+alias dcl='docker compose logs'
+alias dclf='docker compose logs -f'
+alias dco=docker compose
+alias dcps='docker compose ps'
+alias dcpull='docker compose pull'
+alias dcr='docker compose run'
+alias dcrestart='docker compose restart'
+alias dcrm='docker compose rm'
+alias dcstart='docker compose start'
+alias dcstop='docker compose stop'
+alias dcup='docker compose up'
+alias dcupd='docker compose up -d'
 
 # QOL aliases to make managing the stack easier
 alias stack='make -e'

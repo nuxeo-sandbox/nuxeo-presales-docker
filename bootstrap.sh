@@ -15,7 +15,6 @@ command -v make >/dev/null || CHECKS+=("make")
 command -v envsubst >/dev/null || CHECKS+=("envsubst")
 command -v git >/dev/null || CHECKS+=("git")
 command -v docker >/dev/null || CHECKS+=("docker")
-command -v docker-compose >/dev/null || CHECKS+=("docker-compose")
 
 if [ $CHECKS ]
 then
@@ -278,7 +277,7 @@ echo "Please wait, getting things ready..."
 make dockerfiles NUXEO_IMAGE=${FROM_IMAGE} ELASTIC_VERSION=${ELASTIC_VERSION}
 docker pull --quiet ${FROM_IMAGE}
 echo " pulling other services..."
-docker-compose --log-level ERROR pull
+docker compose --log-level ERROR pull
 echo ""
 
 # Generate CLID
@@ -298,7 +297,7 @@ echo ""
 
 # Build image (may use CLID generated in previous step)
 echo "Building your custom image(s)..."
-docker-compose build
+docker compose build
 echo ""
 
 # Display a sharable config
