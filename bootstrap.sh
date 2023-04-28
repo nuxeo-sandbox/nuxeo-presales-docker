@@ -238,7 +238,9 @@ done
 echo ""
 echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
 
-if [ BRANCH eq "master" ]
+echo "$BRANCH"
+
+if [ "$BRANCH" = "master" ]
 then
   git clone ${REPO} ${NX_STUDIO}
 else
