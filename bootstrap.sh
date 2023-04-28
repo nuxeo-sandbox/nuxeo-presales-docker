@@ -319,7 +319,7 @@ echo ""
 
 # Display a sharable config
 echo "> Share your configuration:"
-echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
+echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${BRANCH}/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions
