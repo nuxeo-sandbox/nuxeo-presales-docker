@@ -15,3 +15,9 @@ conf
 # Custom Nuxeo Log configuration
 init/log4j2.xml
 
+# Optional folders to sync (see docker-compose.yml)
+nuxeo_store
+nuxeo_war
+
+# Stuff for dev
+.yo-rc.json
