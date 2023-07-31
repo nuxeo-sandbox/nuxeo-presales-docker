@@ -57,13 +57,6 @@ RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-nodeps-*.zip ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-*.zip ${NUXEO_HOME}/local-packages/local-package.zip
 
-# Install packages at build time
-RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${NUXEO_PACKAGES}
-# Install a local package without its dependencies (`mp-install --nodeps`)
-# RUN /install-packages.sh --offline ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
-# Install remote packages and a local package with its dependencies
-# RUN /install-packages.sh --clid ${NUXEO_CLID} nuxeo-web-ui nuxeo-drive ${NUXEO_HOME}/local-packages/local-package.zip
-
 RUN usermod -aG 998 nuxeo
 
 # >>> Make your changes ABOVE this line <<<
@@ -88,5 +81,12 @@ USER 900
 #RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/obj2gltf /usr/local/bin/obj2gltf
 #RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/gltf-pipeline /usr/local/bin/gltf-pipeline
 #USER 900
+
+# Install packages at build time
+RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${NUXEO_PACKAGES}
+# Install a local package without its dependencies (`mp-install --nodeps`)
+# RUN /install-packages.sh --offline ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
+# Install remote packages and a local package with its dependencies
+# RUN /install-packages.sh --clid ${NUXEO_CLID} nuxeo-web-ui nuxeo-drive ${NUXEO_HOME}/local-packages/local-package.zip
 
 # !!! END OF FILE !!!
