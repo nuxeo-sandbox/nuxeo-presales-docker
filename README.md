@@ -8,7 +8,7 @@ additional documentation.
 
 # Compatible Versions
 
-* Nuxeo LTS 2021
+* Nuxeo LTS 2023
 
 # Requirements
 
