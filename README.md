@@ -35,7 +35,7 @@ for an explanation of how the script works.
 For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to
 scaffold the environment. You can find an example of how to use this tooling in
 EC2
-[here](https://github.com/nuxeo/presales-vmdemo/blob/master/AWS-templates/Nuxeo_Release_presales).
+[here](https://github.com/nuxeo/presales-vmdemo/blob/master/EC2-scripts/Nuxeo.sh).
 
 # Support
 
