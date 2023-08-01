@@ -30,7 +30,7 @@ alias nxl='nx exec COMMAND="tail -f /var/log/nuxeo/server.log"'
 alias nxbash='nx exec COMMAND=bash'
 alias opensearch='stack SERVICE=opensearch'
 alias mongodb='stack SERVICE=mongo'
-alias mongo='stack exec SERVICE=mongo COMMAND=mongo'
+alias mongo='stack exec SERVICE=mongo COMMAND=mongosh'
 alias nxpull='docker compose build --pull'
 
 # Quick access to nuxeoctl
