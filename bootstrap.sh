@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
-BRANCH="master"
+BRANCH="lts2021"
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
 LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021"
 LATEST_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
