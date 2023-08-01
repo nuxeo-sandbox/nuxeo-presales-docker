@@ -23,7 +23,7 @@ For running Nuxeo locally, you can install everything using the bootstrap script
 like so:
 
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/lts2021/bootstrap.sh)"
 ```
 
 Note: if you are testing new features, you can pass `-b branch-name` to the bootstrap script to clone a specific branch.
@@ -35,7 +35,7 @@ for an explanation of how the script works.
 For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to
 scaffold the environment. You can find an example of how to use this tooling in
 EC2
-[here](https://github.com/nuxeo/presales-vmdemo/blob/master/AWS-templates/Nuxeo_Release_presales).
+[here](https://github.com/nuxeo/presales-vmdemo/blob/lts2021/AWS-templates/Nuxeo_Release_presales).
 
 # Support
 
