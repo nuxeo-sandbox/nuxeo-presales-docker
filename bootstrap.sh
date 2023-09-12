@@ -165,7 +165,6 @@ then
   fi
   if [[ ${FOUND} == "0" ]] && [[ "${DOCKER}" == "n" || "${DOCKER}" == "N" ]]
   then
-    STUDIO_PACKAGE="${STUDIO_PACKAGE} nuxeo-web-ui"
     FOUND="1"
   fi
   if [[ "${FOUND}" != "0" ]]
@@ -263,6 +262,11 @@ nuxeo.selection.selectAllEnabled=true
 nuxeo.templates=default,mongodb
 EOF
 
+# Make sure we always have a UI installed
+AUTO_PACKAGES="nuxeo-web-ui"
+# Auto install Nuxeo Explorer because the website is unusable
+AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
+
 # Write environment file
 cat << EOF > ${NX_STUDIO}/.env
 APPLICATION_NAME=${NX_STUDIO}
@@ -274,7 +278,7 @@ NUXEO_IMAGE=${FROM_IMAGE}
 
 NUXEO_DEV=true
 NUXEO_PORT=8080
-NUXEO_PACKAGES=${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}
+NUXEO_PACKAGES=${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}
 
 INSTALL_RPM=${INSTALL_RPM}
 
