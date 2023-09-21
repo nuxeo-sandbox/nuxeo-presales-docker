@@ -267,7 +267,8 @@ EOF
 # Make sure we always have a UI installed
 AUTO_PACKAGES="nuxeo-web-ui"
 # Auto install Nuxeo Explorer because the website is unusable
-AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
+# TODO: Uncomment when platform-explorer is actually available for LTS 2023...
+# AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 
 # Write environment file
 cat << EOF > ${NX_STUDIO}/.env
