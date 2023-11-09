@@ -72,7 +72,7 @@ USER 900
 
 # (Optional) Install node.js and tools
 #RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash && \
-#    source ~/.bash_profile && nvm install ${NODE_VERSION} && npm install -g @shopify/screenshot-glb obj2gltf gltf-pipeline
+#    source ~/.bash_profile && nvm install ${NODE_VERSION} && npm install -g @shopify/screenshot-glb obj2gltf gltf-pipeline @gltf-transform/cli
 
 # Workaround to make the node commands available in the default system PATH used by Java
 #USER 0
@@ -80,6 +80,7 @@ USER 900
 #RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/screenshot-glb /usr/local/bin/screenshot-glb
 #RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/obj2gltf /usr/local/bin/obj2gltf
 #RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/gltf-pipeline /usr/local/bin/gltf-pipeline
+#RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/gltf-transform /usr/local/bin/gltf-transform
 #USER 900
 
 # Install packages at build time
