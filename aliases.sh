@@ -41,3 +41,6 @@ alias nxctl-restart='nx exec COMMAND="nuxeoctl restart"'
 alias nxctl-mp-list='nx exec COMMAND="nuxeoctl mp-list"'
 alias nxctl-showconf='nx exec COMMAND="nuxeoctl showconf"'
 alias nxctl-tail='nx exec COMMAND="tail -f /var/log/nuxeo/server.log"'
+
+# Workaround to run 2021 on Apple Silicon
+alias dockeremu='docker run --privileged --rm tonistiigi/binfmt --uninstall \* && docker run --privileged --rm tonistiigi/binfmt --install all'
