@@ -257,8 +257,11 @@ cat << EOF > ${NX_STUDIO}/conf/system.conf
 session.timeout=600
 nuxeo.url=http://${FQDN}:8080/nuxeo
 
+# WebUI
 # Enable "select all" by default
 nuxeo.selection.selectAllEnabled=true
+# Fix WEBUI-976
+nuxeo.analytics.documentDistribution.disableThreshold=10000
 
 # Templates
 nuxeo.templates=default,mongodb
