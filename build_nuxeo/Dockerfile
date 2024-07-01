@@ -65,6 +65,8 @@ RUN usermod -aG 998 nuxeo
 # Set back original (nuxeo) user
 USER 900
 
+# (Optional) Enable cors to be used in api-playground.
+COPY cors_config/cors-config.xml /opt/nuxeo/server/nxserver/config/cors-config.xml
 # (Optional) Include the google credentials.
 # Replace the filename with your value
 # COPY google-credential.json /opt/nuxeo/google-credential.json

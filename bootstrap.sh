@@ -1,11 +1,11 @@
 #!/bin/bash
 
-REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
+REPO="https://github.com/nuxeo/nuxeo-devops-demo-site.git"
 BRANCH="master"
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
 LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2023"
 
-MONGO_VERSION="6.0"
+#MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.11"
 
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
@@ -243,7 +243,7 @@ if [ "$BRANCH" = "master" ]
 then
   git clone ${REPO} ${NX_STUDIO}
 else
-  echo "Using nuxeo-presales-docker branch ${BRANCH}"
+  echo "Using nuxeo-devops-demo-site branch ${BRANCH}"
   git clone -b ${BRANCH} ${REPO} ${NX_STUDIO}
 fi
 
@@ -255,7 +255,7 @@ echo ""
 cat << EOF > ${NX_STUDIO}/conf/system.conf
 # Host Configuration
 session.timeout=600
-nuxeo.url=http://${FQDN}:8080/nuxeo
+nuxeo.url=http://${FQDN}:18080/nuxeo
 
 # WebUI
 # Enable "select all" by default
@@ -264,11 +264,14 @@ nuxeo.selection.selectAllEnabled=true
 nuxeo.analytics.documentDistribution.disableThreshold=10000
 
 # Templates
-nuxeo.templates=default,mongodb
+nuxeo.templates=default
 EOF
 
 # Make sure we always have a UI installed
 AUTO_PACKAGES="nuxeo-web-ui"
+
+# nuxeo-showcase-content for demo site
+DEMO_PACKAGES="nuxeo-showcase-content"
 # Auto install Nuxeo Explorer because the website is unusable
 # TODO: Uncomment when platform-explorer is actually available for LTS 2023...
 # AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
@@ -283,12 +286,11 @@ NUXEO_IMAGE=${FROM_IMAGE}
 CONNECT_URL=https://connect.nuxeo.com/nuxeo/site/
 
 NUXEO_DEV=true
-NUXEO_PORT=8080
-NUXEO_PACKAGES=${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}
+NUXEO_PORT=18080
+NUXEO_PACKAGES=${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${DEMO_PACKAGES} ${NUXEO_PACKAGES:-}
 
 INSTALL_RPM=${INSTALL_RPM}
 
-MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
 OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
 
@@ -329,7 +331,7 @@ echo ""
 
 # Display a sharable config
 echo "> Share your configuration:"
-echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${BRANCH}/bootstrap.sh)\""
+echo "IMAGE_TYPE=${IMAGE_TYPE} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo/nuxeo-devops-demo-site/${BRANCH}/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions

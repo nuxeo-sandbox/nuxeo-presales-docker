@@ -11,11 +11,10 @@ services:
         - "NUXEO_IMAGE=${NUXEO_IMAGE}"
     env_file:
       - ./.env
-    image: presales-nuxeo-${PROJECT_NAME}
+    image: nuxeo-devops-demo-${PROJECT_NAME}
     hostname: nuxeo
     restart: unless-stopped
     depends_on:
-      - mongo
       - opensearch
     expose:
       # Webservice Port
@@ -25,7 +24,7 @@ services:
       # JMX port
       - 1089
     ports:
-      - "${NUXEO_PORT}:8080"
+      - "${NUXEO_PORT}:18080"
       - "8787:8787"
       - "1089:1089"
     volumes:
@@ -37,24 +36,24 @@ services:
       # - ./nuxeo_store:/opt/nuxeo/server/packages/store
       # Makes things pretty slow, uncomment with caution; useful for debugging
       # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
-  mongo:
-    image: mongo:${MONGO_VERSION}
-    hostname: mongo
-    restart: unless-stopped
-    healthcheck:
-      test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
-      interval: 1m
-      timeout: 30s
-      retries: 10
-      start_period: 15s
-    expose:
-      # Mongo connection
-      - 27017
+#  mongo:
+#    image: mongo:${MONGO_VERSION}
+#    hostname: mongo
+#    restart: unless-stopped
+#    healthcheck:
+#      test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
+#      interval: 1m
+#      timeout: 30s
+#      retries: 10
+#      start_period: 15s
+#    expose:
+#      # Mongo connection
+#      - 27017
     # Uncomment the following block if you require host-level access to MongoDB
     #ports:
     #  - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
+#    volumes:
+#      - mongo-data:/data/db
   opensearch:
     build:
       context: .
@@ -63,7 +62,7 @@ services:
         - "OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}"
     env_file:
       - ./.env
-    image: presales-opensearch-${PROJECT_NAME}
+    image: nuxeo-devops-demo-${PROJECT_NAME}
     hostname: opensearch
     restart: unless-stopped
     healthcheck:
@@ -114,4 +113,4 @@ services:
       - "5601:5601"
 volumes:
   opensearch-data:
-  mongo-data:
+#  mongo-data:
