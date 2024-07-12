@@ -33,8 +33,6 @@ services:
       - ./conf:/etc/nuxeo/conf.d/:ro
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
-      # Optional, makes container startup faster after the first time
-      # - ./nuxeo_store:/opt/nuxeo/server/packages/store
       # Makes things pretty slow, uncomment with caution; useful for debugging
       # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
   mongo:
