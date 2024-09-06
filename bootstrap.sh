@@ -299,11 +299,11 @@ AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 
 if ${INSTALL_PACKAGES}
 then
-  ENV_BUILD_PACKAGES=${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}
-  ENV_NUXEO_PACKAGES=${STUDIO_PACKAGE}
+  ENV_BUILD_PACKAGES="${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
+  ENV_NUXEO_PACKAGES="${STUDIO_PACKAGE}"
 else
-  ENV_BUILD_PACKAGES=${AUTO_PACKAGES}
-  ENV_NUXEO_PACKAGES=${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}
+  ENV_BUILD_PACKAGES="${AUTO_PACKAGES}"
+  ENV_NUXEO_PACKAGES="${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}"
 fi
 
 # Write environment file
@@ -367,7 +367,7 @@ echo ""
 
 # Display a sharable config
 echo "Share your configuration:"
-echo "INSTALL_PACKAGES={$INSTALL_PACKAGES} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${BRANCH}/bootstrap.sh)\""
+echo "INSTALL_PACKAGES=${INSTALL_PACKAGES} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${BRANCH}/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions
