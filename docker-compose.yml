@@ -7,7 +7,7 @@ services:
         - "INSTALL_RPM=${INSTALL_RPM}"
         - "CONNECT_URL=${CONNECT_URL}"
         - "NUXEO_CLID=${NUXEO_CLID}"
-        - "NUXEO_PACKAGES=${NUXEO_PACKAGES}"
+        - "BUILD_PACKAGES=${BUILD_PACKAGES}"
         - "NUXEO_IMAGE=${NUXEO_IMAGE}"
     env_file:
       - ./.env

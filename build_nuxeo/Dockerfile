@@ -10,7 +10,7 @@ FROM ${NUXEO_IMAGE}
 # !!! DO NOT CHANGE BELOW THIS LINE !!!
 ARG CONNECT_URL
 ARG NUXEO_CLID
-ARG NUXEO_PACKAGES
+ARG BUILD_PACKAGES
 ARG NUXEO_HOME
 ARG INSTALL_RPM
 
@@ -84,7 +84,7 @@ USER 900
 #USER 900
 
 # Install packages at build time
-RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${NUXEO_PACKAGES}
+RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${BUILD_PACKAGES}
 # Install a local package without its dependencies (`mp-install --nodeps`)
 # RUN /install-packages.sh --offline ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # Install remote packages and a local package with its dependencies

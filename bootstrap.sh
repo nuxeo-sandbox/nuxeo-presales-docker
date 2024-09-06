@@ -102,6 +102,31 @@ then
   echo "Using Nuxeo Studio package: ${STUDIO_PACKAGE}"
 fi
 
+# Prompt for packages in build
+INSTALL_PACKAGES_DEFAULT=false
+INSTALL_PACKAGES="${INSTALL_PACKAGES:-}"
+if [ -z "${INSTALL_PACKAGES}" ]
+then
+  while true
+  do
+    read -p "Do you want to install packages at build time? [${INSTALL_PACKAGES_DEFAULT}]: " INSTALL_PACKAGES
+    # If not specified, use default
+    if [ -z "${INSTALL_PACKAGES}" ]; then
+        INSTALL_PACKAGES=${INSTALL_PACKAGES_DEFAULT}
+    fi
+
+    # Restrict input to 'true' or 'false'
+    case "${INSTALL_PACKAGES}" in
+      true|false)
+        break
+        ;;
+      *)
+        echo "Invalid input. Please enter 'true' or 'false', or you can press Enter to accept the default (${INSTALL_PACKAGES_DEFAULT})."
+        ;;
+    esac
+  done
+fi
+
 # Prompt for host name
 FQDN="${FQDN:-}"
 if [ -z "${FQDN}" ]
@@ -269,8 +294,17 @@ EOF
 
 # Make sure we always have a UI installed
 AUTO_PACKAGES="nuxeo-web-ui"
-# Auto install Nuxeo Explorer because the website is unusable
+# Auto install Nuxeo Explorer because the website is often unusable
 AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
+
+if ${INSTALL_PACKAGES}
+then
+  ENV_BUILD_PACKAGES=${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}
+  ENV_NUXEO_PACKAGES=${STUDIO_PACKAGE}
+else
+  ENV_BUILD_PACKAGES=${AUTO_PACKAGES}
+  ENV_NUXEO_PACKAGES=${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}
+fi
 
 # Write environment file
 cat << EOF > ${NX_STUDIO}/.env
@@ -283,7 +317,12 @@ CONNECT_URL=https://connect.nuxeo.com/nuxeo/site/
 
 NUXEO_DEV=true
 NUXEO_PORT=8080
-NUXEO_PACKAGES=${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}
+
+# These packages will be included in the custom image build
+BUILD_PACKAGES=${ENV_BUILD_PACKAGES}
+
+# These packages will be installed at startup
+NUXEO_PACKAGES=${ENV_NUXEO_PACKAGES}
 
 INSTALL_RPM=${INSTALL_RPM}
 
