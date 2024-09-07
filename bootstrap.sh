@@ -276,6 +276,8 @@ mkdir -p ${NX_STUDIO}/conf
 cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
 echo ""
 
+TEMPLATES="default,mongodb"
+
 # Write system configuration
 cat << EOF > ${NX_STUDIO}/conf/system.conf
 # Host Configuration
@@ -289,7 +291,7 @@ nuxeo.selection.selectAllEnabled=true
 nuxeo.analytics.documentDistribution.disableThreshold=10000
 
 # Templates
-nuxeo.templates=default,mongodb
+nuxeo.append.templates.system=${TEMPLATES}
 EOF
 
 # Make sure we always have a UI installed
