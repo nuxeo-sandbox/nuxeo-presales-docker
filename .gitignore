@@ -17,3 +17,4 @@ nuxeo_war
 
 # Stuff for dev
 .yo-rc.json
+sh.sh
