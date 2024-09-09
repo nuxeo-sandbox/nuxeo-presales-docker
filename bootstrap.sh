@@ -1,9 +1,8 @@
 #!/bin/bash
 
-REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
-BRANCH="master"
-DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
-LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2023"
+NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
+NPD_BRANCH="master"
+NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
 
 MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.11"
@@ -38,7 +37,7 @@ fi
 while getopts b: flag
 do
   case "${flag}" in
-    b) BRANCH=${OPTARG};;
+    b) NPD_BRANCH=${OPTARG};;
   esac
 done
 
@@ -139,69 +138,24 @@ then
   FQDN="localhost"
 fi
 
-# Choose image
-# Cloud image is deprecated, just default to LTS
-IMAGE_TYPE="LTS"
-AUTO_IMAGE=""
-FROM_IMAGE=""
-if [ -z "${IMAGE_TYPE}" ]
-then
-  echo "Which image? (LTS requires a Nuxeo Docker login)"
-  select lc in "Latest" "LTS"
-  do
-      if [[ "$lc" == "LTS" || "$lc" == "2" ]] || [[ "$lc" == "Latest" || "$lc" == "1" ]]
-      then
-          break
-      fi
-  done
-else
-  lc=${IMAGE_TYPE}
-  AUTO_IMAGE="y"
-fi
-lc=$(echo "${lc}" | awk '{print tolower($0)}')
-if [[ "$lc" == "lts" || "$lc" == "2" ]]
-then
-  echo "LTS selected"
-  FROM_IMAGE=${LTS_IMAGE}
-  IMAGE_TYPE="lts"
-elif [[ "$lc" == "latest" || "$lc" == "1" ]]
-then
-  echo "Latest selected"
-  FROM_IMAGE=${LATEST_IMAGE}
-  IMAGE_TYPE="latest"
-else
-  echo "Invalid image type '${lc}', using Latest image"
-  FROM_IMAGE=${LATEST_IMAGE}
-  IMAGE_TYPE="latest"
-fi
-
-export FROM_IMAGE
+export NUXEO_IMAGE
 echo ""
-echo "Using Image: ${FROM_IMAGE}"
+echo "Using Image: ${NUXEO_IMAGE}"
 
-# Check Docker repo configuration
-if [[ "${FROM_IMAGE}" == "${LTS_IMAGE}" ]]
+# If the Nuxeo image is private, need Docker login.
+DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
+if [[ "${NUXEO_IMAGE}" == "${DOCKER_PRIVATE}"* ]]
 then
+  # Check to see if user already has saved credentials
   grep -q ${DOCKER_PRIVATE} ${HOME}/.docker/config.json
   FOUND=$?
-  DOCKER=""
-  if [ -z "${AUTO_IMAGE}" ] && [[ "${FOUND}" == "0" ]]
-  then
-    echo -n "Docker login found.  Would you like to use the existing credentials? y/n [y]: "
-    read DOCKER
-  fi
-  if [[ ${FOUND} == "0" ]] && [[ "${DOCKER}" == "n" || "${DOCKER}" == "N" ]]
-  then
-    FOUND="1"
-  fi
   if [[ "${FOUND}" != "0" ]]
   then
-    echo "Please provide your login credentials for ${DOCKER_PRIVATE}:"
     docker login ${DOCKER_PRIVATE}
-    EXEC=$?
-    if [[ "${EXEC}" != "0" ]]
+    DOCKER_LOGIN_OK=$?
+    if [[ "${DOCKER_LOGIN_OK}" != "0" ]]
     then
-      echo "Unable to complete docker login :-("
+      echo "Unable to complete docker login"
       exit 1
     fi
   fi
@@ -264,12 +218,12 @@ done
 echo ""
 echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
 
-if [ "$BRANCH" = "master" ]
+if [ "$NPD_BRANCH" = "master" ]
 then
-  git clone ${REPO} ${NX_STUDIO}
+  git clone ${NPD_REPO} ${NX_STUDIO}
 else
-  echo "Using nuxeo-presales-docker branch ${BRANCH}"
-  git clone -b ${BRANCH} ${REPO} ${NX_STUDIO}
+  echo "Using nuxeo-presales-docker branch ${NPD_BRANCH}"
+  git clone -b ${NPD_BRANCH} ${NPD_REPO} ${NX_STUDIO}
 fi
 
 mkdir -p ${NX_STUDIO}/conf
@@ -313,7 +267,7 @@ cat << EOF > ${NX_STUDIO}/.env
 APPLICATION_NAME=${NX_STUDIO}
 PROJECT_NAME=${PROJECT_NAME}
 
-NUXEO_IMAGE=${FROM_IMAGE}
+NUXEO_IMAGE=${NUXEO_IMAGE}
 
 CONNECT_URL=https://connect.nuxeo.com/nuxeo/site/
 
@@ -342,7 +296,7 @@ cd ${NX_STUDIO}
 
 # Pull images
 echo "Please wait, getting things ready..."
-docker pull --quiet ${FROM_IMAGE}
+docker pull --quiet ${NUXEO_IMAGE}
 echo " pulling other services..."
 docker compose pull
 echo ""
@@ -369,7 +323,7 @@ echo ""
 
 # Display a sharable config
 echo "Share your configuration:"
-echo "INSTALL_PACKAGES=${INSTALL_PACKAGES} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${BRANCH}/bootstrap.sh)\""
+echo "INSTALL_PACKAGES=${INSTALL_PACKAGES} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${NPD_BRANCH}/bootstrap.sh)\""
 echo ""
 
 # Display startup instructions
