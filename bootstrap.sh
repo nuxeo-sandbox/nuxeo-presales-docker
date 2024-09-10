@@ -351,6 +351,12 @@ echo
 docker compose build
 
 echo
-echo "!!! All done !!!"
-echo
+echo "================================================================================"
+echo "Installation complete."
+echo "================================================================================"
 
+echo
+echo "See https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki for docs. Hint: "
+echo
+echo "cd ${NX_STUDIO} && docker compose up -d"
+echo
