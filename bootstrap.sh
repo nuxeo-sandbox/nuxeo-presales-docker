@@ -5,8 +5,6 @@
 # ==============================================================================
 
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
-# Allow passing NPD branch as a param.
-NPD_BRANCH=${NPD_BRANCH:-master}
 NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
 MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.11"
@@ -38,7 +36,12 @@ then
   exit 2
 fi
 
-# Allow use of a different branch, useful for testing
+# Allow use of a different branch, useful for testing, default is `master`.
+
+# Allow passing NPD branch as a param.
+NPD_BRANCH=${NPD_BRANCH:-master}
+
+# Allow use of a different branch with a flag.
 while getopts b: flag
 do
   case "${flag}" in
@@ -178,8 +181,6 @@ done
 # Other params
 # ==============================================================================
 
-
-
 # This value is appended to custom image names.
 PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
 
@@ -207,6 +208,7 @@ echo "Here's what will happen next:"
 echo
 echo "* Scaffold a folder for your stack"
 echo "* Pull docker images"
+echo "* Generate CLID"
 echo "* Build custom images"
 
 echo
