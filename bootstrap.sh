@@ -2,7 +2,7 @@
 
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 NPD_BRANCH="master"
-NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
+NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023.6"
 
 MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.11"
