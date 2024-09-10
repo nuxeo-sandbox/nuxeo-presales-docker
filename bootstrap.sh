@@ -5,7 +5,8 @@
 # ==============================================================================
 
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
-NPD_BRANCH="master"
+# Allow passing NPD branch as a param.
+NPD_BRANCH=${NPD_BRANCH:-master}
 NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
 MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.11"
@@ -176,6 +177,8 @@ done
 # ==============================================================================
 # Other params
 # ==============================================================================
+
+
 
 # This value is appended to custom image names.
 PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
