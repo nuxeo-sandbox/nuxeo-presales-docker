@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Manually generate and add NUXEO_CLID to the .env file for use when building images or 
-# starting the Nuxeo runtime.  Use with caution, as the automated install may have already
-# set the NUXEO_CLID value.
+# Generate NUXEO_CLID and add to the .env file.
 
 set -euf
 
