@@ -1,17 +1,21 @@
 #!/bin/bash
 
+# ==============================================================================
+# Bootstrap script to create a docker compose tooling for Nuxeo.
+# ==============================================================================
+
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 NPD_BRANCH="master"
 NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
-
 MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.11"
-
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
+INSTALL_RPM="" # TODO: this isn' used. It's kind of an advanced topic though, so maybe that's ok.
+CONNECT_URL="https://connect.nuxeo.com/nuxeo/site/"
 
-CHECKS=()
 # Check for commands used in this script
+CHECKS=()
 command -v awk >/dev/null || CHECKS+=("awk")
 command -v make >/dev/null || CHECKS+=("make")
 command -v envsubst >/dev/null || CHECKS+=("envsubst")
@@ -41,67 +45,29 @@ do
   esac
 done
 
-# Directions for image setup
-cat << EOM
- _ __  _   ___  _____  ___
-| '_ \| | | \ \/ / _ \/ _ \\
-| | | | |_| |>  <  __/ (_) |
-|_| |_|\__,_/_/\_\___|\___/
+# ==============================================================================
+# User inputs
+# ==============================================================================
 
-Nuxeo Docker Compose Bootstrap
-
-Requirements:
-
-* A Nuxeo Connect Account (https://connect.nuxeo.com/)
-* A Nuxeo Connect token (https://connect.nuxeo.com/nuxeo/site/connect/tokens)
-* A Nuxeo Studio project id
-* Sonatype User Token credentials (https://packages.nuxeo.com/#user/usertoken)
-
-If you are on a Mac, you have the option to save your Connect Token in your
-Keychain. If you do so, note that a dialog box will pop up to verify credential
-access whenever you use this script.
-
-This script builds a custom Nuxeo docker image. This may consume a lot of
-bandwidth and may take a bit of time. Please be patient. At the end of the
-script, additional instructions will be displayed.
-
-EOM
-
-# Prompt for studio project name
+# Studio Project
+# ==============
 NX_STUDIO="${NX_STUDIO:-}"
-INSTALL_RPM=""
+# Required, loop until we get a value.
 while [ -z "${NX_STUDIO}" ]
 do
   echo -n "Studio Project ID: "
   read NX_STUDIO
 done
 
+# We don't want to run this script on existing folders...
 if [ -e ${NX_STUDIO} ]
 then
   echo "Hmm, the directory ${PWD}/${NX_STUDIO} already exists.  I'm going to exit and let you sort that out."
   exit 3
 fi
 
-# Prompt for project version
-PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
-STUDIO_PACKAGE=""
-NX_STUDIO_VER="${NX_STUDIO_VER:-}"
-if [ -z "${NX_STUDIO_VER}" ]
-then
-  echo -n "Version: [0.0.0-SNAPSHOT] "
-  read NX_STUDIO_VER
-fi
-if [ -z "${NX_STUDIO_VER}" ]
-then
-  NX_STUDIO_VER="0.0.0-SNAPSHOT"
-fi
-if [ -n "${NX_STUDIO}" ]
-then
-  STUDIO_PACKAGE="${NX_STUDIO}-${NX_STUDIO_VER}"
-  echo "Using Nuxeo Studio package: ${STUDIO_PACKAGE}"
-fi
-
-# Prompt for packages in build
+# Install Packages at build time?
+# ===============================
 INSTALL_PACKAGES_DEFAULT=false
 INSTALL_PACKAGES="${INSTALL_PACKAGES:-}"
 if [ -z "${INSTALL_PACKAGES}" ]
@@ -126,22 +92,12 @@ then
   done
 fi
 
-# Prompt for host name
-FQDN="${FQDN:-}"
-if [ -z "${FQDN}" ]
-then
-  echo -n "Hostname: [localhost] "
-  read FQDN
-fi
-if [ -z "${FQDN}" ]
-then
-  FQDN="localhost"
-fi
+# ==============================================================================
+# Credentials
+# ==============================================================================
 
-export NUXEO_IMAGE
-echo ""
-echo "Using Image: ${NUXEO_IMAGE}"
-
+# Nexus
+# =====
 # If the Nuxeo image is private, need Docker login.
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
 if [[ "${NUXEO_IMAGE}" == "${DOCKER_PRIVATE}"* ]]
@@ -161,7 +117,8 @@ then
   fi
 fi
 
-# Prompt for Studio Login
+# NOS
+# ===
 STUDIO_USERNAME=${STUDIO_USERNAME:-}
 while [ -z "${STUDIO_USERNAME}" ]
 do
@@ -169,7 +126,7 @@ do
   read STUDIO_USERNAME
 done
 
-# Check to see if password exists
+# Get Studio token from KeyChain on macOs
 MACFOUND="false"
 if [[ "${OSTYPE}" == "darwin"* ]]
 then
@@ -184,6 +141,7 @@ then
   fi
 fi
 
+# Save Studio token to Keychain on macOS
 if [[ "${MACFOUND}" == "false" && "${OSTYPE}" == "darwin"* ]]
 then
   echo -n "Save the Nuxeo Studio token in your keychain? y/n [y]: "
@@ -206,6 +164,7 @@ then
   fi
 fi
 
+# If all else fails, just ask the user to enter the token
 CREDENTIALS=${CREDENTIALS:-}
 while [ -z "${CREDENTIALS}" ]
 do
@@ -214,25 +173,71 @@ do
   echo ""
 done
 
-# Create project folder
-echo ""
-echo "Cloning configuration: ${PWD}/${NX_STUDIO}"
+# ==============================================================================
+# Other params
+# ==============================================================================
 
-if [ "$NPD_BRANCH" = "master" ]
+# This value is appended to custom image names.
+PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
+
+# Host
+# ====
+FQDN="${FQDN:-}"
+if [ -z "${FQDN}" ]
 then
-  git clone ${NPD_REPO} ${NX_STUDIO}
-else
-  echo "Using nuxeo-presales-docker branch ${NPD_BRANCH}"
-  git clone -b ${NPD_BRANCH} ${NPD_REPO} ${NX_STUDIO}
+  FQDN="localhost"
 fi
 
+# ==============================================================================
+# Summarize
+# ==============================================================================
+
+echo
+echo "Studio project:        ${NX_STUDIO}"
+echo "Build-time Packages?:  ${INSTALL_PACKAGES}"
+echo "Nuxeo Image:           ${NUXEO_IMAGE}"
+echo "Studio Username:       ${STUDIO_USERNAME}"
+echo "NPD Branch:            ${NPD_BRANCH}"
+
+echo
+echo "Here's what will happen next:"
+echo
+echo "* Scaffold a folder for your stack"
+echo "* Pull docker images"
+echo "* Build custom images"
+
+echo
+read -p "Ready? (y|n) [y]: " response
+response=${response:-y}
+if [[ "$response" != "y" ]]
+then
+  exit 0
+fi
+
+echo
+echo "Please wait, getting things ready..."
+
+# ==============================================================================
+# Do the things
+# ==============================================================================
+
+# Clone NPD to scaffold project folder...
+echo
+echo "================================================================================"
+echo "Scaffolding stack folder..."
+echo "================================================================================"
+echo
+git clone -b ${NPD_BRANCH} ${NPD_REPO} ${NX_STUDIO}
+
+# Install conf files
+# ==================
 mkdir -p ${NX_STUDIO}/conf
 cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
-echo ""
 
+# These templates are required for our stack.
 TEMPLATES="default,mongodb"
 
-# Write system configuration
+# Scaffold system.conf
 cat << EOF > ${NX_STUDIO}/conf/system.conf
 # Host Configuration
 session.timeout=600
@@ -248,28 +253,31 @@ nuxeo.analytics.documentDistribution.disableThreshold=10000
 nuxeo.append.templates.system=${TEMPLATES}
 EOF
 
+# Install .env
+# ============
 # Make sure we always have a UI installed
 AUTO_PACKAGES="nuxeo-web-ui"
 # Auto install Nuxeo Explorer because the website is often unusable
 AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 
+# Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
 then
-  ENV_BUILD_PACKAGES="${STUDIO_PACKAGE} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
-  ENV_NUXEO_PACKAGES="${STUDIO_PACKAGE}"
+  ENV_BUILD_PACKAGES="${NX_STUDIO} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
+  ENV_NUXEO_PACKAGES="${NX_STUDIO}"
 else
   ENV_BUILD_PACKAGES="${AUTO_PACKAGES}"
-  ENV_NUXEO_PACKAGES="${STUDIO_PACKAGE} ${NUXEO_PACKAGES:-}"
+  ENV_NUXEO_PACKAGES="${NX_STUDIO} ${NUXEO_PACKAGES:-}"
 fi
 
-# Write environment file
+# Write .env file
 cat << EOF > ${NX_STUDIO}/.env
 APPLICATION_NAME=${NX_STUDIO}
 PROJECT_NAME=${PROJECT_NAME}
 
 NUXEO_IMAGE=${NUXEO_IMAGE}
 
-CONNECT_URL=https://connect.nuxeo.com/nuxeo/site/
+CONNECT_URL=${CONNECT_URL}
 
 NUXEO_DEV=true
 NUXEO_PORT=8080
@@ -291,18 +299,32 @@ STUDIO_USERNAME=${STUDIO_USERNAME}
 STUDIO_CREDENTIALS=${CREDENTIALS}
 EOF
 
-# Run everything in NX_STUDIO dir
+# Run commands
+# ============
+
+# Run everything in project dir
 cd ${NX_STUDIO}
 
 # Pull images
-echo "Please wait, getting things ready..."
-docker pull --quiet ${NUXEO_IMAGE}
-echo " pulling other services..."
+echo
+echo "================================================================================"
+echo "Pulling ${NUXEO_IMAGE}..."
+echo "================================================================================"
+echo
+docker pull ${NUXEO_IMAGE}
+
+echo
+echo "================================================================================"
+echo "Pulling other images..."
+echo "================================================================================"
+echo
 docker compose pull
-echo ""
 
 # Generate CLID
+echo "================================================================================"
 echo "Generating CLID..."
+echo "================================================================================"
+echo
 ./generate_clid.sh
 EC=$?
 if [[ "${EC}" == "1" ]]
@@ -314,21 +336,16 @@ then
   echo "Your studio token does not appear to be correct.  Please check and try again."
   exit 2
 fi
-echo ""
 
-# Build image (may use CLID generated in previous step)
+# Build images
+echo
+echo "================================================================================"
 echo "Building your custom image(s)..."
+echo "================================================================================"
+echo
 docker compose build
-echo ""
 
-# Display a sharable config
-echo "Share your configuration:"
-echo "INSTALL_PACKAGES=${INSTALL_PACKAGES} NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} NX_STUDIO_VER=${NX_STUDIO_VER} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/${NPD_BRANCH}/bootstrap.sh)\""
-echo ""
+echo
+echo "!!! All done !!!"
+echo
 
-# Display startup instructions
-make -e info
-if [ -e notes.txt ]
-then
-  cat notes.txt
-fi
