@@ -2,7 +2,9 @@
 # Make changes only between the specified section
 # Upstream image is Rocky Linux 9
 
-ARG NUXEO_IMAGE
+# ARG used by FROM should always have a default value that makes the build valid.
+# https://docs.docker.com/reference/build-checks/invalid-default-arg-in-from/
+ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023
 
 # Change the source image, if necessary
 FROM ${NUXEO_IMAGE}
