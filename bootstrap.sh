@@ -7,7 +7,7 @@
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
 MONGO_VERSION="6.0"
-OPENSEARCH_VERSION="1.3.11"
+OPENSEARCH_VERSION="1.3.19"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
 INSTALL_RPM="" # TODO: this isn' used. It's kind of an advanced topic though, so maybe that's ok.
