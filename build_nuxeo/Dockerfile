@@ -16,8 +16,8 @@ ARG BUILD_PACKAGES
 ARG NUXEO_HOME
 ARG INSTALL_RPM
 
-ARG NVM_VERSION=0.39.3
-ARG NODE_VERSION=18.17.0
+ARG NVM_VERSION=0.40.1
+ARG NODE_VERSION=20.18.0
 
 # We need to be root to run yum commands
 USER 0
@@ -27,23 +27,24 @@ ENV LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8"
 
-# Install FFmpeg, mediainfo and codecs
-RUN dnf config-manager --set-enabled crb && dnf -y install epel-release && \
-    dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
-    dnf -y install mediainfo ffmpeg x264 x265 opus flac libvpx && dnf --enablerepo=crb -y install libvorbis-devel
+# Install repos
+RUN dnf -y install epel-release && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+RUN dnf config-manager --enable ol9_codeready_builder
 
 # Install Fonts
 RUN dnf -y install google-noto-sans-cjk-jp-fonts
 
-# Install newest version of imagemagick and icc color profiles
-# RUN dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm \
-#    && dnf --enablerepo=remi -y install ImageMagick7
+# Install additional packages
+RUN dnf -y install mediainfo
 
-#Install codecs for Imagemagick
-RUN dnf -y install librsvg2-tools && dnf --enablerepo=devel -y install libwebp-tools
+#Install ffmpeg and codecs
+RUN dnf -y install ffmpeg x264 x265 opus libvpx flac libvorbis-devel
+
+#Install latest Imagemagick and codecs
+# RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools
 
 # Dependencies for GLB thumbnail generation
-#RUN dnf -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
+# RUN dnf -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
 
 # Add additional RPMs to the source image
 RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
