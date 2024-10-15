@@ -1,6 +1,6 @@
 # Please take note of the inline directives.
 # Make changes only between the specified section
-# Upstream image is Rocky Linux 9
+# Upstream image is Oracle Linux 9 (https://jira.nuxeo.com/browse/NXP-32711)
 
 # ARG used by FROM should always have a default value that makes the build valid.
 # https://docs.docker.com/reference/build-checks/invalid-default-arg-in-from/
