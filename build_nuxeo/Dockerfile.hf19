@@ -1,12 +1,12 @@
 # Please take note of the inline directives.
 # Make changes only between the specified section.
 
-# For Nuxeo Server 2023.20 and higher, upstream image uses Oracle Linux 9
+# For Nuxeo Server <= 2023.19, upstream image uses Rocky Linux 9
 # See https://jira.nuxeo.com/browse/NXP-32711
 
 # ARG used by FROM should always have a default value that makes the build valid.
 # https://docs.docker.com/reference/build-checks/invalid-default-arg-in-from/
-ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023
+ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023.19
 
 # Change the source image, if necessary
 FROM ${NUXEO_IMAGE}
@@ -30,24 +30,23 @@ ENV LANG="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8"
 
 # ==============================================================================
-# For Oracle Linux, Nuxeo Server 2023.20+
+# For Rocky Linux, Nuxeo Server <=2023.19
 # ==============================================================================
 
-# Install repos
-RUN dnf -y install epel-release && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm
-RUN dnf config-manager --enable ol9_codeready_builder
+# Install FFmpeg, mediainfo and codecs
+RUN dnf config-manager --set-enabled crb && dnf -y install epel-release && \
+    dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
+    dnf -y install mediainfo ffmpeg x264 x265 opus flac libvpx && dnf --enablerepo=crb -y install libvorbis-devel
 
-# Install additional packages
-RUN dnf -y install mediainfo
+# Install newest version of imagemagick and icc color profiles
+# RUN dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm \
+#    && dnf --enablerepo=remi -y install ImageMagick7
 
-#Install ffmpeg and codecs
-RUN dnf -y install ffmpeg x264 x265 opus libvpx flac libvorbis-devel
-
-#Install latest Imagemagick and codecs
-#RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools
+#Install codecs for Imagemagick
+RUN dnf -y install librsvg2-tools && dnf --enablerepo=devel -y install libwebp-tools
 
 # ==============================================================================
-# End Oracle Linux stuff
+# End Rocky Linux stuff
 # ==============================================================================
 
 # Install Fonts

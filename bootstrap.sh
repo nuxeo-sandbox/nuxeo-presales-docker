@@ -20,6 +20,9 @@ command -v make >/dev/null || CHECKS+=("make")
 command -v envsubst >/dev/null || CHECKS+=("envsubst")
 command -v git >/dev/null || CHECKS+=("git")
 command -v docker >/dev/null || CHECKS+=("docker")
+command -v sort >/dev/null || CHECKS+=("sort")
+command -v head >/dev/null || CHECKS+=("head")
+command -v sed >/dev/null || CHECKS+=("sed")
 
 if [ $CHECKS ]
 then
@@ -205,6 +208,26 @@ fi
 # Full identifier for Nuxeo Server docker image.
 NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 
+# If no HF level is specified, just use latest Dockerfile.
+if [[ $nx_version == "2023" ]]
+then
+  DOCKERFILE="build_nuxeo/Dockerfile"
+fi
+
+# If HF level has been specified we need to select the correct Dockerfile.
+if [ -z "${DOCKERFILE}" ]
+then
+  # If Nuxeo verion is 2023.19 or earlier, use Rocky Linux Dockerfile
+  TARGET_VERSION="2023.19"
+  # Compare the two versions using sort (code from ChatGPT)
+  if [ "$(printf '%s\n' "$nx_version" "$TARGET_VERSION" | sort -V | head -n 1)" = "$nx_version" ]; then
+    DOCKERFILE="build_nuxeo/Dockerfile.hf19"
+  else
+    DOCKERFILE="build_nuxeo/Dockerfile"
+  fi
+fi
+
+
 # ==============================================================================
 # Summarize
 # ==============================================================================
@@ -216,6 +239,7 @@ echo "Build-time Packages?:  ${INSTALL_PACKAGES}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
 echo "Studio Username:       ${STUDIO_USERNAME}"
 echo "NPD Branch:            ${NPD_BRANCH}"
+echo "Dockerfile:            ${DOCKERFILE}"
 
 echo
 echo "Here's what will happen next:"
@@ -317,6 +341,10 @@ FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
 STUDIO_CREDENTIALS=${CREDENTIALS}
 EOF
+
+# Use correct Dockerfile for Oracle vs Rocky Linux
+# Use sed to replace the value of 'dockerfile' for Nuxeo with the new value (for macOS)
+sed -i '' "s|dockerfile: build_nuxeo/Dockerfile|dockerfile: $DOCKERFILE|" "${NX_STUDIO}/docker-compose.yml"
 
 # Run commands
 # ============
