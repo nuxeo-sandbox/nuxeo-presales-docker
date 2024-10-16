@@ -5,7 +5,7 @@
 # ==============================================================================
 
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
-NUXEO_IMAGE="docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023"
+NUXEO_IMAGE_PREFIX="docker-private.packages.nuxeo.com/nuxeo/nuxeo:"
 MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.19"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
@@ -52,6 +52,16 @@ done
 # ==============================================================================
 # User inputs
 # ==============================================================================
+
+# Nuxeo Version
+# =============
+NX_VERSION_DEFAULT="2023"
+nx_version="${NX_VERSION:-}"
+if [ -z "${nx_version}" ]
+then
+  read -p "Nuxeo Version [${NX_VERSION_DEFAULT}]: " nx_version
+  nx_version=${nx_version:-${NX_VERSION_DEFAULT}}
+fi
 
 # Studio Project
 # ==============
@@ -104,7 +114,7 @@ fi
 # =====
 # If the Nuxeo image is private, need Docker login.
 DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
-if [[ "${NUXEO_IMAGE}" == "${DOCKER_PRIVATE}"* ]]
+if [[ "${NUXEO_IMAGE_PREFIX}" == "${DOCKER_PRIVATE}"* ]]
 then
   # Check to see if user already has saved credentials
   grep -q ${DOCKER_PRIVATE} ${HOME}/.docker/config.json
@@ -192,11 +202,15 @@ then
   FQDN="localhost"
 fi
 
+# Full identifier for Nuxeo Server docker image.
+NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
+
 # ==============================================================================
 # Summarize
 # ==============================================================================
 
 echo
+echo "Nuxeo version:         ${nx_version}"
 echo "Studio project:        ${NX_STUDIO}"
 echo "Build-time Packages?:  ${INSTALL_PACKAGES}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
