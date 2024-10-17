@@ -56,16 +56,6 @@ done
 # User inputs
 # ==============================================================================
 
-# Nuxeo Version
-# =============
-NX_VERSION_DEFAULT="2023"
-nx_version="${NX_VERSION:-}"
-if [ -z "${nx_version}" ]
-then
-  read -p "Nuxeo Version [${NX_VERSION_DEFAULT}]: " nx_version
-  nx_version=${nx_version:-${NX_VERSION_DEFAULT}}
-fi
-
 # Studio Project
 # ==============
 NX_STUDIO="${NX_STUDIO:-}"
@@ -107,6 +97,16 @@ then
         ;;
     esac
   done
+fi
+
+# Nuxeo Version
+# =============
+NX_VERSION_DEFAULT="2023"
+nx_version="${NX_VERSION:-}"
+if [ -z "${nx_version}" ]
+then
+  read -p "Nuxeo Version [${NX_VERSION_DEFAULT}]: " nx_version
+  nx_version=${nx_version:-${NX_VERSION_DEFAULT}}
 fi
 
 # ==============================================================================
