@@ -233,9 +233,9 @@ fi
 # ==============================================================================
 
 echo
-echo "Nuxeo version:         ${nx_version}"
 echo "Studio project:        ${NX_STUDIO}"
 echo "Build-time Packages?:  ${INSTALL_PACKAGES}"
+echo "Nuxeo version:         ${nx_version}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
 echo "Studio Username:       ${STUDIO_USERNAME}"
 echo "NPD Branch:            ${NPD_BRANCH}"
