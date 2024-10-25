@@ -10,7 +10,7 @@ MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.19"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
-INSTALL_RPM="" # TODO: this isn' used. It's kind of an advanced topic though, so maybe that's ok.
+INSTALL_RPM="" # TODO: this isn't used. It's kind of an advanced topic though, so maybe that's ok.
 CONNECT_URL="https://connect.nuxeo.com/nuxeo/site/"
 
 # Check for commands used in this script
