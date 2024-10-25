@@ -10,10 +10,10 @@ MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.19"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
-# Found this in https://github.com/nuxeo/nuxeo-helm-chart/blob/master/ci/helm/values/values-kafka.yaml.gotmpl
-ZOOKEEPER_VERSION="3.6.2"
-# From https://doc.nuxeo.com/nxdoc/compatibility-matrix/#kafka
-KAFKA_VERSION="3.6.0"
+# Values came from Ben
+ZOOKEEPER_IMAGE="docker.io/bitnami/zookeeper:3.7"
+KAFKA_IMAGE="docker.io/bitnami/kafka:3.5.1"
+
 INSTALL_RPM="" # TODO: this isn't used. It's kind of an advanced topic though, so maybe that's ok.
 CONNECT_URL="https://connect.nuxeo.com/nuxeo/site/"
 
@@ -340,8 +340,8 @@ INSTALL_RPM=${INSTALL_RPM}
 MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
 OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
-ZOOKEEPER_VERSION=${ZOOKEEPER_VERSION}
-KAFKA_VERSION=${KAFKA_VERSION}
+ZOOKEEPER_IMAGE=${ZOOKEEPER_IMAGE}
+KAFKA_IMAGE=${KAFKA_IMAGE}
 
 FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}

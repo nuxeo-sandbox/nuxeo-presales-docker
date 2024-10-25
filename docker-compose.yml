@@ -118,7 +118,7 @@ services:
     ports:
       - "5601:5601"
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.7
+    image: ${ZOOKEEPER_IMAGE}
     # container_name: zookeeper
     ports:
       - "2181:2181"
@@ -127,7 +127,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
-    image: docker.io/bitnami/kafka:3.5.1
+    image: ${KAFKA_IMAGE}
     # container_name: kafka
     hostname: kafka
     ports:
