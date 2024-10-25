@@ -10,7 +10,9 @@ MONGO_VERSION="6.0"
 OPENSEARCH_VERSION="1.3.19"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
-ZOOKEEPER_VERSION="3.5.8"
+# Found this in https://github.com/nuxeo/nuxeo-helm-chart/blob/master/ci/helm/values/values-kafka.yaml.gotmpl
+ZOOKEEPER_VERSION="3.6.2"
+# From https://doc.nuxeo.com/nxdoc/compatibility-matrix/#kafka
 KAFKA_VERSION="3.6.0"
 INSTALL_RPM="" # TODO: this isn't used. It's kind of an advanced topic though, so maybe that's ok.
 CONNECT_URL="https://connect.nuxeo.com/nuxeo/site/"
