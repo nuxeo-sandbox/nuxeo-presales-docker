@@ -18,13 +18,13 @@ services:
       - mongo
       - opensearch
       - kafka
-    expose:
-      # Webservice Port
-      - 8080
-      # Port for Debugging (JPDA)
-      - 8787
-      # JMX port
-      - 1089
+#    expose:
+#      # Webservice Port
+#      - 8080
+#      # Port for Debugging (JPDA)
+#      - 8787
+#      # JMX port
+#      - 1089
     ports:
       - "${NUXEO_PORT}:8080"
       - "8787:8787"
@@ -51,12 +51,12 @@ services:
       timeout: 30s
       retries: 10
       start_period: 15s
-    expose:
-      # Mongo connection
-      - 27017
+#    expose:
+#      # Mongo connection
+#      - 27017
     # Uncomment the following block if you require host-level access to MongoDB
-    #ports:
-    #  - "27017:27017"
+    ports:
+      - "27017:27017"
     volumes:
       - mongo-data:/data/db
   opensearch:
@@ -83,13 +83,13 @@ services:
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - "DISABLE_SECURITY_PLUGIN=true"
       - "cluster.routing.allocation.disk.threshold_enabled=false"
-    expose:
-      - 9200
-      - 9300
+#    expose:
+#      - 9200
+#      - 9300
     # Uncomment the following block if you require host-level access to ElasticSearch
-    #ports:
-    #  - 9200:9200
-    #  - 9300:9300
+    ports:
+      - 9200:9200
+      - 9300:9300
     ulimits:
       memlock:
         soft: -1
@@ -124,7 +124,6 @@ services:
     volumes:
       - ./data/zookeeper/data:/datalog
       - ./data/zookeeper/log:/data
-
   kafka:
     image: apache/kafka:${KAFKA_VERSION}
     container_name: kafka
