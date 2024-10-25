@@ -15,6 +15,7 @@ services:
     hostname: nuxeo
     restart: unless-stopped
     depends_on:
+      - kafka
       - mongo
       - opensearch
     expose:
@@ -28,6 +29,10 @@ services:
       - "${NUXEO_PORT}:8080"
       - "8787:8787"
       - "1089:1089"
+    # required to setup async-profiling
+    privileged: true
+    mem_reservation: 1g
+    mem_limit: 3g
     volumes:
       - ./init:/docker-entrypoint-initnuxeo.d/:rw
       - ./conf:/etc/nuxeo/conf.d/:ro
@@ -36,6 +41,36 @@ services:
       - nuxeo-data:/var/lib/nuxeo:rw
       # Makes things pretty slow, uncomment with caution; useful for debugging
       # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
+
+  zookeeper:
+    image: zookeeper:${ZOOKEEPER_VERSION}
+    container_name: zookeeper
+    hostname: zookeeper
+    volumes:
+      - ./data/zookeeper/data:/datalog
+      - ./data/zookeeper/log:/data
+
+  kafka:
+    image: wurstmeister/kafka:${KAFKA_VERSION}
+    container_name: kafka
+    hostname: kafka
+    environment:
+      #KAFKA_BROKER_ID: 1
+      KAFKA_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 10
+      KAFKA_OFFSETS_RETENTION_MINUTES: 20160
+      KAFKA_HEAP_OPTS: "-Xmx256M -Xms256M"
+      KAFKA_LOG_DIRS: /kafka/log
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+    depends_on:
+      - zookeeper
+    volumes:
+      - ${PWD}/data/kafka/data:/kafka:rw
+      - ${PWD}/data/kafka/log:/opt/kafka/log:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   mongo:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
@@ -54,6 +89,7 @@ services:
     #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
+
   opensearch:
     build:
       context: .
@@ -77,6 +113,7 @@ services:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - "DISABLE_SECURITY_PLUGIN=true"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
     expose:
       - 9200
       - 9300
@@ -90,6 +127,7 @@ services:
         hard: -1
     volumes:
       - opensearch-data:/usr/share/opensearch/data
+
   dashboards:
     image: ${OPENSEARCH_DASHBOARDS_IMAGE}
     hostname: dashboards
@@ -111,6 +149,7 @@ services:
       - 5601
     ports:
       - "5601:5601"
+
 volumes:
   nuxeo-data:
   opensearch-data:
