@@ -44,7 +44,7 @@ RUN dnf -y install mediainfo
 RUN dnf -y install ffmpeg x264 x265 opus libvpx flac libvorbis-devel
 
 # Looks like vi is not installed by default
-RUN dnf -y install vi 
+RUN dnf -y install vi
 
 #Install latest Imagemagick and codecs
 #RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools
