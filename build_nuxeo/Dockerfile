@@ -53,6 +53,9 @@ RUN dnf -y install vi
 # End Oracle Linux stuff
 # ==============================================================================
 
+# Install libreoffice on arm64
+RUN if [ $(uname -m) == "aarch64" ];then dnf -y install libreoffice-core libreoffice-writer libreoffice-calc libreoffice-impress ; else echo "Not arm64 so no need to install libreoffice"; fi
+
 # Install Fonts
 RUN dnf -y install google-noto-sans-cjk-jp-fonts
 
