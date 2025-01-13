@@ -41,7 +41,19 @@ RUN dnf config-manager --enable ol9_codeready_builder
 RUN dnf -y install mediainfo
 
 #Install ffmpeg and codecs
-RUN dnf -y install ffmpeg x264 x265 opus libvpx flac libvorbis-devel
+# This fails:
+# RUN dnf -y install ffmpeg x264 x265 opus libvpx flac libvorbis-devel
+# Using this:
+RUN dnf -y install \
+    ffmpeg \
+    x264 \
+    x265 \
+    opus \
+    libvpx \
+    flac \
+    libvorbis-devel \
+    --allowerasing && \
+    dnf clean all
 
 # Looks like vi is not installed by default
 RUN dnf -y install vi
