@@ -55,14 +55,9 @@ services:
     volumes:
       - mongo-data:/data/db
   opensearch:
-    build:
-      context: .
-      dockerfile: build_opensearch/Dockerfile
-      args:
-        - "OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}"
+    image: ${OPENSEARCH_IMAGE}
     env_file:
       - ./.env
-    image: presales-opensearch-${PROJECT_NAME}
     hostname: opensearch
     restart: unless-stopped
     healthcheck:
