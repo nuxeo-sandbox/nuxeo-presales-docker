@@ -6,7 +6,7 @@
 
 # ARG used by FROM should always have a default value that makes the build valid.
 # https://docs.docker.com/reference/build-checks/invalid-default-arg-in-from/
-ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2023
+ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2025
 
 # Change the source image, if necessary
 FROM ${NUXEO_IMAGE}
@@ -19,7 +19,7 @@ ARG NUXEO_HOME
 ARG INSTALL_RPM
 
 ARG NVM_VERSION=0.40.1
-ARG NODE_VERSION=20.18.0
+ARG NODE_VERSION=22.14.0
 
 # We need to be root to run yum commands
 USER 0
@@ -30,7 +30,7 @@ ENV LANG="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8"
 
 # ==============================================================================
-# For Oracle Linux, Nuxeo Server 2023.20+
+# For Oracle Linux
 # ==============================================================================
 
 # Install repos
@@ -41,13 +41,22 @@ RUN dnf config-manager --enable ol9_codeready_builder
 RUN dnf -y install mediainfo
 
 #Install ffmpeg and codecs
-RUN dnf -y install ffmpeg x264 x265 opus libvpx flac libvorbis-devel
+RUN dnf -y install \
+    ffmpeg \
+    x264 \
+    x265 \
+    opus \
+    libvpx \
+    flac \
+    libvorbis-devel \
+    --allowerasing && \
+    dnf clean all
 
 # Looks like vi is not installed by default
 RUN dnf -y install vi
 
 #Install latest Imagemagick and codecs
-#RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools
+RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools --enablerepo=remi
 
 # ==============================================================================
 # End Oracle Linux stuff
