@@ -34,8 +34,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
       - nuxeo-data:/var/lib/nuxeo:rw
-      # Makes things pretty slow, uncomment with caution; useful for debugging
-      # - ./nuxeo_war:/opt/nuxeo/server/nxserver/nuxeo.war:rw
+      # Install custom packages from local directory
+      # - "./nuxeo_packages:/opt/nuxeo/packages"
   mongo:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
