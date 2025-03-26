@@ -65,9 +65,6 @@ RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools --enablerepo=remi
 # End Oracle Linux stuff
 # ==============================================================================
 
-# Install Fonts
-RUN dnf -y install google-noto-sans-cjk-jp-fonts
-
 # Dependencies for GLB thumbnail generation
 #RUN dnf -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
 
