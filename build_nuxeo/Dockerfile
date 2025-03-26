@@ -82,9 +82,9 @@ RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-nodeps-*.zip ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-*.zip ${NUXEO_HOME}/local-packages/local-package.zip
 
-RUN usermod -aG 998 nuxeo
-
 # >>> Make your changes ABOVE this line <<<
+
+RUN usermod -aG 998 nuxeo
 
 # !!! DO NOT CHANGE BELOW THIS LINE (except for noted items) !!!
 # Set back original (nuxeo) user
