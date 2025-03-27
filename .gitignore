@@ -2,10 +2,6 @@
 .env
 env
 
-# Dockerfile environments
-Dockerfile
-es/Dockerfile
-
 # Custom nuxeo packages (optional)
 nuxeo_packages
 
@@ -21,3 +17,7 @@ nuxeo_war
 
 # Stuff for dev
 .yo-rc.json
+sh.sh
+
+# Other
+.DS_Store
