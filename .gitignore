@@ -2,6 +2,10 @@
 .env
 env
 
+# Dockerfile environments
+Dockerfile
+es/Dockerfile
+
 # Custom nuxeo packages (optional)
 nuxeo_packages
 
