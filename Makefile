@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := status
-.PHONY: pull build rebuild start exec restart logs vilog status ps stop down rm new clean
+.PHONY: pull build pullbuild rebuild start exec restart logs vilog status ps stop down rm new clean
 
 COMPOSE_DIR := .
 SERVICE :=
@@ -11,6 +11,11 @@ pull:
 build:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
 
+# Always attempt to pull a newer version of the image; useful with wrapper tags like `2023` or `latest`.
+pullbuild:
+	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build --pull $(SERVICE)
+
+# Build without cache; necessary when building with Studio SNAPSHOTS because Docker has no way to know the Studio project has changed.
 rebuild:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build --pull --no-cache $(SERVICE)
 
