@@ -21,7 +21,7 @@ ARG INSTALL_RPM
 ARG NVM_VERSION=0.40.1
 ARG NODE_VERSION=20.18.0
 
-# We need to be root to run yum commands
+# We need to be root to run commands
 USER 0
 
 # Set UTF8 default locale
