@@ -101,7 +101,7 @@ fi
 
 # Nuxeo Version
 # =============
-NX_VERSION_DEFAULT="2023"
+NX_VERSION_DEFAULT="2025"
 nx_version="${NX_VERSION:-}"
 if [ -z "${nx_version}" ]
 then
