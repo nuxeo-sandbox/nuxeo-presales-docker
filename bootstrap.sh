@@ -108,6 +108,10 @@ then
   read -p "Nuxeo Version [${NX_VERSION_DEFAULT}]: " nx_version
   nx_version=${nx_version:-${NX_VERSION_DEFAULT}}
 fi
+if [[ "$nx_version" != "$NX_VERSION_DEFAULT"* ]]; then
+  echo "Invalid Nuxeo Version. It should starts with $NX_VERSION_DEFAULT"
+  exit 1
+fi
 
 # ==============================================================================
 # Credentials
@@ -208,24 +212,8 @@ fi
 # Full identifier for Nuxeo Server docker image.
 NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 
-# If no 2023 HF level is specified, or we are with 2025, just use latest Dockerfile.
-if [[ $nx_version == "2023" || $nx_version == 2025* ]]
-then
-  DOCKERFILE="build_nuxeo/Dockerfile"
-fi
-
-# If HF level has been specified we need to select the correct Dockerfile.
-if [ -z "${DOCKERFILE}" ]
-then
-  # If Nuxeo verion is 2023.19 or earlier, use Rocky Linux Dockerfile
-  TARGET_VERSION="2023.19"
-  # Compare the two versions using sort (code from ChatGPT)
-  if [ "$(printf '%s\n' "$nx_version" "$TARGET_VERSION" | sort -V | head -n 1)" = "$nx_version" ]; then
-    DOCKERFILE="build_nuxeo/Dockerfile.hf19"
-  else
-    DOCKERFILE="build_nuxeo/Dockerfile"
-  fi
-fi
+# With 2025, no need for different Dockerfile (see lts2023 issues up to 2023.19)
+DOCKERFILE="build_nuxeo/Dockerfile"
 
 
 # ==============================================================================
@@ -306,7 +294,7 @@ AUTO_PACKAGES="nuxeo-web-ui"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
-then
+thenstat
   ENV_BUILD_PACKAGES="${NX_STUDIO} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
   ENV_NUXEO_PACKAGES="${NX_STUDIO}"
 else
