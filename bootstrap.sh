@@ -208,8 +208,8 @@ fi
 # Full identifier for Nuxeo Server docker image.
 NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 
-# If no HF level is specified, just use latest Dockerfile.
-if [[ $nx_version == "2023" ]]
+# If no 2023 HF level is specified, or we are with 2025, just use latest Dockerfile.
+if [[ $nx_version == "2023" || $nx_version == 2025* ]]
 then
   DOCKERFILE="build_nuxeo/Dockerfile"
 fi
