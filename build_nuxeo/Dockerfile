@@ -56,7 +56,8 @@ RUN dnf -y install \
 RUN dnf -y install vi
 
 #Install latest Imagemagick and codecs
-RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools --enablerepo=remi
+#not needed with LTS2025, it comes with the Docker image.
+#RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools --enablerepo=remi
 
 # ==============================================================================
 # End Oracle Linux stuff
