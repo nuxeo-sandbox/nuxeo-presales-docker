@@ -301,7 +301,8 @@ EOF
 # Make sure we always have a UI installed
 AUTO_PACKAGES="nuxeo-web-ui"
 # Auto install Nuxeo Explorer because the website is often unusable
-AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
+# As of May 2025, platform-explorer is not available for LTS 2025
+#AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
