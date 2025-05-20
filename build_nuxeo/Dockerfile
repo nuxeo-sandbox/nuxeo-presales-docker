@@ -55,12 +55,6 @@ RUN dnf -y install \
 # Looks like vi is not installed by default
 RUN dnf -y install vi
 
-# Workaround for change in the OOTB image; when it installs the custom
-# nuxeo-cloud-aligned ffmpeg, it removes ImageMagick so we need to reinstall it.
-
-# Install Imagemagick and codecs
-RUN dnf -y install ImageMagick7 librsvg2-tools libwebp-tools --enablerepo=remi
-
 # ==============================================================================
 # End Oracle Linux stuff
 # ==============================================================================
