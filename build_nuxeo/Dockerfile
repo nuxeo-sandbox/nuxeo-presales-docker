@@ -29,10 +29,6 @@ ENV LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8"
 
-# ==============================================================================
-# For Oracle Linux
-# ==============================================================================
-
 # Install repos
 RUN dnf -y install epel-release && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm
 RUN dnf config-manager --enable ol9_codeready_builder
@@ -55,10 +51,6 @@ RUN dnf -y install \
 # Looks like vi is not installed by default
 RUN dnf -y install vi
 
-# ==============================================================================
-# End Oracle Linux stuff
-# ==============================================================================
-
 # Install libreoffice if arm64
 RUN if [ $(uname -m) == "aarch64" ];then dnf -y install libreoffice-core libreoffice-writer libreoffice-calc libreoffice-impress ; else echo "Not arm64 so no need to install libreoffice"; fi
 
@@ -70,7 +62,6 @@ RUN dnf -y install google-noto-sans-cjk-jp-fonts
 
 # Add additional RPMs to the source image
 RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
-
 
 # !!! DO NOT CHANGE ABOVE THIS LINE !!!
 
