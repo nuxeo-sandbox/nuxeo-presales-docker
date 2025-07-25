@@ -294,7 +294,7 @@ AUTO_PACKAGES="nuxeo-web-ui"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
-thenstat
+then
   ENV_BUILD_PACKAGES="${NX_STUDIO} ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
   ENV_NUXEO_PACKAGES="${NX_STUDIO}"
 else
