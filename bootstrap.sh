@@ -45,7 +45,7 @@ fi
 NPD_BRANCH=${NPD_BRANCH:-master}
 
 # Allow use of a different branch with a flag.
-while getopts b: flag
+while getopts "b:" flag
 do
   case "${flag}" in
     b) NPD_BRANCH=${OPTARG};;
