@@ -3,11 +3,9 @@
 > [!WARNING]
 > You are viewing a branch. Be sure to understand how to use branches when trying to create a stack.
 
-Simple command line tooling for creating and managing a Docker Compose stack for
-running Nuxeo.
+Simple command line tooling for creating and managing a Docker Compose stack for running Nuxeo.
 
-See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for
-additional documentation.
+See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
 
 # Compatible Versions
 
@@ -22,8 +20,7 @@ additional documentation.
 
 # Usage
 
-For running Nuxeo locally, you can install everything using the bootstrap script
-like so:
+For running Nuxeo locally, you can install everything using the bootstrap script like so:
 
 ```
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/lts2025/bootstrap.sh)" -b lts2025
@@ -31,25 +28,17 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-pres
 
 Note: if you are testing new features, you can pass `-b branch-name` to the bootstrap script to clone a specific branch.
 
-See [Getting
-Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki/Getting-Started)
-for an explanation of how the script works.
+See [Getting Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki/Getting-Started) for an explanation of how the script works.
 
-For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to
-scaffold the environment. You can find an example of how to use this tooling in
-EC2
-[here](https://github.com/nuxeo-sandbox/presales-vmdemo/blob/master/aws/ec2-scripts/Nuxeo.sh).
+For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to scaffold the environment. You can find an example of how to use this tooling in EC2 [here](https://github.com/nuxeo-sandbox/presales-vmdemo/blob/master/aws/ec2-scripts/Nuxeo.sh).
 
 # Support
 
 **These features are not part of the Nuxeo Production platform.**
 
-These solutions are provided for inspiration and we encourage customers to use
-them as code samples and learning resources.
+These solutions are provided for inspiration and we encourage customers to use them as code samples and learning resources.
 
-This is a moving project (no API maintenance, no deprecation process, etc.) If
-any of these solutions are found to be useful for the Nuxeo Platform in general,
-they will be integrated directly into platform, not maintained here.
+This is a moving project (no API maintenance, no deprecation process, etc.) If any of these solutions are found to be useful for the Nuxeo Platform in general, they will be integrated directly into platform, not maintained here.
 
 # License
 
@@ -57,21 +46,12 @@ they will be integrated directly into platform, not maintained here.
 
 # About Nuxeo
 
-Nuxeo Platform is an open source Content Services platform, written in Java.
-Data can be stored in both SQL & NoSQL databases.
+Nuxeo Platform is an open source Content Services platform, written in Java. Data can be stored in both SQL & NoSQL databases.
 
-The development of the Nuxeo Platform is mostly done by Nuxeo employees with an
-open development model.
+The development of the Nuxeo Platform is mostly done by Nuxeo employees with an open development model.
 
-The source code, documentation, roadmap, issue tracker, testing, benchmarks are
-all public.
+The source code, documentation, roadmap, issue tracker, testing, benchmarks are all public.
 
-Typically, Nuxeo users build different types of information management solutions
-for [document management](https://www.nuxeo.com/solutions/document-management/),
-[case management](https://www.nuxeo.com/solutions/case-management/), and
-[digital asset
-management](https://www.nuxeo.com/solutions/dam-digital-asset-management/), use
-cases. It uses schema-flexible metadata & content models that allows content to
-be repurposed to fulfill future use cases.
+Typically, Nuxeo users build different types of information management solutions for [document management](https://www.nuxeo.com/solutions/document-management/), [case management](https://www.nuxeo.com/solutions/case-management/), and [digital asset management](https://www.nuxeo.com/solutions/dam-digital-asset-management/), use cases. It uses schema-flexible metadata & content models that allows content to be repurposed to fulfill future use cases.
 
 More information is available at [www.nuxeo.com](https://www.nuxeo.com).
