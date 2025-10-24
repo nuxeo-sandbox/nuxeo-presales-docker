@@ -323,10 +323,6 @@ STUDIO_USERNAME=${STUDIO_USERNAME}
 STUDIO_CREDENTIALS=${CREDENTIALS}
 EOF
 
-# Use correct Dockerfile for Oracle vs Rocky Linux
-# Use sed to replace the value of 'dockerfile' for Nuxeo with the new value (for macOS)
-sed -i '' "s|dockerfile: build_nuxeo/Dockerfile|dockerfile: $DOCKERFILE|" "${NX_STUDIO}/docker-compose.yml"
-
 # Run commands
 # ============
 
