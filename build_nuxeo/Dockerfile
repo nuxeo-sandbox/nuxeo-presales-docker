@@ -48,8 +48,8 @@ RUN dnf -y install \
     --allowerasing && \
     dnf clean all
 
-# Looks like vi is not installed by default
-RUN dnf -y install vi
+# Create vi symlink (vim is in upstream, but vi symlink is not)
+RUN ln -s /usr/bin/vim /usr/bin/vi
 
 # Install libreoffice if arm64
 RUN if [ $(uname -m) == "aarch64" ];then dnf -y install libreoffice-core libreoffice-writer libreoffice-calc libreoffice-impress ; else echo "Not arm64 so no need to install libreoffice"; fi
