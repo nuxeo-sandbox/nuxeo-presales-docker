@@ -54,9 +54,6 @@ RUN dnf -y install vi
 # Install libreoffice if arm64
 RUN if [ $(uname -m) == "aarch64" ];then dnf -y install libreoffice-core libreoffice-writer libreoffice-calc libreoffice-impress ; else echo "Not arm64 so no need to install libreoffice"; fi
 
-# Install Fonts
-RUN dnf -y install google-noto-sans-cjk-jp-fonts
-
 # Dependencies for GLB thumbnail generation
 #RUN dnf -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
 
