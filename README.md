@@ -8,7 +8,7 @@ additional documentation.
 
 # Compatible Versions
 
-* Nuxeo LTS 2023
+* Nuxeo LTS 2025
 
 # Requirements
 
@@ -23,7 +23,7 @@ For running Nuxeo locally, you can install everything using the bootstrap script
 like so:
 
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/lts2025/bootstrap.sh)" -b lts2025
 ```
 
 Note: if you are testing new features, you can pass `-b branch-name` to the bootstrap script to clone a specific branch.
