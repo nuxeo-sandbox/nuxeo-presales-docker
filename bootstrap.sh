@@ -212,10 +212,6 @@ fi
 # Full identifier for Nuxeo Server docker image.
 NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 
-# With 2025, no need for different Dockerfile (see lts2023 issues up to 2023.19)
-DOCKERFILE="build_nuxeo/Dockerfile"
-
-
 # ==============================================================================
 # Summarize
 # ==============================================================================
@@ -227,7 +223,6 @@ echo "Nuxeo version:         ${nx_version}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
 echo "Studio Username:       ${STUDIO_USERNAME}"
 echo "NPD Branch:            ${NPD_BRANCH}"
-echo "Dockerfile:            ${DOCKERFILE}"
 
 echo
 echo "Here's what will happen next:"
