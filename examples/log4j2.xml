@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 2026-01-22: Copied from LTS 2025. Modified to remove jar file names from console output -->
 <!-- Log4j Configuration - For more configuration information and examples see https://logging.apache.org/log4j/2.x/ -->
 <Configuration monitorInterval="30">
   <Properties>
     <Property name="defaultConsoleLayout">
-      <![CDATA[%d{ISO8601} %-5p [%c{1}] %m%n]]>
+      <![CDATA[%d{ISO8601} %-5p [%c{1}] %m%n%ex]]>
     </Property>
     <Property name="consoleLayout">
       <![CDATA[${sys:nuxeo.common.logging.console.layout:-${defaultConsoleLayout}}]]>
