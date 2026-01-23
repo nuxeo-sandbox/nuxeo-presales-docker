@@ -285,8 +285,13 @@ EOF
 AUTO_PACKAGES="nuxeo-web-ui"
 # Auto install Nuxeo Explorer because the website is often unusable
 AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
+# Auto install Nuxeo API Playground for easier API testing
+AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-api-playground"
 # Auto install Nuxeo Admin Console for easier administration
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-admin-console"
+# TODO: Auto install nuxeo-search-client-opensearch2
+# Need to wait until I update OPENSEARCH_VERSION above to 2.x
+# AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch2"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
