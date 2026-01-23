@@ -1,6 +1,9 @@
 # About
 
 > [!WARNING]
+> This stack (based on OpenSearch 2) does not work. See https://hyland.atlassian.net/browse/NXP-33479
+
+> [!WARNING]
 > You are viewing a branch. Be sure to understand how to use branches when trying to create a stack.
 
 Simple command line tooling for creating and managing a Docker Compose stack for running Nuxeo.
