@@ -106,6 +106,9 @@ services:
       - 5601
     ports:
       - "5601:5601"
+# TODO: Add explicit mounts to prevent anonymous volumes:
+# - Nuxeo: nuxeo-tmp:/tmp:rw and nuxeo-logs:/var/log/nuxeo:rw
+# - MongoDB: mongo-configdb:/data/configdb:rw
 volumes:
   nuxeo-data:
   opensearch-data:
