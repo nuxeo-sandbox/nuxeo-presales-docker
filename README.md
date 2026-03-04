@@ -1,8 +1,5 @@
 # About
 
-> [!WARNING]
-> You are viewing a branch. Be sure to understand how to use branches when trying to create a stack.
-
 Simple command line tooling for creating and managing a Docker Compose stack for running Nuxeo.
 
 See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
