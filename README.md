@@ -20,7 +20,7 @@ See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for 
 For running Nuxeo locally, you can install everything using the bootstrap script like so:
 
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/lts2023/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
 ```
 
 Note: if you are testing new features, you can pass `-b branch-name` to the bootstrap script to clone a specific branch.
