@@ -291,6 +291,8 @@ AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-api-playground"
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-admin-console"
 # Auto install OpenSearch 1.x search client
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch1"
+# Auto install OpenSearch 1.x audit client
+AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-audit-opensearch1"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
