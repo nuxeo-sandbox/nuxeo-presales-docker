@@ -1,6 +1,23 @@
 #!/bin/bash
 
 # ==============================================================================
+# APRIL 2026: Modified in branch nos-deployment-workaround to handle the fact
+# that Nuxeo fails to install a Studio project wit dependencies. UNtil this is fixed
+# (and it is lasting...), we install only nuxeo-web-ui, so the while process can start normally
+#
+# See below "# WARKAROUND NOS + DEPLOYMENT ISSUE."
+#
+# This branch is to be used with the Nuxeo Presales AWS deployement scripts, cleanup done in
+# this branch will likely make it fail on localhost.
+#
+# WARNING 2: As your Studio project is not deployed at first build, you must, after start is done,
+# nxbash, then stop Nuxeo and nuxeoctl mp-install --nodeps all your package (without versions,
+# as Nuxeo will pick up the most recent one available for your Nuxeo version.)
+#
+# WARNING 2 => RESET THE PASSWORD RIGHT AFTER THE START.
+# ==============================================================================
+
+# ==============================================================================
 # Bootstrap script to create a docker compose tooling for Nuxeo.
 # ==============================================================================
 
@@ -281,8 +298,7 @@ EOF
 
 # Install .env
 # ============
-# Make sure we always have a UI installed
-AUTO_PACKAGES="nuxeo-web-ui"
+AUTO_PACKAGES=""
 # Auto install Nuxeo Explorer because the website is often unusable
 AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 # Auto install Nuxeo API Playground for easier API testing
@@ -293,9 +309,11 @@ AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-admin-console"
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch1"
 
 # Handle build-time vs runtime package install
+# WARKAROUND NOS + DEPLOYMENT ISSUE." we remove the studio project from the installation
+# The ENV_NUXEO_PACKAGES variable is ignored below.
 if ${INSTALL_PACKAGES}
 then
-  ENV_BUILD_PACKAGES="${NX_STUDIO}-0.0.0-SNAPSHOT ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
+  ENV_BUILD_PACKAGES="${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
   ENV_NUXEO_PACKAGES="${NX_STUDIO}"
 else
   ENV_BUILD_PACKAGES="${AUTO_PACKAGES}"
@@ -318,7 +336,12 @@ NUXEO_PORT=8080
 BUILD_PACKAGES=${ENV_BUILD_PACKAGES}
 
 # These packages will be installed at startup
-NUXEO_PACKAGES=${ENV_NUXEO_PACKAGES}
+# WARKAROUND NOS + DEPLOYMENT ISSUE.
+# We install only web UI, then you must manually nuxeoctl mp-install your project + the rest of the packages, once Nuxeo is started.
+#NUXEO_PACKAGES=${ENV_NUXEO_PACKAGES}
+NUXEO_PACKAGES=nuxeo-web-ui
+# Once started, use, for example (after nxbash and being in the Nuxeo container):
+# nuxeoctl mp-install --nodeps ${NX_STUDIO}-0.0.0-SNAPSHOT easyshare nuxeo-csv nuxeo-template-rendering ...etc...
 
 INSTALL_RPM=${INSTALL_RPM}
 
