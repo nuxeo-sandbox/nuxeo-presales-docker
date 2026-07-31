@@ -36,4 +36,4 @@ curl -u "${NUXEO_USER}:${NUXEO_PWD}" -X POST \
 
 echo
 echo "==> Submitted. The bulk action runs asynchronously (fire-and-forget)."
-echo "    Watch the Nuxeo logs, or run: make check-indices"
+echo "    Watch the Nuxeo logs and run: make check-indices"
