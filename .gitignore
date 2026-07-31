@@ -2,8 +2,10 @@
 .env
 env
 
-# Custom nuxeo packages (optional)
-nuxeo_packages
+# Custom nuxeo packages (optional): ignore the .zip payloads but keep the folder
+# (needed by the Docker build context) and its README.
+nuxeo_packages/*
+!nuxeo_packages/README.md
 
 # Local server configuration
 conf

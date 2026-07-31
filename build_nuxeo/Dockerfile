@@ -6,7 +6,8 @@
 
 # ARG used by FROM should always have a default value that makes the build valid.
 # https://docs.docker.com/reference/build-checks/invalid-default-arg-in-from/
-ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2025
+# NOTE: the image MUST be >= 2025.22 (semantic/vector search requirements).
+ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2025.22
 
 # Change the source image, if necessary
 FROM ${NUXEO_IMAGE}
@@ -70,6 +71,13 @@ RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-nodeps-*.zip ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-*.zip ${NUXEO_HOME}/local-packages/local-package.zip
 
+# Bake local packages dropped in ./nuxeo_packages/ into the image. Used for the
+# moving vector search client (nuxeo-search-client-opensearch2-vector-package-*.zip)
+# which is not on the marketplace yet. The whole folder is copied (it always
+# exists), and the offline install runs only if a .zip is present, so a classic
+# build without any local package still works. Keep exactly ONE vector .zip there.
+COPY --chown=900:0 nuxeo_packages/ /opt/nuxeo/local-packages-custom/
+
 # >>> Make your changes ABOVE this line <<<
 
 RUN usermod -aG 998 nuxeo
@@ -98,6 +106,14 @@ USER 900
 
 # Install packages at build time
 RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${BUILD_PACKAGES}
+# Install any local package(s) dropped in ./nuxeo_packages/ offline, without
+# their dependencies. Typically the vector search client. Glob keeps this
+# resilient to version bumps; the `if` keeps a classic build (no local .zip) OK.
+RUN if ls /opt/nuxeo/local-packages-custom/*.zip >/dev/null 2>&1; then \
+      /install-packages.sh --offline /opt/nuxeo/local-packages-custom/*.zip; \
+    else \
+      echo "No local package in ./nuxeo_packages/, skipping offline install."; \
+    fi
 # Install a local package without its dependencies (`mp-install --nodeps`)
 # RUN /install-packages.sh --offline ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # Install remote packages and a local package with its dependencies

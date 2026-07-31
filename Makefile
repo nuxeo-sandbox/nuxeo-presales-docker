@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := status
-.PHONY: pull build pullbuild rebuild start exec restart logs vilog status ps stop down rm new clean
+.PHONY: pull build pullbuild rebuild start exec restart logs vilog status ps stop down rm new clean mcp-build mcp-up mcp-down mcp-logs register-model reindex-vector check-indices
 
 COMPOSE_DIR := .
 SERVICE :=
@@ -58,3 +58,32 @@ new: | rm up
 
 clean:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml down --volumes --rmi local --remove-orphans
+
+# --- Nuxeo MCP server (optional, profile "mcp") -----------------------------
+# Build from the local nuxeo-mcp-server clone (checks out NUXEO_MCP_BRANCH) then
+# start on 127.0.0.1:8181.
+mcp-build:
+	$(COMPOSE_DIR)/scripts/build-nuxeo-mcp.sh
+
+mcp-up:
+	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml --profile mcp up --detach mcp
+
+mcp-down:
+	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml --profile mcp rm --force --stop mcp
+
+mcp-logs:
+	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml --profile mcp logs -f mcp
+
+# --- Semantic / vector search helpers ---------------------------------------
+# Register + deploy the embedding model, then print the model_id to paste in
+# conf/vector-search.conf.
+register-model:
+	$(COMPOSE_DIR)/scripts/register-embedding-model.sh
+
+# One-time (fire-and-forget) build of the vector index.
+reindex-vector:
+	$(COMPOSE_DIR)/scripts/reindex-vector.sh
+
+# Check the expected OpenSearch indices exist (nuxeo + nuxeo-vector).
+check-indices:
+	$(COMPOSE_DIR)/scripts/check-nuxeo-indices.sh

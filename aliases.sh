@@ -41,3 +41,14 @@ alias nxctl-restart='nx exec COMMAND="nuxeoctl restart"'
 alias nxctl-mp-list='nx exec COMMAND="nuxeoctl mp-list"'
 alias nxctl-showconf='nx exec COMMAND="nuxeoctl showconf"'
 alias nxctl-tail='nx exec COMMAND="tail -f /var/log/nuxeo/server.log"'
+
+# Nuxeo MCP server (optional, profile "mcp")
+alias mcp-build='make -e mcp-build'
+alias mcp-up='make -e mcp-up'
+alias mcp-down='make -e mcp-down'
+alias mcp-logs='make -e mcp-logs'
+
+# Semantic / vector search helpers
+alias register-model='make -e register-model'
+alias reindex-vector='make -e reindex-vector'
+alias check-indices='make -e check-indices'

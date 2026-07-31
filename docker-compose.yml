@@ -1,3 +1,19 @@
+# =============================================================================
+# Nuxeo LTS 2025 presales stack
+#
+#   nuxeo       Nuxeo LTS 2025 + opensearch2 keyword client (+ optional vector
+#               search client baked from ./nuxeo_packages/*.zip at build time)
+#   mongo       MongoDB 8 - Nuxeo document repository
+#   opensearch  OpenSearch 3.7 - keyword (BM25) "main" index + audit AND, when
+#               enabled, the vector index (k-NN + ML + neural-search)
+#   dashboards  OpenSearch Dashboards (inspect the cluster)
+#   mcp         Nuxeo MCP server (OPTIONAL, profile "mcp"): built from a local
+#               clone of nuxeo/nuxeo-mcp-server, HTTP transport on 127.0.0.1:8181
+#
+# IMPORTANT: the Nuxeo image MUST be >= 2025.22 (semantic/vector search + the
+# required scores and page providers ship in 2025.22). Floating tags "2025" or
+# "2025.0" always pull the latest 2025.x, so they are >= 2025.22 too.
+# =============================================================================
 services:
   nuxeo:
     build:
@@ -68,21 +84,39 @@ services:
       start_period: 1m
     environment:
       - discovery.type=single-node
-      - cluster.name=opensearch
+      - cluster.name=nuxeo
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - "DISABLE_SECURITY_PLUGIN=true"
+      - "DISABLE_INSTALL_DEMO_CONFIG=true"
+      # ML / kNN / neural-search settings for the vector index (self-hosted
+      # embedding model). Harmless when the vector feature is not used.
+      - plugins.ml_commons.only_run_on_ml_node=false
+      - plugins.ml_commons.native_memory_threshold=99
+      - plugins.ml_commons.model_access_control_enabled=false
+      - plugins.ml_commons.allow_registering_model_via_url=true
+      # Relax disk watermarks so the node stays writable on a nearly-full laptop.
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - cluster.routing.allocation.disk.watermark.low=3gb
+      - cluster.routing.allocation.disk.watermark.high=2gb
+      - cluster.routing.allocation.disk.watermark.flood_stage=1gb
+      # One OpenSearch serves both indexes + runs the CPU embedding model, so
+      # give it enough heap to avoid the "Memory Circuit Breaker" while indexing.
+      - "OPENSEARCH_JAVA_OPTS=-Xms${OS_HEAP:-3g} -Xmx${OS_HEAP:-3g}"
     expose:
       - 9200
       - 9300
-    # Uncomment the following block if you require host-level access to ElasticSearch
-    #ports:
-    #  - 9200:9200
-    #  - 9300:9300
+    # 9200 is published on loopback so the host-side scripts (register the
+    # embedding model, check indices) can reach the cluster. It is NOT exposed
+    # on the LAN.
+    ports:
+      - "127.0.0.1:9200:9200"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
     volumes:
       - opensearch-data:/usr/share/opensearch/data
   dashboards:
@@ -106,6 +140,45 @@ services:
       - 5601
     ports:
       - "5601:5601"
+  # ---------------------------------------------------------------------------
+  # Nuxeo MCP server - OPTIONAL. Only starts with the "mcp" profile:
+  #   make mcp-build          (checks out NUXEO_MCP_BRANCH, then builds + starts)
+  #   docker compose --profile mcp up -d --build mcp
+  #
+  # Built from a LOCAL clone of nuxeo/nuxeo-mcp-server (NUXEO_MCP_SRC). It talks
+  # to Nuxeo over the default compose network at http://nuxeo:8080/nuxeo, and is
+  # published on 127.0.0.1:8181 so a host-side `opencode serve` can reach the
+  # MCP endpoint at http://localhost:8181/mcp.
+  # ---------------------------------------------------------------------------
+  mcp:
+    profiles: ["mcp"]
+    build:
+      # Default "." keeps `docker compose config` valid when the mcp profile is
+      # inactive. Set NUXEO_MCP_SRC in .env to your nuxeo-mcp-server clone; the
+      # build only runs when you activate the profile.
+      context: ${NUXEO_MCP_SRC:-.}
+      dockerfile: Dockerfile
+    image: presales-nuxeo-mcp-${PROJECT_NAME}
+    hostname: nuxeo-mcp
+    restart: unless-stopped
+    depends_on:
+      - nuxeo
+    environment:
+      # Reach Nuxeo by service name on the default compose network.
+      - NUXEO_URL=http://nuxeo:8080/nuxeo
+      - NUXEO_USERNAME=${NUXEO_MCP_USERNAME:-Administrator}
+      - NUXEO_PASSWORD=${NUXEO_MCP_PASSWORD:-Administrator}
+      - NUXEO_AUTH_METHOD=basic
+      # Skip the MCP server's default server-selection (would override NUXEO_URL).
+      - SKIP_SERVER_SELECTION=true
+      - MCP_MODE=http
+      - MCP_PORT=8181
+      - MCP_HOST=0.0.0.0
+      # FastMCP DNS-rebinding guard: trust the hosts we connect through.
+      - 'FASTMCP_HTTP_ALLOWED_HOSTS=["nuxeo-mcp","localhost","127.0.0.1"]'
+    ports:
+      # Loopback-only: reachable from the Mac (opencode serve), not the LAN.
+      - "127.0.0.1:8181:8181"
 # TODO: Add explicit mounts to prevent anonymous volumes:
 # - Nuxeo: nuxeo-tmp:/tmp:rw and nuxeo-logs:/var/log/nuxeo:rw
 # - MongoDB: mongo-configdb:/data/configdb:rw

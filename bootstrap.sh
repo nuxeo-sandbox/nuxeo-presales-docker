@@ -7,7 +7,9 @@
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 NUXEO_IMAGE_PREFIX="docker-private.packages.nuxeo.com/nuxeo/nuxeo:"
 MONGO_VERSION="8.0"
-OPENSEARCH_VERSION="1.3.20"
+# OpenSearch 3.7 hosts the keyword/BM25 "main" index + audit AND (when the
+# vector package is installed) the vector index (k-NN + ML + neural-search).
+OPENSEARCH_VERSION="3.7.0"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
 INSTALL_RPM="" # TODO: this isn't used. It's kind of an advanced topic though, so maybe that's ok.
@@ -111,6 +113,58 @@ fi
 if [[ "$nx_version" != "$NX_VERSION_DEFAULT"* ]]; then
   echo "Invalid Nuxeo Version. It should starts with $NX_VERSION_DEFAULT"
   exit 1
+fi
+
+# Optional features
+# =================
+# Semantic / vector search (OpenSearch 3.7 + vector client). Requires the moving
+# nuxeo-search-client-opensearch2-vector-*.zip dropped in ./nuxeo_packages/.
+ENABLE_VECTOR_DEFAULT=false
+ENABLE_VECTOR="${ENABLE_VECTOR:-}"
+if [ -z "${ENABLE_VECTOR}" ]
+then
+  while true
+  do
+    read -p "Enable semantic / vector search? [${ENABLE_VECTOR_DEFAULT}]: " ENABLE_VECTOR
+    ENABLE_VECTOR=${ENABLE_VECTOR:-${ENABLE_VECTOR_DEFAULT}}
+    case "${ENABLE_VECTOR}" in
+      true|false) break ;;
+      *) echo "Please enter 'true' or 'false' (or Enter for ${ENABLE_VECTOR_DEFAULT})." ;;
+    esac
+  done
+fi
+
+# Nuxeo MCP server (optional, built from a local clone of nuxeo/nuxeo-mcp-server).
+ENABLE_MCP_DEFAULT=false
+ENABLE_MCP="${ENABLE_MCP:-}"
+if [ -z "${ENABLE_MCP}" ]
+then
+  while true
+  do
+    read -p "Enable Nuxeo MCP server? [${ENABLE_MCP_DEFAULT}]: " ENABLE_MCP
+    ENABLE_MCP=${ENABLE_MCP:-${ENABLE_MCP_DEFAULT}}
+    case "${ENABLE_MCP}" in
+      true|false) break ;;
+      *) echo "Please enter 'true' or 'false' (or Enter for ${ENABLE_MCP_DEFAULT})." ;;
+    esac
+  done
+fi
+
+# If MCP is enabled, we need the path to a local nuxeo-mcp-server clone and,
+# optionally, the branch to build.
+NUXEO_MCP_SRC="${NUXEO_MCP_SRC:-}"
+NUXEO_MCP_BRANCH="${NUXEO_MCP_BRANCH:-}"
+if [ "${ENABLE_MCP}" == "true" ]
+then
+  while [ -z "${NUXEO_MCP_SRC}" ]
+  do
+    echo -n "Absolute path to your local nuxeo-mcp-server clone: "
+    read NUXEO_MCP_SRC
+  done
+  if [ -z "${NUXEO_MCP_BRANCH}" ]
+  then
+    read -p "nuxeo-mcp-server branch to build (Enter = current checkout): " NUXEO_MCP_BRANCH
+  fi
 fi
 
 # ==============================================================================
@@ -223,6 +277,13 @@ echo "Nuxeo version:         ${nx_version}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
 echo "Studio Username:       ${STUDIO_USERNAME}"
 echo "NPD Branch:            ${NPD_BRANCH}"
+echo "Vector search:         ${ENABLE_VECTOR}"
+echo "Nuxeo MCP server:      ${ENABLE_MCP}"
+if [ "${ENABLE_MCP}" == "true" ]
+then
+  echo "  MCP source:          ${NUXEO_MCP_SRC}"
+  echo "  MCP branch:          ${NUXEO_MCP_BRANCH:-<current checkout>}"
+fi
 
 echo
 echo "Here's what will happen next:"
@@ -258,10 +319,29 @@ git clone -b ${NPD_BRANCH} ${NPD_REPO} ${NX_STUDIO}
 # Install conf files
 # ==================
 mkdir -p ${NX_STUDIO}/conf
-cp ${NX_STUDIO}/conf.d/*.conf ${NX_STUDIO}/conf
+# Always install core.conf (opensearch2 keyword client + MongoDB).
+cp ${NX_STUDIO}/conf.d/core.conf ${NX_STUDIO}/conf
+# vector-search.conf is only relevant when the vector package is installed;
+# copying it without the package would reference a missing template.
+if [ "${ENABLE_VECTOR}" == "true" ]
+then
+  cp ${NX_STUDIO}/conf.d/vector-search.conf ${NX_STUDIO}/conf
+fi
+
+# Make sure the local packages folder exists (used by the Docker build context,
+# and where you drop the vector search client .zip).
+mkdir -p ${NX_STUDIO}/nuxeo_packages
 
 # These templates are required for our stack.
 TEMPLATES="default,mongodb"
+
+# Search templates: opensearch2 keyword + audit, plus the vector client when
+# the feature is enabled.
+SEARCH_TEMPLATES="opensearch2-audit,opensearch2-search-client"
+if [ "${ENABLE_VECTOR}" == "true" ]
+then
+  SEARCH_TEMPLATES="${SEARCH_TEMPLATES},opensearch2-vector-search-client"
+fi
 
 # Scaffold system.conf
 cat << EOF > ${NX_STUDIO}/conf/system.conf
@@ -277,6 +357,7 @@ nuxeo.analytics.documentDistribution.disableThreshold=10000
 
 # Templates
 nuxeo.append.templates.system=${TEMPLATES}
+nuxeo.append.templates.search=${SEARCH_TEMPLATES}
 EOF
 
 # Install .env
@@ -289,10 +370,10 @@ AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-api-playground"
 # Auto install Nuxeo Admin Console for easier administration
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-admin-console"
-# Auto install OpenSearch 1.x search client
-AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch1"
-# Auto install OpenSearch 1.x audit client
-AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-audit-opensearch1"
+# Auto install OpenSearch 2.x audit client (ships in the 2025.22 image)
+AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-audit-opensearch2"
+# Auto install OpenSearch 2.x search client (ships in the 2025.22 image)
+AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch2"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
@@ -328,10 +409,50 @@ MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
 OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
 
+# JVM heaps (tune to your Docker Desktop memory budget; total ~6-8 GB).
+# OpenSearch 3.7 serves both indexes and runs the CPU embedding model.
+NUXEO_HEAP=2g
+OS_HEAP=3g
+
 FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
 STUDIO_CREDENTIALS=${CREDENTIALS}
 EOF
+
+# Vector search extras (embedding model registration script parameters)
+if [ "${ENABLE_VECTOR}" == "true" ]
+then
+  cat << EOF >> ${NX_STUDIO}/.env
+
+# -----------------------------------------------------------------------------
+# Semantic / vector search - embedding model registration
+# (used ONLY by scripts/register-embedding-model.sh)
+# -----------------------------------------------------------------------------
+# Multilingual MiniLM (384 dims, ~50 languages). English-only faster alternative
+# (dimension stays 384): huggingface/sentence-transformers/all-MiniLM-L6-v2
+EMBEDDING_MODEL_NAME=huggingface/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+EMBEDDING_MODEL_VERSION=1.0.1
+EMBEDDING_MODEL_FORMAT=TORCH_SCRIPT
+EOF
+fi
+
+# MCP server extras (build context path + branch, basic-auth credentials)
+if [ "${ENABLE_MCP}" == "true" ]
+then
+  cat << EOF >> ${NX_STUDIO}/.env
+
+# -----------------------------------------------------------------------------
+# Nuxeo MCP server (profile "mcp"). Built from a local nuxeo-mcp-server clone.
+# The MCP container reaches Nuxeo at http://nuxeo:8080/nuxeo (basic auth) and is
+# published on 127.0.0.1:8181 for a host-side "opencode serve".
+# NUXEO_MCP_BRANCH is read ONLY by scripts/build-nuxeo-mcp.sh, not by compose.
+# -----------------------------------------------------------------------------
+NUXEO_MCP_SRC=${NUXEO_MCP_SRC}
+NUXEO_MCP_BRANCH=${NUXEO_MCP_BRANCH}
+NUXEO_MCP_USERNAME=Administrator
+NUXEO_MCP_PASSWORD=Administrator
+EOF
+fi
 
 # Run commands
 # ============
@@ -385,7 +506,31 @@ echo "Installation complete."
 echo "================================================================================"
 
 echo
-echo "See https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki for docs. Hint: "
+echo "See https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki for docs."
 echo
-echo "cd ${NX_STUDIO} && docker compose up -d"
-echo
+
+if [ "${ENABLE_VECTOR}" == "true" ]
+then
+  echo "Semantic / vector search is ENABLED. Before starting Nuxeo:"
+  echo "  cd ${NX_STUDIO}"
+  echo "  1. Drop the vector client .zip in ./nuxeo_packages/ then: docker compose build nuxeo"
+  echo "  2. docker compose up -d mongo opensearch    # wait until healthy"
+  echo "  3. ./scripts/register-embedding-model.sh    # prints a model_id"
+  echo "  4. Paste the model_id into conf/vector-search.conf"
+  echo "  5. docker compose up -d --build nuxeo"
+  echo "  6. make reindex-vector                      # one-time: build the nuxeo-vector index"
+  echo "  7. make check-indices                       # expect 'nuxeo' and 'nuxeo-vector'"
+  echo
+else
+  echo "Hint:"
+  echo "  cd ${NX_STUDIO} && docker compose up -d"
+  echo
+fi
+
+if [ "${ENABLE_MCP}" == "true" ]
+then
+  echo "Nuxeo MCP server is ENABLED (profile \"mcp\", off by default). To start it:"
+  echo "  cd ${NX_STUDIO} && make mcp-build           # builds the branch + starts on 127.0.0.1:8181"
+  echo "  curl http://127.0.0.1:8181/health"
+  echo
+fi
