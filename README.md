@@ -105,18 +105,17 @@ ship inside the `nuxeo:2025.22` image and are auto-installed by `bootstrap.sh`.
 ```bash
 cd <your-stack>
 
-# 1. Drop the vector .zip in ./nuxeo_packages/ (see above), then build Nuxeo:
-docker compose build nuxeo
-
-# 2. Start the infra and wait until healthy:
+# 1. Start mongo and opensearch and wait until healthy:
 docker compose up -d mongo opensearch
 docker compose ps
 
-# 3. Register + deploy the embedding model (prints a model_id):
+# 2. Register + deploy the embedding model (prints a model_id):
 make register-model     # or: ./scripts/register-embedding-model.sh
 
-# 4. Paste the printed model_id into conf/vector-search.conf:
+# 3. Paste the printed model_id into conf/vector-search.conf:
 #      nuxeo.search.client.vector.opensearch2.model.id=<the-printed-id>
+
+# 4. Drop the vector .zip in ./nuxeo_packages/ (see above)
 
 # 5. (Re)build & start Nuxeo:
 docker compose up -d --build nuxeo

@@ -21,6 +21,7 @@ services:
       dockerfile: build_nuxeo/Dockerfile
       args:
         - "INSTALL_RPM=${INSTALL_RPM}"
+        - "INSTALL_FFMPEG=${INSTALL_FFMPEG:-true}"
         - "CONNECT_URL=${CONNECT_URL}"
         - "NUXEO_CLID=${NUXEO_CLID}"
         - "BUILD_PACKAGES=${BUILD_PACKAGES}"

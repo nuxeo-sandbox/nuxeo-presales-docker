@@ -101,6 +101,34 @@ then
   done
 fi
 
+# Install ffmpeg at build time?
+# ==============================
+# ffmpeg (+ codecs) is a heavy build step. Default true keeps previous behavior;
+# set to false to skip it and speed up the custom image build.
+INSTALL_FFMPEG_DEFAULT=true
+INSTALL_FFMPEG="${INSTALL_FFMPEG:-}"
+if [ -z "${INSTALL_FFMPEG}" ]
+then
+  while true
+  do
+    read -p "Install ffmpeg (+ codecs) at build time? [${INSTALL_FFMPEG_DEFAULT}]: " INSTALL_FFMPEG
+    # If not specified, use default
+    if [ -z "${INSTALL_FFMPEG}" ]; then
+        INSTALL_FFMPEG=${INSTALL_FFMPEG_DEFAULT}
+    fi
+
+    # Restrict input to 'true' or 'false'
+    case "${INSTALL_FFMPEG}" in
+      true|false)
+        break
+        ;;
+      *)
+        echo "Invalid input. Please enter 'true' or 'false', or you can press Enter to accept the default (${INSTALL_FFMPEG_DEFAULT})."
+        ;;
+    esac
+  done
+fi
+
 # Nuxeo Version
 # =============
 NX_VERSION_DEFAULT="2025"
@@ -273,6 +301,7 @@ NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 echo
 echo "Studio project:        ${NX_STUDIO}"
 echo "Build-time Packages?:  ${INSTALL_PACKAGES}"
+echo "Install ffmpeg?:       ${INSTALL_FFMPEG}"
 echo "Nuxeo version:         ${nx_version}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
 echo "Studio Username:       ${STUDIO_USERNAME}"
@@ -408,6 +437,9 @@ NUXEO_PACKAGES=${ENV_NUXEO_PACKAGES}
 
 INSTALL_RPM=${INSTALL_RPM}
 
+# Install ffmpeg (+ codecs) in the custom image build (true|false).
+INSTALL_FFMPEG=${INSTALL_FFMPEG}
+
 MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
 OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
@@ -538,11 +570,11 @@ echo
 if [ "${ENABLE_VECTOR}" == "true" ]
 then
   echo "Semantic / vector search is ENABLED. Before starting Nuxeo:"
-  echo "  cd ${NX_STUDIO}"
-  echo "  1. Drop the vector client .zip in ./nuxeo_packages/ then: docker compose build nuxeo"
-  echo "  2. docker compose up -d mongo opensearch    # wait until healthy"
-  echo "  3. ./scripts/register-embedding-model.sh    # prints a model_id"
-  echo "  4. Paste the model_id into conf/vector-search.conf"
+  echo "  0. cd ${NX_STUDIO}"
+  echo "  1. docker compose up -d mongo opensearch    # wait until healthy"
+  echo "  2. ./scripts/register-embedding-model.sh    # prints a model_id"
+  echo "  3. Paste the model_id into conf/vector-search.conf"
+  echo "  4. Drop the vector client .zip in ./nuxeo_packages/"
   echo "  5. docker compose up -d --build nuxeo"
   echo "  6. NUXEO_USER=Administrator NUXEO_PWD=<admin-pwd> make reindex-vector   # one-time: build the nuxeo-vector index"
   echo "  7. make check-indices                       # expect 'nuxeo' and 'nuxeo-vector'"

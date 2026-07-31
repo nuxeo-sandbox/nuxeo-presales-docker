@@ -18,6 +18,8 @@ ARG NUXEO_CLID
 ARG BUILD_PACKAGES
 ARG NUXEO_HOME
 ARG INSTALL_RPM
+# Install ffmpeg (+ codecs) at build time? Heavy step; set to false to skip it.
+ARG INSTALL_FFMPEG=true
 
 ARG NVM_VERSION=0.40.1
 ARG NODE_VERSION=22.14.0
@@ -37,17 +39,15 @@ RUN dnf config-manager --enable ol9_codeready_builder
 # Install additional packages
 RUN dnf -y install mediainfo
 
-#Install ffmpeg and codecs
-RUN dnf -y install \
-    ffmpeg \
-    x264 \
-    x265 \
-    opus \
-    libvpx \
-    flac \
-    libvorbis-devel \
-    --allowerasing && \
-    dnf clean all
+# Install ffmpeg and codecs (optional; controlled by INSTALL_FFMPEG, default true)
+RUN if [ "${INSTALL_FFMPEG}" = "true" ]; then \
+      dnf -y install \
+        ffmpeg x264 x265 opus libvpx flac libvorbis-devel \
+        --allowerasing && \
+      dnf clean all; \
+    else \
+      echo "INSTALL_FFMPEG != true, skipping ffmpeg installation."; \
+    fi
 
 # Create vi symlink (vim is in upstream, but vi symlink is not)
 RUN ln -s /usr/bin/vim /usr/bin/vi

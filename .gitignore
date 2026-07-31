@@ -21,5 +21,8 @@ nuxeo_war
 .yo-rc.json
 sh.sh
 
+# Agent instructions (local only)
+AGENTS.md
+
 # Other
 .DS_Store
