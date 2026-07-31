@@ -335,13 +335,16 @@ mkdir -p ${NX_STUDIO}/nuxeo_packages
 # These templates are required for our stack.
 TEMPLATES="default,mongodb"
 
-# Search templates: opensearch2 keyword + audit, plus the vector client when
-# the feature is enabled.
+# Search templates: opensearch2 keyword + audit. These ship in the 2025.22 base
+# image, so they are safe to add here (generate_clid.sh runs nuxeoctl against the
+# BASE image with this conf mounted).
+#
+# The VECTOR template (opensearch2-vector-search-client) is intentionally NOT
+# added here: it only exists once the nuxeo-search-client-opensearch2-vector
+# package is baked into the CUSTOM image. Adding it now would make CLID
+# generation fail on a missing template. It is appended to system.conf AFTER
+# generate_clid.sh has run (see the "Append the vector template" step below).
 SEARCH_TEMPLATES="opensearch2-audit,opensearch2-search-client"
-if [ "${ENABLE_VECTOR}" == "true" ]
-then
-  SEARCH_TEMPLATES="${SEARCH_TEMPLATES},opensearch2-vector-search-client"
-fi
 
 # Scaffold system.conf
 cat << EOF > ${NX_STUDIO}/conf/system.conf
@@ -490,6 +493,23 @@ elif [[ "${EC}" == "2" ]]
 then
   echo "Your studio token does not appear to be correct.  Please check and try again."
   exit 2
+fi
+
+# Append the vector template (AFTER CLID generation)
+# ==================================================
+# generate_clid.sh runs nuxeoctl against the BASE image with ./conf mounted, so
+# ./conf must only reference templates present in that base image. The vector
+# template (opensearch2-vector-search-client) ships in the vector package baked
+# into the CUSTOM image, not the base image; so we add it to system.conf only
+# now that CLID generation is done. We use a dedicated `nuxeo.append.templates.*`
+# key (any suffix is aggregated by Nuxeo) to avoid rewriting the existing line.
+if [ "${ENABLE_VECTOR}" == "true" ]
+then
+  cat << EOF >> ${NX_STUDIO}/conf/system.conf
+
+# Vector search template - appended after CLID generation (see bootstrap.sh).
+nuxeo.append.templates.vector=opensearch2-vector-search-client
+EOF
 fi
 
 # Build images

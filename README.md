@@ -52,6 +52,32 @@ See [Getting Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wik
 
 For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to scaffold the environment. You can find an example of how to use this tooling in EC2 [here](https://github.com/nuxeo-sandbox/presales-vmdemo/blob/master/aws/ec2-scripts/setup-nuxeo.sh).
 
+## How this branch's `bootstrap.sh` differs from `master`
+
+For future reference, the notable changes vs the `master` bootstrap:
+
+* **OpenSearch 3.7 + `opensearch2` client** instead of OpenSearch 1.x + `opensearch1`.
+  The auto-installed search packages become `nuxeo-audit-opensearch2` and
+  `nuxeo-search-client-opensearch2`, and `conf.d/core.conf` uses
+  `nuxeo.opensearch2.client.server`.
+* **Two extra prompts** (vector search, MCP server) that add the corresponding
+  `.env` variables (`OS_HEAP`, `EMBEDDING_MODEL_*`, `NUXEO_MCP_*`).
+* **The vector template is appended to `system.conf` *after* CLID generation.**
+  This is the important subtlety: `generate_clid.sh` runs `nuxeoctl` against the
+  **base** Nuxeo image with `./conf` mounted, and Nuxeo resolves every
+  `nuxeo.append.templates.*` entry at that point. The keyword/audit templates
+  (`opensearch2-audit`, `opensearch2-search-client`) ship in the `2025.22` base
+  image, so they are safe to add up front. But the vector template
+  (`opensearch2-vector-search-client`) only exists once the moving vector
+  **package** is baked into the **custom** image — it is absent from the base
+  image. If it were listed in `system.conf` during CLID generation, `nuxeoctl`
+  would fail on a missing template and abort the bootstrap. So the vector
+  template is added only **after** `generate_clid.sh` succeeds, via a dedicated
+  `nuxeo.append.templates.vector=opensearch2-vector-search-client` line (any
+  `nuxeo.append.templates.*` suffix is aggregated by Nuxeo, so this merges with
+  the keyword/audit list without rewriting it). Nuxeo still gets the template at
+  real startup, once the custom image (with the vector `.zip`) is built.
+
 ---
 
 # Optional feature 1 — Semantic / vector search (OpenSearch 3.7)
