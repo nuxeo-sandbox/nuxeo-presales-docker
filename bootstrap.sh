@@ -439,7 +439,7 @@ EMBEDDING_MODEL_FORMAT=TORCH_SCRIPT
 EOF
 fi
 
-# MCP server extras (build context path + branch, basic-auth credentials)
+# MCP server extras (build context path + branch)
 if [ "${ENABLE_MCP}" == "true" ]
 then
   cat << EOF >> ${NX_STUDIO}/.env
@@ -452,8 +452,14 @@ then
 # -----------------------------------------------------------------------------
 NUXEO_MCP_SRC=${NUXEO_MCP_SRC}
 NUXEO_MCP_BRANCH=${NUXEO_MCP_BRANCH}
-NUXEO_MCP_USERNAME=Administrator
-NUXEO_MCP_PASSWORD=Administrator
+
+# Admin credentials the MCP server uses to call Nuxeo (Basic auth). NOT stored
+# here on purpose: pass them INLINE when you start the MCP server, e.g.
+#   NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<pwd> make mcp-build
+# If omitted, docker-compose.yml defaults them to Administrator/Administrator.
+# Uncomment below only if you prefer to persist them (less "inline only"):
+#NUXEO_MCP_USERNAME=Administrator
+#NUXEO_MCP_PASSWORD=Administrator
 EOF
 fi
 
@@ -538,8 +544,11 @@ then
   echo "  3. ./scripts/register-embedding-model.sh    # prints a model_id"
   echo "  4. Paste the model_id into conf/vector-search.conf"
   echo "  5. docker compose up -d --build nuxeo"
-  echo "  6. make reindex-vector                      # one-time: build the nuxeo-vector index"
+  echo "  6. NUXEO_USER=Administrator NUXEO_PWD=<admin-pwd> make reindex-vector   # one-time: build the nuxeo-vector index"
   echo "  7. make check-indices                       # expect 'nuxeo' and 'nuxeo-vector'"
+  echo
+  echo "  Credentials for step 6 are passed INLINE (default Administrator/Administrator if omitted)."
+  echo "  Use the 'VAR=val make ...' prefix form, NOT 'make ... VAR=val'."
   echo
 else
   echo "Hint:"
@@ -550,7 +559,11 @@ fi
 if [ "${ENABLE_MCP}" == "true" ]
 then
   echo "Nuxeo MCP server is ENABLED (profile \"mcp\", off by default). To start it:"
-  echo "  cd ${NX_STUDIO} && make mcp-build           # builds the branch + starts on 127.0.0.1:8181"
+  echo "  cd ${NX_STUDIO}"
+  echo "  NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> make mcp-build   # builds the branch + starts on 127.0.0.1:8181"
   echo "  curl http://127.0.0.1:8181/health"
+  echo
+  echo "  Credentials are passed INLINE (default Administrator/Administrator if omitted)."
+  echo "  Use the 'VAR=val make ...' prefix form, NOT 'make ... VAR=val'."
   echo
 fi

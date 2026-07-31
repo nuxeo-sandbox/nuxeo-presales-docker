@@ -166,6 +166,9 @@ services:
     environment:
       # Reach Nuxeo by service name on the default compose network.
       - NUXEO_URL=http://nuxeo:8080/nuxeo
+      # Admin credentials (Basic auth). Passed INLINE at start time, e.g.
+      #   NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<pwd> make mcp-build
+      # Not stored in .env; default to Administrator/Administrator when omitted.
       - NUXEO_USERNAME=${NUXEO_MCP_USERNAME:-Administrator}
       - NUXEO_PASSWORD=${NUXEO_MCP_PASSWORD:-Administrator}
       - NUXEO_AUTH_METHOD=basic

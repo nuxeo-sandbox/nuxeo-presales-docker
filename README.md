@@ -122,12 +122,20 @@ make register-model     # or: ./scripts/register-embedding-model.sh
 docker compose up -d --build nuxeo
 
 # 6. ONE-TIME: build the vector index (otherwise Nuxeo logs "nuxeo-vector"
-#    index-missing errors until it exists). Fire-and-forget, runs async:
-make reindex-vector     # or: ./scripts/reindex-vector.sh
+#    index-missing errors until it exists). Fire-and-forget, runs async.
+#    Credentials are passed INLINE (default Administrator/Administrator if omitted):
+NUXEO_USER=Administrator NUXEO_PWD=<admin-pwd> make reindex-vector
+# or directly:
+# NUXEO_USER=Administrator NUXEO_PWD=<admin-pwd> ./scripts/reindex-vector.sh
 
 # 7. Verify both indices exist:
 make check-indices      # expect "nuxeo" and "nuxeo-vector"
 ```
+
+> **Credentials (inline only).** `reindex-vector` calls Nuxeo with `NUXEO_USER`/`NUXEO_PWD`,
+> passed **inline** at call time (they are **not** stored in `.env`). Omit them to use the
+> `Administrator/Administrator` default. Use the `VAR=val make …` **prefix** form — variables
+> passed as `make … VAR=val` are not exported to the script.
 
 > The vector reindex is also available from the **Admin Console → Elasticsearch/OpenSearch →
 > Reindex** (reindex the vector index only). Re-run it only after wiping the OpenSearch volume.
@@ -165,21 +173,32 @@ built from a branch). Set in `.env` (bootstrap fills these when you enable MCP):
 * `NUXEO_MCP_BRANCH` — branch to build (e.g. `feat-NXENG-584-semantic-search-mcp-tool` to get the
   `semantic_search` tool). Empty = build whatever is checked out. Read **only** by
   `scripts/build-nuxeo-mcp.sh` (Docker cannot check out a branch from a local build context).
-* `NUXEO_MCP_USERNAME` / `NUXEO_MCP_PASSWORD` — Basic-auth credentials (default `Administrator`).
+
+The Nuxeo admin **username/password** the MCP server uses (Basic auth) are **not** stored in
+`.env`; you pass them **inline** when starting the server (see below). Omit them and compose
+defaults to `Administrator/Administrator`.
 
 ### Workflow (localhost)
 
 ```bash
 cd <your-stack>
 
-# Build the MCP image from the chosen branch and start it (127.0.0.1:8181):
-make mcp-build          # or: ./scripts/build-nuxeo-mcp.sh
+# Build the MCP image from the chosen branch and start it (127.0.0.1:8181).
+# Credentials are passed INLINE (default Administrator/Administrator if omitted):
+NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> make mcp-build
+# or: NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> ./scripts/build-nuxeo-mcp.sh
 curl http://127.0.0.1:8181/health
 
-# Stop / logs:
+# Start an already-built image (same inline creds), stop, logs:
+NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> make mcp-up
 make mcp-down
 make mcp-logs
 ```
+
+> **Credentials (inline only).** The shell env overrides the compose `${…:-Administrator}`
+> defaults, so pass `NUXEO_MCP_USERNAME`/`NUXEO_MCP_PASSWORD` at call time; they are **not**
+> persisted in `.env` (a commented hint is left there). Use the `VAR=val make …` **prefix**
+> form — variables passed as `make … VAR=val` are not exported to the recipe.
 
 ### Using it from a host-side `opencode serve`
 
