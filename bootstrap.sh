@@ -101,6 +101,20 @@ then
   done
 fi
 
+# Nuxeo Version
+# =============
+NX_VERSION_DEFAULT="2025"
+nx_version="${NX_VERSION:-}"
+if [ -z "${nx_version}" ]
+then
+  read -p "Nuxeo Version [${NX_VERSION_DEFAULT}]: " nx_version
+  nx_version=${nx_version:-${NX_VERSION_DEFAULT}}
+fi
+if [[ "$nx_version" != "$NX_VERSION_DEFAULT"* ]]; then
+  echo "Invalid Nuxeo Version. It should starts with $NX_VERSION_DEFAULT"
+  exit 1
+fi
+
 # Install ffmpeg at build time?
 # ==============================
 # ffmpeg (+ codecs) is a heavy build step. Default true keeps previous behavior;
@@ -127,20 +141,6 @@ then
         ;;
     esac
   done
-fi
-
-# Nuxeo Version
-# =============
-NX_VERSION_DEFAULT="2025"
-nx_version="${NX_VERSION:-}"
-if [ -z "${nx_version}" ]
-then
-  read -p "Nuxeo Version [${NX_VERSION_DEFAULT}]: " nx_version
-  nx_version=${nx_version:-${NX_VERSION_DEFAULT}}
-fi
-if [[ "$nx_version" != "$NX_VERSION_DEFAULT"* ]]; then
-  echo "Invalid Nuxeo Version. It should starts with $NX_VERSION_DEFAULT"
-  exit 1
 fi
 
 # Optional features
