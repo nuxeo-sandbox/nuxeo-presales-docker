@@ -8,15 +8,26 @@
 > **DO NOT USE IT** as long as this warning is displayed. (well, of course you can, and work on fixing issues)
 
 > [!IMPORTANT]
-> This branch (`with-mcp-server-and-opensearch-vector`) adds two optional deployment features:
+> 
+> This branch (`with-mcp-server-and-opensearch-vector`) adds two optional deployment features...
 > * Nuxeo vector (semantic) search with OpenSearch 3.7,
-> * and the **Nuxeo MCP server**.
+> * and the [Nuxeo MCP server](https://github.com/nuxeo/nuxeo-mcp-server).
 >
-> It therefore uses **OpenSearch 3.7 + the `opensearch2` search client** (instead of
-> OpenSearch 1.x + `opensearch1` on `master`). To have the correct OpenSearch deployed, the Nuxeo image **must be ≥ 2025.22**.
-> Both features are **optional** and focused on **localhost**.
+> ... _Both requiring specific tuning deployment_ (see below)
 >
-> ** THIS BRANCH HAS NOT BEEN TESTED WITH OUR `presales-vmdemo` and CloudFormation template**
+> It therefore uses **OpenSearch 3.7 + the `opensearch2` search client** (instead of OpenSearch 1.x + `opensearch1`
+> on `master`). To have the correct OpenSearch deployed, the Nuxeo image **must be ≥ 2025.22**. Both features are
+> **optional** and focused on **localhost**.
+>
+> At the time of this writing (August 2026), the Platform Team is still working on these features, they are not available
+> as a marketplace plugin (Opensearch with vectors) nor a Docker artefact (MCP Server), hence the little "complications"
+> that require you to (all explained below):
+> * Get and use the latest `nuxeo-search-client-opensearch2-vector-package-0.0.0-SNAPSHOT.zip`
+> * Locally clone the Nuxeo MCP Server and uses its `feat-NXENG-584-semantic-search-mcp-tool` branch
+>
+> We can hope that, sooner or later, deployment will be very simple, just a couple options and the script gets the package and the latest Docker artefact.
+>
+> Now, if you follow the instructions, it is not that complicated :-)
 
 Simple command line tooling for creating and managing a Docker Compose stack for running Nuxeo.
 
@@ -191,7 +202,9 @@ cd <your-stack>
 NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> make mcp-build
 # or: NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> ./scripts/build-nuxeo-mcp.sh
 curl http://127.0.0.1:8181/health
+```
 
+```bash
 # Start an already-built image (same inline creds), stop, logs:
 NUXEO_MCP_USERNAME=Administrator NUXEO_MCP_PASSWORD=<admin-pwd> make mcp-up
 make mcp-down
@@ -211,6 +224,10 @@ We drive the localhost demo (questions asked from Nuxeo at `localhost:8080`) wit
 ```bash
 opencode serve --hostname 127.0.0.1 --port 4096 --cors http://localhost:8080
 ```
+
+> [!CAUTION]
+>
+> Here we start open code server with no credentials. **THIS IS FOR LOCALHOST DEMO PURPOSE ONLY**
 
 > Later upgrades (password on the endpoint, exposure from the Nuxeo Web UI on AWS, JWT auth)
 > are deferred. For now everything is localhost.
