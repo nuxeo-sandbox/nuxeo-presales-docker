@@ -1,22 +1,26 @@
 # About
 
 > [!CAUTION]
-> This branch (`with-mcp-server-and-opensearch-vector`) is **WORK IN PROGRESS**, still under implementation and test.
 >
-> **DO NOT USE IT** as long as this warning is displayed. (well, of course you can, and wrok on fixing issues)
+> 1. This branch (`with-mcp-server-and-opensearch-vector`) is **WORK IN PROGRESS**, still under implementation and test.
+> 2. It is focused on a **localhost** deployment, not tested with the `presales-vmdemo` and CloudFormation template**
+>
+> **DO NOT USE IT** as long as this warning is displayed. (well, of course you can, and work on fixing issues)
+
+> [!IMPORTANT]
+> This branch (`with-mcp-server-and-opensearch-vector`) adds two optional deployment features:
+> * Nuxeo vector (semantic) search with OpenSearch 3.7,
+> * and the **Nuxeo MCP server**.
+>
+> It therefore uses **OpenSearch 3.7 + the `opensearch2` search client** (instead of
+> OpenSearch 1.x + `opensearch1` on `master`). To have the correct OpenSearch deployed, the Nuxeo image **must be ≥ 2025.22**.
+> Both features are **optional** and focused on **localhost**.
+>
+> ** THIS BRANCH HAS NOT BEEN TESTED WITH OUR `presales-vmdemo` and CloudFormation template**
 
 Simple command line tooling for creating and managing a Docker Compose stack for running Nuxeo.
 
 See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
-
-> [!IMPORTANT]
-> **This branch (`with-mcp-server-and-opensearch-vector`) adds two optional features:**
-> **OpenSearch 3.7 + Nuxeo vector (semantic) search**, and the **Nuxeo MCP server**.
-> It therefore uses **OpenSearch 3.7 + the `opensearch2` search client** (instead of
-> OpenSearch 1.x + `opensearch1` on `master`), and the Nuxeo image **must be ≥ 2025.22**.
-> Both features are **optional** and focused on **localhost**.
->
-> ** THIS BRANCH WILL NOT WORK AT ALL WITH OUR `presales-vmdemo` and CloudFormation template**
 
 # Compatible Versions
 
