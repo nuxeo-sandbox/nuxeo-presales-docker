@@ -24,16 +24,11 @@ set -euo pipefail
 NUXEO_URL="${NUXEO_URL:-http://localhost:8080/nuxeo}"
 NUXEO_USER="${NUXEO_USER:-Administrator}"
 NUXEO_PWD="${NUXEO_PWD:-Administrator}"
-QUERY="${QUERY:-SELECT * FROM Document}"
 
-echo "==> Triggering one-time vector reindex on ${NUXEO_URL} (index=vector)..."
-echo "    query: ${QUERY}"
+echo "==> Triggering one-time vector reindex on ${NUXEO_URL}..."
 
-curl -u "${NUXEO_USER}:${NUXEO_PWD}" -X POST \
-  "${NUXEO_URL}/api/v1/search/bulk/reindex?index=vector" \
-  -H 'Content-Type: application/json' \
-  -d "{\"query\":\"${QUERY}\"}"
+curl -s -X POST "${NUXEO_URL}/api/v1/management/search/reindex" -u "${NUXEO_USER}:${NUXEO_PWD}"
 
 echo
 echo "==> Submitted. The bulk action runs asynchronously (fire-and-forget)."
-echo "    Watch the Nuxeo logs and run: make check-indices"
+echo "    Watch the Nuxeo logs, or run: make check-indices"
