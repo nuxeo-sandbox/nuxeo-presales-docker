@@ -3,7 +3,7 @@
 > [!CAUTION]
 >
 > This branch (`with-mcp-server-and-opensearch-vector`) is focused on a **localhost** deployment, not tested with the `presales-vmdemo` and CloudFormation template**
->
+
 > [!IMPORTANT]
 > 
 > This branch (`with-mcp-server-and-opensearch-vector`) adds two optional deployment features...
