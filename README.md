@@ -2,11 +2,8 @@
 
 > [!CAUTION]
 >
-> 1. This branch (`with-mcp-server-and-opensearch-vector`) is **WORK IN PROGRESS**, still under implementation and test.
-> 2. It is focused on a **localhost** deployment, not tested with the `presales-vmdemo` and CloudFormation template**
+> This branch (`with-mcp-server-and-opensearch-vector`) is focused on a **localhost** deployment, not tested with the `presales-vmdemo` and CloudFormation template**
 >
-> **DO NOT USE IT** as long as this warning is displayed. (well, of course you can, and work on fixing issues)
-
 > [!IMPORTANT]
 > 
 > This branch (`with-mcp-server-and-opensearch-vector`) adds two optional deployment features...
