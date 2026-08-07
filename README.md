@@ -112,6 +112,12 @@ nuxeo_packages/nuxeo-search-client-opensearch2-vector-package-0.0.0-SNAPSHOT.zip
 The other opensearch2 packages (`nuxeo-audit-opensearch2`, `nuxeo-search-client-opensearch2`)
 ship inside the `nuxeo:2025.22` image and are auto-installed by `bootstrap.sh`.
 
+> [!NOTE]
+> After Nuxeo first starts, you must run a .sh (see below) that forces it to reindex, so the
+> nuxeo-vector index is created (the plugin does not create it at startup for now). So, if
+> you monitor server.log you will see some errors about the missing index, this is "normal",
+> there will be no more errors once the reindexation is done.
+
 ### Workflow (localhost)
 
 ```bash
