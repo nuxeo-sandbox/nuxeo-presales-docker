@@ -34,6 +34,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
       - nuxeo-data:/var/lib/nuxeo:rw
+      - nuxeo-logs:/var/log/nuxeo:rw
+      - nuxeo-tmp:/tmp:rw
       # Install custom packages from local directory
       # - "./nuxeo_packages:/opt/nuxeo/packages"
   mongo:
@@ -54,6 +56,7 @@ services:
     #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
+      - mongo-configdb:/data/configdb:rw
   opensearch:
     image: ${OPENSEARCH_IMAGE}
     env_file:
@@ -106,10 +109,10 @@ services:
       - 5601
     ports:
       - "5601:5601"
-# TODO: Add explicit mounts to prevent anonymous volumes:
-# - Nuxeo: nuxeo-tmp:/tmp:rw and nuxeo-logs:/var/log/nuxeo:rw
-# - MongoDB: mongo-configdb:/data/configdb:rw
 volumes:
   nuxeo-data:
+  nuxeo-logs:
+  nuxeo-tmp:
   opensearch-data:
   mongo-data:
+  mongo-configdb:
