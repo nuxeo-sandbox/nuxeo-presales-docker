@@ -43,7 +43,7 @@ services:
     hostname: mongo
     restart: unless-stopped
     healthcheck:
-      test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
+      test: echo 'db.stats().ok' | mongosh mongo:27017/test --quiet
       interval: 1m
       timeout: 30s
       retries: 10
