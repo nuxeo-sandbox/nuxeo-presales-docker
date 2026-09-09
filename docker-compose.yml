@@ -1,3 +1,13 @@
+# Cap container log files so long-running instances don't fill the disk.
+# json-file is Docker's default driver; max-size + max-file enable rotation,
+# compress shrinks the rotated files. Budget: 10 MB x 3 files per container.
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+    compress: "true"
+
 services:
   nuxeo:
     build:
@@ -14,6 +24,7 @@ services:
     image: presales-nuxeo-${PROJECT_NAME}
     hostname: nuxeo
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       - mongo
       - opensearch
@@ -42,6 +53,7 @@ services:
     image: mongo:${MONGO_VERSION}
     hostname: mongo
     restart: unless-stopped
+    logging: *default-logging
     healthcheck:
       test: echo 'db.stats().ok' | mongosh mongo:27017/test --quiet
       interval: 1m
@@ -63,6 +75,7 @@ services:
       - ./.env
     hostname: opensearch
     restart: unless-stopped
+    logging: *default-logging
     healthcheck:
       test: curl -f http://opensearch:9200/
       interval: 2m
@@ -92,6 +105,7 @@ services:
     image: ${OPENSEARCH_DASHBOARDS_IMAGE}
     hostname: dashboards
     restart: unless-stopped
+    logging: *default-logging
     healthcheck:
       test: curl -f http://dashboards:5601/dashboards
       interval: 2m
