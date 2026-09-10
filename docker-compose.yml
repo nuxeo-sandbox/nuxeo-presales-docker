@@ -63,6 +63,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - /usr/bin/docker:/usr/bin/docker:ro
       - nuxeo-data:/var/lib/nuxeo:rw
+      - nuxeo-logs:/var/log/nuxeo:rw
+      - nuxeo-tmp:/tmp:rw
       # Install custom packages from local directory
       # - "./nuxeo_packages:/opt/nuxeo/packages"
   mongo:
@@ -71,7 +73,7 @@ services:
     restart: unless-stopped
     logging: *default-logging
     healthcheck:
-      test: echo 'db.stats().ok' | mongo mongo:27017/test --quiet
+      test: echo 'db.stats().ok' | mongosh mongo:27017/test --quiet
       interval: 1m
       timeout: 30s
       retries: 10
@@ -84,6 +86,7 @@ services:
     #  - "27017:27017"
     volumes:
       - mongo-data:/data/db
+      - mongo-configdb:/data/configdb:rw
   opensearch:
     image: ${OPENSEARCH_IMAGE}
     env_file:
@@ -199,10 +202,10 @@ services:
     ports:
       # Loopback-only: reachable from the Mac (opencode serve), not the LAN.
       - "127.0.0.1:8181:8181"
-# TODO: Add explicit mounts to prevent anonymous volumes:
-# - Nuxeo: nuxeo-tmp:/tmp:rw and nuxeo-logs:/var/log/nuxeo:rw
-# - MongoDB: mongo-configdb:/data/configdb:rw
 volumes:
   nuxeo-data:
+  nuxeo-logs:
+  nuxeo-tmp:
   opensearch-data:
   mongo-data:
+  mongo-configdb:
