@@ -255,6 +255,10 @@ echo "==========================================================================
 echo
 git clone -b ${NPD_BRANCH} ${NPD_REPO} ${NX_STUDIO}
 
+# The `init` folder needs to be writable by the container user; we have a
+# feature to copy the server's default log4j2.xml out to the host.
+chmod 777 ${NX_STUDIO}/init
+
 # Install conf files
 # ==================
 mkdir -p ${NX_STUDIO}/conf
