@@ -1,0 +1,24 @@
+<!--
+  Suppress the Web UI `user does not exist` 404 WARN noise.
+
+  Since Web UI 2025.19, there are widgets that try to fetch the principal for
+  all user names (via `api/v1/user/<username>`). The problem is there is plenty
+  of "user" activity in Nuxeo that's attributed to the `system` user. You can't
+  fetch user info for `system`. So the log is now full of warnings about an
+  unknown user.
+
+  * Regression from ELEMENTS-1995 / WEBUI-1096
+  * Tracking bug WEBUI-2309.
+
+  This is a WORKAROUND until the product bug is fixed.
+
+  Usage: copy the <Logger> element below into the <Loggers> section of
+  init/log4j2.xml, then restart Nuxeo (hint: nx restart)
+-->
+
+<!-- Suppress the Web UI `user does not exist` 404 WARN noise for the `system` user -->
+<Logger name="org.nuxeo.ecm.webengine.app.WebEngineExceptionMapper" level="warn">
+  <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL" operator="and">
+    <KeyValuePair key="PathInfo" value="/api/v1/user/system" />
+  </ThreadContextMapFilter>
+</Logger>
