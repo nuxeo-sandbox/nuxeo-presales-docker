@@ -1,0 +1,37 @@
+<!--
+  Goal: Show only the current session's logs in `nx logs`.
+
+  Since adding the named `nuxeo-logs` volume, `server.log` persists across
+  restarts. So when you `nx logs` (or equivalent) you see logs from past
+  sessions as well.
+
+  (This is because OOTB the Nuxeo image does `tail -fn+1 .../server.log`)
+
+  FIX: replace the OOTB config with one that:
+
+    * Rolls the existing server.log into a timestamped `.gz` archive on every JVM start
+    * Keeps only the newest 50 archives, pruning the oldest
+
+  Usage: in the <Appenders> section of `init/log4j2.xml`:
+
+    * Comment out the element <RollingFile name="FILE-ORIGINAL"...> (in case you
+      want to restore it)
+    * Paste the one below
+    * Restart Nuxeo (hint: nx restart)
+-->
+
+<!-- server.log: roll to a .gz on JVM start so `nx logs` shows only the current session -->
+<RollingFile name="FILE-ORIGINAL" fileName="${sys:nuxeo.log.dir}/server.log"
+  filePattern="${sys:nuxeo.log.dir}/server-%d{yyyy-MM-dd}-%i.log.gz">
+  <PatternLayout pattern="${fileLayout}" />
+  <Policies>
+    <OnStartupTriggeringPolicy /> <!-- archive the previous session on every JVM start -->
+    <TimeBasedTriggeringPolicy /> <!-- daily rollover at midnight (from %d in filePattern) -->
+  </Policies>
+  <DefaultRolloverStrategy>
+    <Delete basePath="${sys:nuxeo.log.dir}" maxDepth="1">
+      <IfFileName glob="server-*.log.gz" />
+      <IfAccumulatedFileCount exceeds="50" /> <!-- keep newest 50 archives, prune oldest -->
+    </Delete>
+  </DefaultRolloverStrategy>
+</RollingFile>
