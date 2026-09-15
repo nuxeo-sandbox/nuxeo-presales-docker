@@ -24,7 +24,6 @@ alias dcupd='docker compose up -d'
 # QOL aliases to make managing the stack easier
 alias stack='make -e'
 alias nx='stack SERVICE=nuxeo'
-# See https://github.com/nuxeo-sandbox/nuxeo-presales-docker/issues/10
 alias nxl='nx exec COMMAND="tail -Fn+1 /var/log/nuxeo/server.log"'
 alias vilog='nx exec COMMAND="vi /var/log/nuxeo/server.log"'
 alias nxbash='nx exec COMMAND=bash'
