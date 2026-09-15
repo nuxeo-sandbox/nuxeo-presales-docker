@@ -28,8 +28,16 @@ exec:
 restart:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml restart $(SERVICE)
 
+# For a single service, show only the current session's logs. If no service is
+# specified, show all logs.
 logs:
-	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml logs -f $(SERVICE)
+	@dc="docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml"; \
+	if [ -n "$(SERVICE)" ]; then \
+		since=$$(docker inspect -f '{{.State.StartedAt}}' $$($$dc ps -aq $(SERVICE)) 2>/dev/null); \
+		$$dc logs -f --since "$${since:-1970-01-01T00:00:00Z}" $(SERVICE); \
+	else \
+		$$dc logs -f; \
+	fi
 
 vilog:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
