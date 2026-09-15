@@ -1,11 +1,15 @@
 <!--
+  WARNING: this customization is *already included* in our Nuxeo image. It's
+  left here as a log4j example only.
+-->
+<!--
   Goal: Show only the current session's logs in `nx logs`.
 
   Since adding the named `nuxeo-logs` volume, `server.log` persists across
   restarts. So when you `nx logs` (or equivalent) you see logs from past
   sessions as well.
 
-  (This is because OOTB the Nuxeo image does `tail -fn+1 .../server.log`)
+  (This is because OOTB the Nuxeo image injects the whole server.log into STDOUT)
 
   FIX: replace the OOTB config with one that:
 
