@@ -27,6 +27,7 @@ alias nx='stack SERVICE=nuxeo'
 # See https://github.com/nuxeo-sandbox/nuxeo-presales-docker/issues/10
 alias nxlogs='nx logs'
 alias nxl='nx exec COMMAND="tail -Fn+1 /var/log/nuxeo/server.log"'
+alias vilog='nx exec COMMAND="vi /var/log/nuxeo/server.log"'
 alias nxbash='nx exec COMMAND=bash'
 alias opensearch='stack SERVICE=opensearch'
 alias mongodb='stack SERVICE=mongo'

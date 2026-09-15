@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := status
-.PHONY: pull build pullbuild rebuild start exec restart logs vilog status ps stop down rm new clean
+.PHONY: pull build pullbuild rebuild start exec restart logs status ps stop down rm new clean
 
 COMPOSE_DIR := .
 SERVICE :=
@@ -38,9 +38,6 @@ logs:
 	else \
 		$$dc logs -f; \
 	fi
-
-vilog:
-	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml exec nuxeo vi /var/log/nuxeo/server.log
 
 status: | info ps
 
