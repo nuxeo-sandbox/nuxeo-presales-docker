@@ -1,7 +1,10 @@
 # Please take note of the inline directives.
-# Make changes only between the specified section.
+# Make changes only between the specified sections.
 
-# For Nuxeo Server 2023.20 and higher, upstream image uses Oracle Linux 9
+# Reference for the Nuxeo base image and custom-build conventions:
+# https://doc.nuxeo.com/n/OZF
+
+# Upstream image uses Oracle Linux 9
 # See https://hyland.atlassian.net/browse/NXP-32711
 
 # ARG used by FROM should always have a default value that makes the build valid.
@@ -11,7 +14,8 @@ ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2025
 # Change the source image, if necessary
 FROM ${NUXEO_IMAGE}
 
-# !!! DO NOT CHANGE BELOW THIS LINE !!!
+# BEGIN DO NOT CHANGE
+#===============================================================================
 ARG CONNECT_URL
 ARG NUXEO_CLID
 ARG BUILD_PACKAGES
@@ -60,23 +64,36 @@ RUN if [ $(uname -m) == "aarch64" ];then dnf -y install libreoffice-core libreof
 # Add additional RPMs to the source image
 RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
 
-# !!! DO NOT CHANGE ABOVE THIS LINE !!!
+# Bake in presales log4j customizations (needs root; edits the server's log4j2.xml).
+COPY build_nuxeo/apply-presales-log4j.sh /tmp/apply-presales-log4j.sh
+RUN PRESALES_LOG4J_BUILD=1 sh /tmp/apply-presales-log4j.sh /opt/nuxeo/server/lib/log4j2.xml && rm -f /tmp/apply-presales-log4j.sh
 
-# >>> Make your changes BELOW this line <<<
+#===============================================================================
+# END DO NOT CHANGE
 
-# See: https://github.com/nuxeo/nuxeo/tree/master/docker for source documentation
+# BEGIN Things you want to run as root go here
+#===============================================================================
 
 # Example custom package installation
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-nodeps-*.zip ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # COPY --chown=900:0 /docker-entrypoint-initnuxeo.d/local-package-*.zip ${NUXEO_HOME}/local-packages/local-package.zip
 
-# >>> Make your changes ABOVE this line <<<
+#===============================================================================
+# END Things you want to run as root go here
+
+# BEGIN DO NOT CHANGE
+#===============================================================================
 
 RUN usermod -aG 998 nuxeo
 
-# !!! DO NOT CHANGE BELOW THIS LINE (except for noted items) !!!
 # Set back original (nuxeo) user
 USER 900
+
+#===============================================================================
+# END DO NOT CHANGE
+
+# BEGIN Things you want to run as nuxeo go here
+#===============================================================================
 
 # (Optional) Include the google credentials.
 # Replace the filename with your value
@@ -103,4 +120,5 @@ RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${BUI
 # Install remote packages and a local package with its dependencies
 # RUN /install-packages.sh --clid ${NUXEO_CLID} nuxeo-web-ui nuxeo-drive ${NUXEO_HOME}/local-packages/local-package.zip
 
-# !!! END OF FILE !!!
+#===============================================================================
+# END OF FILE
