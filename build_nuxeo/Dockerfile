@@ -68,6 +68,10 @@ RUN if [ -n "${INSTALL_RPM}" ]; then dnf -y install ${INSTALL_RPM}; fi
 COPY build_nuxeo/apply-presales-log4j.sh /tmp/apply-presales-log4j.sh
 RUN PRESALES_LOG4J_BUILD=1 sh /tmp/apply-presales-log4j.sh /opt/nuxeo/server/lib/log4j2.xml && rm -f /tmp/apply-presales-log4j.sh
 
+# Make the stdout log tail survive log rollovers so `docker compose logs` /
+# `nxlogs` keeps updating. Upstream fix tracked by NXP-33966.
+RUN sed -i 's/tail -fn+1/tail -Fn+1/' /nuxeo-run-dev.sh
+
 #===============================================================================
 # END DO NOT CHANGE
 
