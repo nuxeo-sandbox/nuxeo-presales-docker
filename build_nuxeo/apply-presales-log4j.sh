@@ -8,9 +8,7 @@
 # examples workflow for that. This is for things we want to bake in in all
 # cases.
 #
-#   1. Suppress the Web UI `user does not exist` 404 WARN noise for the `system`
-#      user (regression WEBUI-1096 / ELEMENTS-1995, tracked by WEBUI-2309).
-#   2. Reset server.log on JVM start so `nx logs` shows only the current
+#   1. Reset server.log on JVM start so `nx logs` shows only the current
 #      session. Meanwhile, old logs are archived so nothing is lost except that
 #      we only keep the newest 50 archives.
 #
@@ -32,23 +30,7 @@ if [ ! -f "${OOTB_LOG4J}" ]; then
   exit 0
 fi
 
-# Note: each fragment is stored in a temporary file; this is the safest way to
-# inject the XML blocks (e.g. instead of strings in vars).
-
-#   1. Suppress the Web UI `user does not exist` 404 WARN noise for the `system`
-#      user (regression WEBUI-1096 / ELEMENTS-1995, tracked by WEBUI-2309).
-hide_system_user_logger="$(mktemp)"
-cat > "${hide_system_user_logger}" << 'EOF'
-    <!-- Suppress the Web UI `user does not exist` 404 WARN noise
-         for the `system` user (WEBUI-1096 / ELEMENTS-1995, tracked by WEBUI-2309). -->
-    <Logger name="org.nuxeo.ecm.webengine.app.WebEngineExceptionMapper" level="warn">
-      <ThreadContextMapFilter onMatch="DENY" onMismatch="NEUTRAL" operator="and">
-        <KeyValuePair key="PathInfo" value="/api/v1/user/system" />
-      </ThreadContextMapFilter>
-    </Logger>
-EOF
-
-#   2. Reset server.log on JVM start so `nx logs` shows only the current
+#   1. Reset server.log on JVM start so `nx logs` shows only the current
 #      session. Meanwhile, old logs are archived so nothing is lost except that
 #      we only keep the newest 50 archives.
 reset_server_log_appender="$(mktemp)"
@@ -74,18 +56,15 @@ EOF
 
 spliced_log4j="$(mktemp)"
 
-# This finds two specific lines in the default log4j2.xml -- the FILE-ORIGINAL
-# appender (which we replace) and the <Loggers> tag (we add our logger right
-# after it). If a future Nuxeo release renames or removes those lines, that
-# change is simply skipped and the rest of the file is left untouched.
-awk -v logger_file="${hide_system_user_logger}" -v appender_file="${reset_server_log_appender}" '
+# This finds one specific line in the default log4j2.xml -- the FILE-ORIGINAL
+# appender (which we replace). If a future Nuxeo release renames or removes that
+# line, the change is simply skipped and the rest of the file is left untouched.
+awk -v appender_file="${reset_server_log_appender}" '
   function emit(f,   line) { while ((getline line < f) > 0) print line; close(f) }
   # Replace the default FILE-ORIGINAL appender with the presales rolling config.
   /<RollingFile name="FILE-ORIGINAL"/ { emit(appender_file); skip = 1; next }
   skip && /<\/RollingFile>/           { skip = 0; next }
   skip                                { next }
-  # Insert the hide-system-user logger just inside <Loggers>.
-  /<Loggers>/                         { print; emit(logger_file); next }
   { print }
 ' "${OOTB_LOG4J}" > "${spliced_log4j}"
 
@@ -93,6 +72,6 @@ awk -v logger_file="${hide_system_user_logger}" -v appender_file="${reset_server
 # it keeps its original owner and permissions.
 cat "${spliced_log4j}" > "${OOTB_LOG4J}"
 # Clean up temporary files used for splicing the log4j2.xml.
-rm -f "${spliced_log4j}" "${hide_system_user_logger}" "${reset_server_log_appender}"
+rm -f "${spliced_log4j}" "${reset_server_log_appender}"
 
 echo "apply-presales-log4j: customizations applied to ${OOTB_LOG4J}"
