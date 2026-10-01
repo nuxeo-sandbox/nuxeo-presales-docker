@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := status
-.PHONY: pull build pullbuild start exec restart logs status ps stop down rm new clean
+.PHONY: pull build pullbuild rebuild start exec restart logs status ps stop down rm new clean
 
 COMPOSE_DIR := .
 SERVICE :=
@@ -18,6 +18,9 @@ build:
 # Like build, but also pull a newer base image; useful with floating tags like `2025` or `latest`.
 pullbuild:
 	CACHEBUST=$(shell date +%s) docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build --pull $(SERVICE)
+
+# Backwards-compatible alias; build now always busts the package layer, so rebuild is redundant.
+rebuild: build
 
 up:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
