@@ -96,6 +96,6 @@ then
 
   if [[ -z "${UPDATE}" || "${UPDATE}" == "y" || "${UPDATE}" == "Y" ]]
   then
-    make rebuild
+    make pullbuild
   fi
 fi

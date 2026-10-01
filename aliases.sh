@@ -30,7 +30,7 @@ alias nxbash='nx exec COMMAND=bash'
 alias opensearch='stack SERVICE=opensearch'
 alias mongodb='stack SERVICE=mongo'
 alias mongo='stack exec SERVICE=mongo COMMAND=mongosh'
-alias nxpull='docker compose build --pull'
+alias nxpull='nx pullbuild'
 
 # Quick access to nuxeoctl
 alias nxctl-status='nx exec COMMAND="nuxeoctl status"'

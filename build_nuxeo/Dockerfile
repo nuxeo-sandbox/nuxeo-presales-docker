@@ -117,8 +117,19 @@ USER 900
 #RUN ln -s /home/nuxeo/.nvm/versions/node/v${NODE_VERSION}/bin/gltf-transform /usr/local/bin/gltf-transform
 #USER 900
 
-# Install packages at build time
+# One problem is that Docker has no way to know if a Nuxeo artifact has changed.
+# For example, make a change to your Studio project, run `nx build` and nothing
+# happens. You can combat this with a --no-cache build, but this means
+# rebuilding all layers, including the expensive OS/RPM layers, every time.
+
+# Inject a dummy layer that changes whenever CACHEBUST changes. When we run `nx
+# build` the connect layer always gets rebuilt, forcing a fresh Studio install.
+ARG CACHEBUST=0
+RUN echo "Cache bust: ${CACHEBUST}"
+
+# Install packages at build time.
 RUN /install-packages.sh --connect-url ${CONNECT_URL} --clid ${NUXEO_CLID} ${BUILD_PACKAGES}
+
 # Install a local package without its dependencies (`mp-install --nodeps`)
 # RUN /install-packages.sh --offline ${NUXEO_HOME}/local-packages/local-package-nodeps.zip
 # Install remote packages and a local package with its dependencies
