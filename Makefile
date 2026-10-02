@@ -11,7 +11,7 @@ pull:
 # CACHEBUST forces the Studio/Hyland package install layer (Studio SNAPSHOTs
 # keep the same version, so Docker can't otherwise tell the project changed)
 # while reusing the cached OS/RPM layers. For a full from-scratch build use
-# `make clean`.
+# `make rebuild`.
 build:
 	CACHEBUST=$(shell date +%s) docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
 
@@ -19,8 +19,10 @@ build:
 pullbuild:
 	CACHEBUST=$(shell date +%s) docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build --pull $(SERVICE)
 
-# Backwards-compatible alias; build now always busts the package layer, so rebuild is redundant.
-rebuild: build
+# Force a full rebuild of ALL layers (incl. the expensive OS/RPM ones) on the
+# SAME base image.
+rebuild:
+	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build --no-cache $(SERVICE)
 
 up:
 	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml up --detach $(SERVICE)
