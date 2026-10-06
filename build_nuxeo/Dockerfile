@@ -37,7 +37,7 @@ ENV LANG="en_US.UTF-8" \
 
 # We use RPM Fusion to get ffmpeg with x264 and x265 support
 # RPM Fusion is built against Fedora's EPEL, so we use that too
-RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && dnf -y install https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
 
 RUN dnf config-manager --enable ol9_codeready_builder
 
