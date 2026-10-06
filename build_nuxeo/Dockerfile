@@ -45,7 +45,9 @@ RUN dnf config-manager --enable ol9_codeready_builder
 # Install additional packages
 
 # Install mediainfo
-RUN dnf -y install mediainfo
+# Only used by nuxeo-video-mediainfo-mapper, which is 2+years old
+# Consider removing this...
+# RUN dnf -y install mediainfo
 
 #Install ffmpeg and codecs
 RUN dnf -y install \
