@@ -39,9 +39,12 @@ ENV LANG="en_US.UTF-8" \
 # RPM Fusion is built against Fedora's EPEL, so we use that too
 RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
 
+# CRB is needed so we can do stuff like install ffmpeg
 RUN dnf config-manager --enable ol9_codeready_builder
 
 # Install additional packages
+
+# Install mediainfo
 RUN dnf -y install mediainfo
 
 #Install ffmpeg and codecs
