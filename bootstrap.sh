@@ -7,7 +7,7 @@
 NPD_REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
 NUXEO_IMAGE_PREFIX="docker-private.packages.nuxeo.com/nuxeo/nuxeo:"
 MONGO_VERSION="8.0"
-OPENSEARCH_VERSION="1.3.20"
+OPENSEARCH_VERSION="2"
 OPENSEARCH_IMAGE="opensearchproject/opensearch:"${OPENSEARCH_VERSION}
 OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEARCH_VERSION}
 INSTALL_RPM="" # TODO: this isn't used. It's kind of an advanced topic though, so maybe that's ok.
@@ -293,10 +293,10 @@ AUTO_PACKAGES="${AUTO_PACKAGES} platform-explorer"
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-api-playground"
 # Auto install Nuxeo Admin Console for easier administration
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-admin-console"
-# Auto install OpenSearch 1.x search client
-AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch1"
-# Auto install OpenSearch 1.x audit client
-AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-audit-opensearch1"
+# Auto install OpenSearch 2.x search client
+AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch2"
+# Auto install OpenSearch 2.x audit client
+AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-audit-opensearch2"
 
 # Handle build-time vs runtime package install
 if ${INSTALL_PACKAGES}
