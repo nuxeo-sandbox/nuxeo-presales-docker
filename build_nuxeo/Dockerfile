@@ -9,10 +9,10 @@
 
 # ARG used by FROM should always have a default value that makes the build valid.
 # https://docs.docker.com/reference/build-checks/invalid-default-arg-in-from/
-ARG NUXEO_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2025
+ARG BASE_IMAGE=docker-private.packages.nuxeo.com/nuxeo/nuxeo:2025
 
 # Change the source image, if necessary
-FROM ${NUXEO_IMAGE}
+FROM ${BASE_IMAGE}
 
 # BEGIN DO NOT CHANGE
 #===============================================================================
