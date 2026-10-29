@@ -16,7 +16,7 @@ services:
       args:
         - "INSTALL_RPM=${INSTALL_RPM}"
         - "CONNECT_URL=${CONNECT_URL}"
-        - "NUXEO_CLID=${NUXEO_CLID}"
+        - "NUXEO_CLID=${NUXEO_CLID:-}"
         - "BUILD_PACKAGES=${BUILD_PACKAGES}"
         - "BASE_IMAGE=${NUXEO_IMAGE}"
         - "CACHEBUST=${CACHEBUST:-0}"
