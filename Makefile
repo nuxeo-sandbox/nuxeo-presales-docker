@@ -1,12 +1,17 @@
 .DEFAULT_GOAL := status
-.PHONY: pull build pullbuild rebuild start exec restart logs status ps stop down rm new clean
+.PHONY: pull build rebuild start exec restart logs status ps stop down rm new clean
 
 COMPOSE_DIR := .
 SERVICE :=
 COMMAND :=
 
+# Fetch the latest version of every image in scope, including the base images that
+# buildable services are built FROM.
 pull:
-	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml pull $(SERVICE)
+	docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml pull --ignore-buildable $(SERVICE)
+	@docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml config --format json \
+	  | jq -r --arg svc "$(SERVICE)" '.services | to_entries[] | select($$svc == "" or .key == $$svc) | select(.value.build) | .value.build.args.BASE_IMAGE // empty' \
+	  | sort -u | while read -r img; do [ -n "$$img" ] && docker pull "$$img"; done
 
 # CACHEBUST forces the Studio/Hyland package install layer (Studio SNAPSHOTs
 # keep the same version, so Docker can't otherwise tell the project changed)
@@ -14,10 +19,6 @@ pull:
 # `make rebuild`.
 build:
 	CACHEBUST=$(shell date +%s) docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build $(SERVICE)
-
-# Like build, but also pull a newer base image; useful with floating tags like `2025` or `latest`.
-pullbuild:
-	CACHEBUST=$(shell date +%s) docker compose --project-directory $(COMPOSE_DIR) --file $(COMPOSE_DIR)/docker-compose.yml build --pull $(SERVICE)
 
 # Force a full rebuild of ALL layers (incl. the expensive OS/RPM ones) on the
 # SAME base image.
