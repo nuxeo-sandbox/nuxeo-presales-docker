@@ -1,8 +1,5 @@
 # About
 
-> [!WARNING]
-> You are viewing a branch. Be sure to understand how to use branches when trying to create a stack.
-
 Simple command line tooling for creating and managing a Docker Compose stack for running Nuxeo.
 
 See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
@@ -23,7 +20,7 @@ See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for 
 For running Nuxeo locally, you can install everything using the bootstrap script like so:
 
 ```
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/OpenSearch2/bootstrap.sh)" -- -b OpenSearch2
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
 ```
 
 Note: if you are testing new features, you can pass `-- -b branch-name` to the bootstrap script to clone a specific branch.
