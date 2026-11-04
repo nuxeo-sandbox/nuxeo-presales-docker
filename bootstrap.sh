@@ -99,6 +99,34 @@ then
   done
 fi
 
+# Include a mail server?
+# ======================
+# Adds an optional mail server (webmail, IMAP, SMTP, aliases) to the stack via
+# the `mail` compose profile. Off by default so it doesn't burden every stack.
+MAIL_SERVER_DEFAULT=n
+MAIL_SERVER="${MAIL_SERVER:-}"
+if [ -z "${MAIL_SERVER}" ]
+then
+  while true
+  do
+    read -p "Do you want to include a mail server? (y|n) [${MAIL_SERVER_DEFAULT}]: " MAIL_SERVER
+    # If not specified, use default
+    if [ -z "${MAIL_SERVER}" ]; then
+        MAIL_SERVER=${MAIL_SERVER_DEFAULT}
+    fi
+
+    # Restrict input to 'y' or 'n'
+    case "${MAIL_SERVER}" in
+      y|n)
+        break
+        ;;
+      *)
+        echo "Invalid input. Please enter 'y' or 'n', or you can press Enter to accept the default (${MAIL_SERVER_DEFAULT})."
+        ;;
+    esac
+  done
+fi
+
 # Nuxeo Version
 # =============
 NX_VERSION_DEFAULT="2025"
@@ -209,6 +237,16 @@ then
   FQDN="localhost"
 fi
 
+# Compose profiles
+# ================
+# Activate optional stack services based on the choices above. Docker Compose
+# reads COMPOSE_PROFILES from `.env`.
+COMPOSE_PROFILES=""
+if [[ "${MAIL_SERVER}" == "y" ]]
+then
+  COMPOSE_PROFILES="mail"
+fi
+
 # Full identifier for Nuxeo Server docker image.
 NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 
@@ -219,6 +257,7 @@ NUXEO_IMAGE="${NUXEO_IMAGE_PREFIX}${nx_version}"
 echo
 echo "Studio project:        ${NX_STUDIO}"
 echo "Build-time Packages?:  ${INSTALL_PACKAGES}"
+echo "Mail server?:          ${MAIL_SERVER}"
 echo "Nuxeo version:         ${nx_version}"
 echo "Nuxeo Image:           ${NUXEO_IMAGE}"
 echo "Studio Username:       ${STUDIO_USERNAME}"
@@ -331,6 +370,9 @@ INSTALL_RPM=${INSTALL_RPM}
 MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
 OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
+
+# Activates optional stack services (e.g. the mail server via the `mail` profile)
+COMPOSE_PROFILES=${COMPOSE_PROFILES}
 
 FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
