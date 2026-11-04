@@ -101,8 +101,8 @@ fi
 
 # Include a mail server?
 # ======================
-# Adds an optional mail server (webmail, IMAP, SMTP, aliases) to the stack via
-# the `mail` compose profile. Off by default so it doesn't burden every stack.
+# TODO: default "no" for now because it's new, but I suspect we will default
+# this to "yes" eventually.
 MAIL_SERVER_DEFAULT=n
 MAIL_SERVER="${MAIL_SERVER:-}"
 if [ -z "${MAIL_SERVER}" ]
@@ -239,12 +239,12 @@ fi
 
 # Compose profiles
 # ================
-# Activate optional stack services based on the choices above. Docker Compose
-# reads COMPOSE_PROFILES from `.env`.
 COMPOSE_PROFILES=""
+MAILU_SECRET_KEY=""
 if [[ "${MAIL_SERVER}" == "y" ]]
 then
-  COMPOSE_PROFILES="mail"
+  COMPOSE_PROFILES="${COMPOSE_PROFILES:+${COMPOSE_PROFILES},}mail"
+  MAILU_SECRET_KEY=$(openssl rand -hex 16)
 fi
 
 # Full identifier for Nuxeo Server docker image.
@@ -371,13 +371,37 @@ MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}
 OPENSEARCH_DASHBOARDS_IMAGE=${OPENSEARCH_DASHBOARDS_IMAGE}
 
-# Activates optional stack services (e.g. the mail server via the `mail` profile)
 COMPOSE_PROFILES=${COMPOSE_PROFILES}
 
 FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
 STUDIO_CREDENTIALS=${CREDENTIALS}
 EOF
+
+if [[ "${MAIL_SERVER}" == "y" ]]
+then
+  cat << EOF > ${NX_STUDIO}/.mail.env
+SECRET_KEY=${MAILU_SECRET_KEY}
+DOMAIN=mail.localhost
+HOSTNAMES=mail.localhost
+POSTMASTER=admin
+TLS_FLAVOR=mailu
+ADMIN=true
+WEBMAIL=roundcube
+WEBDAV=none
+ANTIVIRUS=none
+API=false
+MESSAGE_SIZE_LIMIT=50000000
+RECIPIENT_DELIMITER=+
+FULL_TEXT_SEARCH=off
+WEBROOT_REDIRECT=/webmail
+WEB_ADMIN=/admin
+WEB_WEBMAIL=/webmail
+LOG_LEVEL=INFO
+TZ=Etc/UTC
+CREDENTIAL_ROUNDS=12
+EOF
+fi
 
 # Run commands
 # ============

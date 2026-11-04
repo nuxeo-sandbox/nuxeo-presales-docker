@@ -8,6 +8,10 @@ x-logging: &default-logging
     max-file: "3"
     compress: "true"
 
+# Optional add-on stacks, gated by compose profiles
+include:
+  - mail.yml
+
 services:
   nuxeo:
     build:
