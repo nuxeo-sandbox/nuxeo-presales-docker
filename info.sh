@@ -34,5 +34,5 @@ echo "  Link:    https://connect.nuxeo.com/nuxeo/site/studio/ide?project=${APPLI
 echo
 echo "Command line to share your configuration:"
 echo
-echo "INSTALL_PACKAGES=false NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
+echo "INSTALL_PACKAGES=n NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
 echo

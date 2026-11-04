@@ -75,25 +75,25 @@ fi
 
 # Install Packages at build time?
 # ===============================
-INSTALL_PACKAGES_DEFAULT=false
+INSTALL_PACKAGES_DEFAULT=n
 INSTALL_PACKAGES="${INSTALL_PACKAGES:-}"
 if [ -z "${INSTALL_PACKAGES}" ]
 then
   while true
   do
-    read -p "Do you want to install packages at build time? [${INSTALL_PACKAGES_DEFAULT}]: " INSTALL_PACKAGES
+    read -p "Do you want to install packages at build time? (y|n) [${INSTALL_PACKAGES_DEFAULT}]: " INSTALL_PACKAGES
     # If not specified, use default
     if [ -z "${INSTALL_PACKAGES}" ]; then
         INSTALL_PACKAGES=${INSTALL_PACKAGES_DEFAULT}
     fi
 
-    # Restrict input to 'true' or 'false'
+    # Restrict input to 'y' or 'n'
     case "${INSTALL_PACKAGES}" in
-      true|false)
+      y|n)
         break
         ;;
       *)
-        echo "Invalid input. Please enter 'true' or 'false', or you can press Enter to accept the default (${INSTALL_PACKAGES_DEFAULT})."
+        echo "Invalid input. Please enter 'y' or 'n', or you can press Enter to accept the default (${INSTALL_PACKAGES_DEFAULT})."
         ;;
     esac
   done
@@ -299,7 +299,7 @@ AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-search-client-opensearch2"
 AUTO_PACKAGES="${AUTO_PACKAGES} nuxeo-audit-opensearch2"
 
 # Handle build-time vs runtime package install
-if ${INSTALL_PACKAGES}
+if [[ "${INSTALL_PACKAGES}" == "y" ]]
 then
   ENV_BUILD_PACKAGES="${NX_STUDIO}-0.0.0-SNAPSHOT ${AUTO_PACKAGES} ${NUXEO_PACKAGES:-}"
   ENV_NUXEO_PACKAGES="${NX_STUDIO}"
