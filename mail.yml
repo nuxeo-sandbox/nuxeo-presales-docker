@@ -15,7 +15,7 @@ services:
       - mailu-redis:/data
 
   front:
-    image: ghcr.io/mailu/nginx:${MAILU_VERSION:-2024.06}
+    image: ghcr.io/mailu/nginx:${MAILU_VERSION}
     restart: unless-stopped
     profiles: ["mail"]
     env_file: .mail.env
@@ -35,7 +35,7 @@ services:
       - admin
 
   admin:
-    image: ghcr.io/mailu/admin:${MAILU_VERSION:-2024.06}
+    image: ghcr.io/mailu/admin:${MAILU_VERSION}
     restart: unless-stopped
     profiles: ["mail"]
     env_file: .mail.env
@@ -48,7 +48,7 @@ services:
       - redis
 
   imap:
-    image: ghcr.io/mailu/dovecot:${MAILU_VERSION:-2024.06}
+    image: ghcr.io/mailu/dovecot:${MAILU_VERSION}
     restart: unless-stopped
     profiles: ["mail"]
     env_file: .mail.env
@@ -60,7 +60,7 @@ services:
       - front
 
   smtp:
-    image: ghcr.io/mailu/postfix:${MAILU_VERSION:-2024.06}
+    image: ghcr.io/mailu/postfix:${MAILU_VERSION}
     restart: unless-stopped
     profiles: ["mail"]
     env_file: .mail.env
@@ -72,7 +72,7 @@ services:
       - front
 
   antispam:
-    image: ghcr.io/mailu/rspamd:${MAILU_VERSION:-2024.06}
+    image: ghcr.io/mailu/rspamd:${MAILU_VERSION}
     hostname: antispam
     restart: unless-stopped
     profiles: ["mail"]
@@ -86,7 +86,7 @@ services:
       - redis
 
   webmail:
-    image: ghcr.io/mailu/webmail:${MAILU_VERSION:-2024.06}
+    image: ghcr.io/mailu/webmail:${MAILU_VERSION}
     restart: unless-stopped
     profiles: ["mail"]
     env_file: .mail.env
