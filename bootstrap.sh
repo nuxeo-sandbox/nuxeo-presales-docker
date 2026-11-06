@@ -242,10 +242,12 @@ fi
 # ================
 COMPOSE_PROFILES=""
 MAILU_SECRET_KEY=""
+MAILU_ADMIN_PW=""
 if [[ "${MAIL_SERVER}" == "y" ]]
 then
   COMPOSE_PROFILES="${COMPOSE_PROFILES:+${COMPOSE_PROFILES},}mail"
   MAILU_SECRET_KEY=$(openssl rand -hex 16)
+  MAILU_ADMIN_PW=$(openssl rand -hex 10)
 fi
 
 # Full identifier for Nuxeo Server docker image.
@@ -382,13 +384,18 @@ EOF
 
 if [[ "${MAIL_SERVER}" == "y" ]]
 then
+  MAIL_DOMAIN="mail.localhost"
   cat << EOF > ${NX_STUDIO}/.mail.env
 SECRET_KEY=${MAILU_SECRET_KEY}
-DOMAIN=mail.localhost
-HOSTNAMES=mail.localhost
+DOMAIN=${MAIL_DOMAIN}
+HOSTNAMES=${MAIL_DOMAIN}
 POSTMASTER=admin
 TLS_FLAVOR=mailu
 ADMIN=true
+INITIAL_ADMIN_ACCOUNT=mailadmin
+INITIAL_ADMIN_DOMAIN=${MAIL_DOMAIN}
+INITIAL_ADMIN_PW=${MAILU_ADMIN_PW}
+INITIAL_ADMIN_MODE=ifmissing
 WEBMAIL=roundcube
 WEBDAV=none
 ANTIVIRUS=none
