@@ -14,18 +14,30 @@ OPENSEARCH_DASHBOARDS_IMAGE="opensearchproject/opensearch-dashboards:"${OPENSEAR
 INSTALL_RPM="" # TODO: this isn't used. It's kind of an advanced topic though, so maybe that's ok.
 CONNECT_URL="https://connect.nuxeo.com/nuxeo/site/"
 
-# Check for commands used in this script
+# Check for the commands the tooling relies on. This is the first thing a user
+# runs, so we check everything the whole stack needs up front (not just this
+# script).
 CHECKS=()
-command -v awk >/dev/null || CHECKS+=("awk")
-command -v make >/dev/null || CHECKS+=("make")
-command -v envsubst >/dev/null || CHECKS+=("envsubst")
+# commands required by this script and generate_clid.sh
 command -v git >/dev/null || CHECKS+=("git")
 command -v docker >/dev/null || CHECKS+=("docker")
+command -v awk >/dev/null || CHECKS+=("awk")
+command -v grep >/dev/null || CHECKS+=("grep")
+command -v cut >/dev/null || CHECKS+=("cut")
+command -v tail >/dev/null || CHECKS+=("tail")
+command -v mktemp >/dev/null || CHECKS+=("mktemp")
+command -v readlink >/dev/null || CHECKS+=("readlink")
+command -v openssl >/dev/null || CHECKS+=("openssl")
+# commands needed by Makefile / check_version.sh / info.sh
+command -v make >/dev/null || CHECKS+=("make")
+command -v jq >/dev/null || CHECKS+=("jq")
+command -v curl >/dev/null || CHECKS+=("curl")
 command -v sort >/dev/null || CHECKS+=("sort")
-command -v head >/dev/null || CHECKS+=("head")
-command -v sed >/dev/null || CHECKS+=("sed")
+# docker compose v2 is a separate plugin that can be missing even when docker is
+# present.
+docker compose version >/dev/null 2>&1 || CHECKS+=("docker-compose-plugin")
 
-if [ $CHECKS ]
+if [ ${#CHECKS[@]} -ne 0 ]
 then
   echo "Please install the following programs for your platform:"
   echo ${CHECKS[@]}
