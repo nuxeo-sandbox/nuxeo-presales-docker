@@ -46,8 +46,7 @@ services:
       - "587:587"   # submission
       - "143:143"   # IMAP
       - "993:993"   # IMAPS
-      - "8081:80"   # webmail + admin UI (http)
-      - "8443:443"  # webmail + admin UI (https)
+      - "${MAIL_WEB_BIND:-}8081:80"   # webmail + admin UI
     volumes:
       - mailu-certs:/certs
     depends_on:
