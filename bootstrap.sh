@@ -400,7 +400,7 @@ EOF
 
 if [[ "${MAIL_SERVER}" == "y" ]]
 then
-  MAIL_DOMAIN="mail.localhost"
+  MAIL_DOMAIN="mail.example.com"
   cat << EOF > ${NX_STUDIO}/.mail.env
 SECRET_KEY=${MAILU_SECRET_KEY}
 DOMAIN=${MAIL_DOMAIN}
