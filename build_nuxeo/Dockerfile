@@ -52,15 +52,21 @@ RUN if [ "${USE_FFMPEG}" != "n" ]; then \
         libvorbis-devel \
         --allowerasing && \
       dnf clean all; \
-    else \
-      echo "USE_FFMPEG=n, skipping ffmpeg"; \
     fi
 
 # Create vi symlink (vim is in upstream, but vi symlink is not)
 RUN ln -s /usr/bin/vim /usr/bin/vi
 
-# Install libreoffice if arm64, excluding Java to prevent downgrade from Java 21 to Java 17
-RUN if [ $(uname -m) == "aarch64" ];then dnf -y install libreoffice-core libreoffice-writer libreoffice-calc libreoffice-impress --exclude=java-* ; else echo "Not arm64 so no need to install libreoffice"; fi
+# Install libreoffice if ARM (including Mac Apple Silicon)
+# Exclude Java to prevent downgrade from Java 21 to Java 17
+RUN if [ $(uname -m) == "aarch64" ]; then \
+      dnf -y install \
+        libreoffice-core \
+        libreoffice-writer \
+        libreoffice-calc \
+        libreoffice-impress \
+        --exclude=java-*; \
+    fi
 
 # Dependencies for GLB thumbnail generation
 #RUN dnf -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
