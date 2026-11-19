@@ -49,17 +49,8 @@ RUN dnf config-manager --enable ol9_codeready_builder
 # Consider removing this...
 # RUN dnf -y install mediainfo
 
-#Install ffmpeg and codecs
-RUN dnf -y install \
-    ffmpeg \
-    x264 \
-    x265 \
-    opus \
-    libvpx \
-    flac \
-    libvorbis-devel \
-    --allowerasing && \
-    dnf clean all
+# Branch no-ffmpeg: ffmpeg and codecs are intentionally NOT installed here.
+# Use the master branch if you need video conversions.
 
 # Create vi symlink (vim is in upstream, but vi symlink is not)
 RUN ln -s /usr/bin/vim /usr/bin/vi
