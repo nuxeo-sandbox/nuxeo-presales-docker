@@ -56,13 +56,6 @@ RUN if [ "${USE_FFMPEG}" != "n" ]; then \
       echo "USE_FFMPEG=n, skipping ffmpeg"; \
     fi
 
-# Install additional packages
-
-# Install mediainfo
-# Only used by nuxeo-video-mediainfo-mapper, which is 2+years old
-# Consider removing this...
-# RUN dnf -y install mediainfo
-
 # Create vi symlink (vim is in upstream, but vi symlink is not)
 RUN ln -s /usr/bin/vim /usr/bin/vi
 
