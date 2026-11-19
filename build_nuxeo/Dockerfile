@@ -34,24 +34,14 @@ ENV LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8"
 
-# Install repos
-
-# We use RPM Fusion to get ffmpeg with x264 and x265 support
-# RPM Fusion is built against Fedora's EPEL, so we use that too
-RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
-
-# CRB is needed so we can do stuff like install ffmpeg
-RUN dnf config-manager --enable ol9_codeready_builder
-
-# Install additional packages
-
-# Install mediainfo
-# Only used by nuxeo-video-mediainfo-mapper, which is 2+years old
-# Consider removing this...
-# RUN dnf -y install mediainfo
-
 # Install ffmpeg and codecs
 RUN if [ "${USE_FFMPEG}" != "n" ]; then \
+      # We need RPM Fusion for ffmpeg; RPM Fusion requires EPEL, so add that.
+      dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+      # Add RPM Fusion to get ffmpeg with x264 and x265 support
+      dnf -y install https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
+      # CRB is needed so we can install ffmpeg
+      dnf config-manager --enable ol9_codeready_builder && \
       dnf -y install \
         ffmpeg \
         x264 \
@@ -65,6 +55,13 @@ RUN if [ "${USE_FFMPEG}" != "n" ]; then \
     else \
       echo "USE_FFMPEG=n, skipping ffmpeg"; \
     fi
+
+# Install additional packages
+
+# Install mediainfo
+# Only used by nuxeo-video-mediainfo-mapper, which is 2+years old
+# Consider removing this...
+# RUN dnf -y install mediainfo
 
 # Create vi symlink (vim is in upstream, but vi symlink is not)
 RUN ln -s /usr/bin/vim /usr/bin/vi
