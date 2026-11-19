@@ -13,6 +13,12 @@ NUXEO_PORT=$(grep '^NUXEO_PORT' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
 NUXEO_PACKAGES=$(grep '^NUXEO_PACKAGES' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
 # TODO: need to support both.
 BUILD_PACKAGES=$(grep '^BUILD_PACKAGES' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
+USE_FFMPEG=$(grep '^USE_FFMPEG' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
+FFMPEG_ARG=""
+if [[ "${USE_FFMPEG}" == "n" ]]
+then
+  FFMPEG_ARG="USE_FFMPEG=n "
+fi
 
 if [[ -e ${COMPOSE_DIR}/conf/system.conf ]]
 then
@@ -34,5 +40,5 @@ echo "  Link:    https://connect.nuxeo.com/nuxeo/site/studio/ide?project=${APPLI
 echo
 echo "Command line to share your configuration:"
 echo
-echo "INSTALL_PACKAGES=n NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
+echo "INSTALL_PACKAGES=n ${FFMPEG_ARG}NUXEO_PACKAGES=\"${NUXEO_PACKAGES:-}\" FQDN=${FQDN} NX_STUDIO=${NX_STUDIO} bash -c \"\$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)\""
 echo

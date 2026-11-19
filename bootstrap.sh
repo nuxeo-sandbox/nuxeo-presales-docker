@@ -214,11 +214,17 @@ done
 PROJECT_NAME=$(echo "${NX_STUDIO}" | awk '{print tolower($0)}')
 
 # Host
-# ====
 FQDN="${FQDN:-}"
 if [ -z "${FQDN}" ]
 then
   FQDN="localhost"
+fi
+
+# Install ffmpeg and codecs in the custom image? Blank means yes.
+USE_FFMPEG="${USE_FFMPEG:-}"
+if [[ "${USE_FFMPEG}" != "n" ]]
+then
+  USE_FFMPEG=""
 fi
 
 # Full identifier for Nuxeo Server docker image.
@@ -339,6 +345,7 @@ BUILD_PACKAGES=${ENV_BUILD_PACKAGES}
 NUXEO_PACKAGES=${ENV_NUXEO_PACKAGES}
 
 INSTALL_RPM=${INSTALL_RPM}
+USE_FFMPEG=${USE_FFMPEG}
 
 MONGO_VERSION=${MONGO_VERSION}
 OPENSEARCH_IMAGE=${OPENSEARCH_IMAGE}

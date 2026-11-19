@@ -21,6 +21,7 @@ ARG NUXEO_CLID
 ARG BUILD_PACKAGES
 ARG NUXEO_HOME
 ARG INSTALL_RPM
+ARG USE_FFMPEG=y
 
 ARG NVM_VERSION=0.40.1
 ARG NODE_VERSION=22.14.0
@@ -49,17 +50,21 @@ RUN dnf config-manager --enable ol9_codeready_builder
 # Consider removing this...
 # RUN dnf -y install mediainfo
 
-#Install ffmpeg and codecs
-RUN dnf -y install \
-    ffmpeg \
-    x264 \
-    x265 \
-    opus \
-    libvpx \
-    flac \
-    libvorbis-devel \
-    --allowerasing && \
-    dnf clean all
+# Install ffmpeg and codecs
+RUN if [ "${USE_FFMPEG}" != "n" ]; then \
+      dnf -y install \
+        ffmpeg \
+        x264 \
+        x265 \
+        opus \
+        libvpx \
+        flac \
+        libvorbis-devel \
+        --allowerasing && \
+      dnf clean all; \
+    else \
+      echo "USE_FFMPEG=n, skipping ffmpeg"; \
+    fi
 
 # Create vi symlink (vim is in upstream, but vi symlink is not)
 RUN ln -s /usr/bin/vim /usr/bin/vi
