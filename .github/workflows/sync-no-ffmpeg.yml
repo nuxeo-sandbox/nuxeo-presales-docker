@@ -1,0 +1,53 @@
+# Keeps the `no-ffmpeg` branch in sync with `master`.
+#
+# `no-ffmpeg` is `master` minus the ffmpeg install in build_nuxeo/Dockerfile.
+# Every push to `master` is merged into it, so nobody has to do it by hand.
+#
+# If this job fails (merge conflict, or ffmpeg showing up again in the
+# Dockerfile), `no-ffmpeg` is left as it was. Fix it locally:
+#   git checkout no-ffmpeg && git merge master
+#   (resolve, keeping ffmpeg out of the Dockerfile) && git push
+
+name: Sync no-ffmpeg with master
+
+on:
+  push:
+    branches:
+      - master
+  # Allows running it by hand from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Never run two syncs at the same time
+concurrency:
+  group: sync-no-ffmpeg
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out no-ffmpeg with full history
+        uses: actions/checkout@v7
+        with:
+          ref: no-ffmpeg
+          fetch-depth: 0
+
+      - name: Merge master
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git merge --no-edit origin/master
+
+      - name: Check that ffmpeg is still not installed
+        run: |
+          # Comment lines may mention ffmpeg; any other line may not.
+          if grep -nE '^[^#]*ffmpeg' build_nuxeo/Dockerfile; then
+            echo "::error file=build_nuxeo/Dockerfile::The merge brought ffmpeg back into the Dockerfile. Merge master into no-ffmpeg by hand."
+            exit 1
+          fi
+
+      - name: Push no-ffmpeg
+        run: git push origin no-ffmpeg
