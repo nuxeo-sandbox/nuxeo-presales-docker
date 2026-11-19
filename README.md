@@ -4,6 +4,10 @@ Simple command line tooling for creating and managing a Docker Compose stack for
 
 See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
 
+> [!NOTE]
+> This branch (`no-ffmpeg`) is identical to `master` except that ffmpeg is not installed. It is kept in sync
+> with `master` automatically (see `.github/workflows/sync-no-ffmpeg.yml`), so do not commit to it directly.
+
 # Compatible Versions
 
 * Nuxeo LTS 2025
