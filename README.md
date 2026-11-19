@@ -7,6 +7,10 @@ See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for 
 > [!NOTE]
 > This branch (`no-ffmpeg`) is identical to `master` except that ffmpeg is not installed. It is kept in sync
 > with `master` automatically (see `.github/workflows/sync-no-ffmpeg.yml`), so do not commit to it directly.
+> Deploy locally with:
+> ```
+> bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)" -- -b no-ffmpeg
+> ````
 
 # Compatible Versions
 
