@@ -25,6 +25,15 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-pres
 
 Note: if you are testing new features, you can pass `-- -b branch-name` to the bootstrap script to clone a specific branch.
 
+> [!TIP]
+> If you are testing new features, you can pass `-- -b branch-name` to the bootstrap script to clone a specific branch.
+>
+> Example: Skipping ffmpeg. By default the Nuxeo image is built with ffmpeg and its codecs, which takes a while.
+> If you do not need video, use the `no-ffmpeg` branch:
+> ```
+> bash -c "$(curl -fsSL https://raw.githubusercontent.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)" -- -b no-ffmpeg
+> ```
+
 See [Getting Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki/Getting-Started) for an explanation of how the script works.
 
 For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to scaffold the environment. You can find an example of how to use this tooling in EC2 [here](https://github.com/nuxeo-sandbox/presales-vmdemo/blob/master/aws/ec2-scripts/setup-nuxeo.sh).
