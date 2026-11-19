@@ -38,6 +38,13 @@ See [Getting Started](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wik
 
 For running Nuxeo elsewhere (e.g. EC2) you will need to do a bit more work to scaffold the environment. You can find an example of how to use this tooling in EC2 [here](https://github.com/nuxeo-sandbox/presales-vmdemo/blob/master/aws/ec2-scripts/setup-nuxeo.sh).
 
+# Contributing
+
+Documentation lives in the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki).
+This README only covers requirements and the bootstrap command. Options,
+examples, explanations, troubleshooting, and feature notes go in the Wiki.
+When you change behavior, update the Wiki, not this README.
+
 # Support
 
 **These features are not part of the Nuxeo Production platform.**
